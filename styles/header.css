@@ -1,0 +1,27 @@
+.divinline {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    }
+    .user{
+    	display: inline-block;
+    	margin-right: 4px;
+    	color: white;
+    }
+ .bg-mine {
+    background-color: #282828;
+    padding-right: 2%;
+}
+.mine.btn-outline-success {
+    color: #fff;
+    border-color: #fff;
+}
+.mine.btn-outline-success.focus, .mine.btn-outline-success:focus {
+    box-shadow: 0 0 0 0.2rem rgba(186, 200, 189, 0.5);
+}
+.mine.btn-outline-success:hover{
+    background-color: #727272;
+}

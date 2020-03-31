@@ -1,0 +1,42 @@
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 13% auto;
+    background-color: rgba(255, 255, 255, 0.65);
+    border-radius: 0.5rem;
+}
+
+.body{
+
+	height: 100%;
+    width: 100%;
+    background-color: #fff;
+    position: fixed
+    /*overflow: scroll;*/
+}
+
+.image{
+    background-image: url('../image/stil-flRm0z3MEoA-unsplash.jpg');
+    background-repeat: space;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #e2e1df;
+}
+
+.btn.my:hover {color: #d8d3cd;}
+
+.btn.my:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(187, 179, 168);
+}
+.btn-my-primary {
+    color: #fff;
+    background-color: #505964;
+   border-color: #dad7d2;
+}
+.form-control.my:focus {
+    border-color: #dad7d2;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(218, 215, 210);
+}
