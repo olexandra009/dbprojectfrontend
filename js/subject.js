@@ -7,13 +7,16 @@ let data_names = [{id: '1', last_name: "Surname", first_name: "Name", second_nam
     {id: '2', last_name: "Surname", first_name: "Name1", second_name: "Pobatkovi"},
     {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},]
 
+let theme_names = [{id: '112314',name:"Name of the first theme" , number:'1', hours:'10', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
+    {id: '112214', name:"Name of the second theme" ,number:'2', hours:'11', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
+    {id: '112514', name:"Name of the third theme" ,number:'3', hours:'6', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5}]
 
 
 /*------------------Listeners-----------------------*/
 $(document).on('click', '#subj_info', function () {
     nextMenu('subj_info');
     createThemeDiv();
-    createLessonDiv();
+  //  createLessonDiv();
 });
 
 
@@ -87,6 +90,12 @@ function  createThemeDiv(){
     theme.append($(`<button class="btn my_btn btn-outline-success" id="add_theme">`).text('Додати тему'));
     theme.append($(`<div id="add_theme_form">`));
     $('#content').append(theme);
+    let them_view = $(`<div id="theme_view">`);
+    theme_names.forEach(the=> them_view.append(themes(the)))
+
+
+    $('#content').append(them_view);
+
 }
 
 function createLessonDivAdding() {
@@ -309,11 +318,31 @@ function cellDate(data){
 let themes = ({id: id,
                name: name,
                hours: hours,
-               number: num,
-              coef_special: cs,
-              coef_d : cd,
-              coef_th: ct})=>{
-    let div = $(`<div data-id = ${id} class="">`);
+               number: number,
+                  coef_special: cs,
+                  coef_diary : cd,
+              coef_theme: ct})=>{
+    let div = $(`<div data-id = ${id} class="theme_list">`);
+    let header = $(` <div class="header">`);
+    let button_edit = $(`<button data-id="${id}" data-name="${name}" data-hours="${hours}"  data-number="${number}" 
+data-coef_special="${cs}" data-coefdiary="${cd}", data-coef_theme="${ct}" class="btn btn-outline-success my_btn edit_theme">`).text('Редагувати');
+    let button_delete = $(`<button data-id="${id}" class="btn btn-outline-dark delete_theme">`).text('Видалити');
+    let span = $(`<span>`).text(name);
+    let btn_div = $(`<div class="btn-group">`).append(button_edit).append(button_delete);
+    header.append(span).append(btn_div);
+    div.append(header);
+
+    let information = $(` <div class="information">`);
+    let div_number = $(` <div>`).text('Порядковий номер: '+number);
+    let div_hours = $(` <div>`).text('Кількість годин'+hours);
+    let div_coeficients = $(` <div>`).text('Коефіцієнти оцінок: спеціальні: '+cs+", поточні: "+cd+", тематична: "+ct);
+
+    information.append(div_number).append(div_hours).append(div_coeficients);
+
+    div.append(information);
+    return div;
+
+
 
 }
 
@@ -321,4 +350,4 @@ let themes = ({id: id,
 /*------To do on update--------*/
 
 createThemeDiv();
-createLessonDiv();
+//createLessonDiv();

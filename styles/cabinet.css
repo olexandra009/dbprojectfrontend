@@ -248,3 +248,18 @@ table#marks>tr>td {
     text-align: center;
     min-width: 50px;
 }
+.theme_list {
+    border: 0.5px solid;
+    padding: 1%;
+    border-radius: 0.7rem;
+    margin-top: 1%;
+}
+
+.theme_list > .header {
+    justify-content: space-between;
+    display: flex;
+}
+
+.theme_list>.header>span {
+    font-size: 1.2em;
+}
