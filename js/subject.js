@@ -28,6 +28,18 @@ let lesson_names = [{
         date: new Date(2020, 4, 7),
     }]
 
+let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
+    {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', visible:'true'}, {id:'2', value:'9', visible:'true'}]},
+    {date: new Date(2019, 3, 24), marks:[]},
+    {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7', visible:'true'}]},
+    {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12', visible:'true'}]}, ]
+let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', value:5, comment:"once more chance"}, {id:'2',value: 10, visible:'true' }]},
+    {name: "Test12", type: "test", marks: [{id:'1', value:'12', visible:'true'}, {id:'3', value:'6', visible: "true"}]}];
+let them_marks = [{id: '1', theme: 'theme1', value: '10', visible:'false'},
+    {id: '2', theme: 'theme1', value: '8', visible:'true'},
+    {id: '3', theme: 'theme1', value: '9', visible:'true'},];
+
+
 /*------------------Listeners-----------------------*/
 $(document).on('click', '#subj_info', function () {
     nextMenu('subj_info');
@@ -85,6 +97,15 @@ $(document).on('click', '.edit_theme', function () {
 $(document).on('click', '.delete_theme', function () {
    //todo delete theme
 });
+$(document).on('click', '.edit_lesson', function () {
+    createEditionLessonView($(this));
+});
+$(document).on('click', '.delete_lesson', function () {
+    //todo delete theme
+});
+$(document).on('click', '#back', function(){
+    $("#bacground_adding_parents").remove()
+})
 
 /************************Function***************************/
 /*-----Left-menu navigating-----*/
@@ -165,19 +186,35 @@ let form = $('<form class="container" method="post" id="form">')
 data-coef_special="${cs}" data-coefdiary="${cd}", data-coef_theme="${ct}" class="btn btn-outline-success my_btn edit_theme">`).text('Редагувати');
   */
 function createEditionThemeView(a) {
+    let back = $(` <button id="back" class="btn my_btn btn-outline-success" >`).text("Назад");
     let form = $('<form class="container" method="post" id="form_them_edit">')
     let input_name = create_input_group('text', 'Назва', a.data('name'), "theme");
     let input_num =  create_input_group('number', 'Порядковий номер', a.data('number'), "theme", 1);
     let coef_sp = create_input_group('number', 'Коефіцієнт спеціальних оцінок',  a.data('coef_special'), "coef-special", 0, "", 0.01)
     let coef_d =   create_input_group('number', 'Коефіцієнт поточних оцінок', a.data('coefdiary'), "coef-diary", 0, "", 0.01)
     let coef_th =   create_input_group('number', 'Коефіцієнт тематичної оцінок', a.data('coef_theme'), "coef-theme", 0, "", 0.01)
-    form.append(input_name);
+    form.append(back).append(input_name);
     form.append(input_num);
     form.append(coef_sp);
     form.append(coef_d);
     form.append(coef_th);
     let submit = $(`<input type="submit" class="input-group-text">`);
+
     form.append(submit);
+    createWindow(form)
+}
+function createEditionLessonView(a) {
+    let back = $(` <button id="back" class="btn my_btn btn-outline-success" >`).text("Назад");
+
+    let form = $('<form class="container" method="post" id="form_them_edit">')
+    let input_name = create_input_group('text', 'Тема: ', a.data('theme'), "theme");
+    let input_num =  create_input_group('date', 'Дата проведення:', a.data('date'), "date");
+    let coef_sp = create_input_group('text', 'Домашнє завдання: ',  (a.data('hometask')=='undefined')?"":a.data('hometask'), "hometask")
+     form.append(back).append(input_name);
+    form.append(input_num);
+    form.append(coef_sp);
+    let submit = $(`<input type="submit" class="input-group-text">`);
+   form.append(submit)
     createWindow(form)
 }
 function createViewLessonsFromThemeById(id){
@@ -197,16 +234,7 @@ $(document).on('click', '#create_marks_by_period', function(){
    //TODO get the period
    // make AJAX request
 
-    let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
-        {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', visible:'true'}, {id:'2', value:'9', visible:'true'}]},
-        {date: new Date(2019, 3, 24), marks:[]},
-        {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7', visible:'true'}]},
-        {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12', visible:'true'}]}, ]
-    let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', value:5, comment:"once more chance"}, {id:'2',value: 10, visible:'true' }]},
-        {name: "Test12", type: "test", marks: [{id:'1', value:'12', visible:'true'}, {id:'3', value:'6', visible: "true"}]}];
-    let them_marks = [{id: '1', theme: 'theme1', value: '10', visible:'false'},
-        {id: '2', theme: 'theme1', value: '8', visible:'true'},
-        {id: '3', theme: 'theme1', value: '9', visible:'true'},];
+
     let table = $('#marks');
     let caption = $('#table_caption');
         data_names.forEach(student=> {
