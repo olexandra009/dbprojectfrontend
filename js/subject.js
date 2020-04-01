@@ -91,7 +91,7 @@ function  createThemeDiv(){
 
 function createLessonDivAdding() {
     let form = $('<form class="container" method="post" id="form_l">');
-    
+
     let input_theme = create_input_group('text', 'Тема уроку', "", "lesson-theme");
     let input_num = create_input_group('date', 'Дата проведення', "", "date")
     let input_hometask =  create_input_group('text', 'Домашнє завдання', "", "lesson-theme");
