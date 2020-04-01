@@ -239,3 +239,12 @@ form.container.filter {
 .mar {
     margin-top: 2%;
 }
+table#marks > tr > td.caption_surname {
+    text-align: start;
+}
+
+table#marks>tr>td {
+    padding: 3px;
+    text-align: center;
+    min-width: 50px;
+}
