@@ -11,6 +11,22 @@ let theme_names = [{id: '112314',name:"Name of the first theme" , number:'1', ho
     {id: '112214', name:"Name of the second theme" ,number:'2', hours:'11', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
     {id: '112514', name:"Name of the third theme" ,number:'3', hours:'6', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5}]
 
+let lesson_names = [{
+    id: '242145',
+    theme: 'Theme of lesson 1',
+    date: new Date(2020, 4, 5),
+    hometask: 'write esse'
+},
+    {
+        id: '24234',
+        theme: 'Theme of lesson 2',
+        date: new Date(2020, 4, 6),
+    },
+    {
+        id: '24234',
+        theme: 'Theme of lesson 3',
+        date: new Date(2020, 4, 7),
+    }]
 
 /*------------------Listeners-----------------------*/
 $(document).on('click', '#subj_info', function () {
@@ -38,10 +54,8 @@ let createTheme = false;
 
 $(document).on('click', '#add_theme', function () {
     if(!createTheme){
-        $('#form_l').remove();
         createThemeDivAdding();
         createTheme = true;
-        createLesson =false;
         return;
     }
     $('#form').remove();
@@ -49,14 +63,27 @@ $(document).on('click', '#add_theme', function () {
 });
 $(document).on('click', '#add_lesson', function () {
     if(!createLesson) {
-        $('#form').remove();
         createLessonDivAdding()
-        createTheme = false
-        createLesson = true;
+        createLesson=true;
         return;
     }
     $('#form_l').remove();
-    createTheme = false;
+    createLesson = false;
+});
+$(document).on('click', '.theme_list', function (e) {
+    if(e.target.type == "submit")return;
+    //TODO view Theme
+    let id= $(this).data('id');
+    createViewLessonsFromThemeById(id);
+});
+
+
+
+$(document).on('click', '.edit_theme', function () {
+     createEditionThemeView($(this));
+});
+$(document).on('click', '.delete_theme', function () {
+   //todo delete theme
 });
 
 /************************Function***************************/
@@ -78,12 +105,16 @@ function removing(item, div) {
         document.getElementById(div).classList.remove('hidden');
 }
 /*------------------------------------------*/
-function  createLessonDiv(){
+function  createLessonDiv(id){
     let theme = $(`<div class="cotainer lesson">`);
     theme.append($(`<button class="btn my_btn btn-outline-success" id="add_lesson">`).text('Створити урок'));
     theme.append($(`<div id="add_lesson_form">`));
     $('#content').append(theme);
+    let them_view = $(`<div id="lesson_view">`);
 
+    //todo ajax lessons by theme id
+    lesson_names.forEach(l=>them_view.append(lessons(l)));
+    $('#content').append(them_view);
 }
 function  createThemeDiv(){
     let theme = $(`<div class="cotainer theme">`);
@@ -130,6 +161,37 @@ let form = $('<form class="container" method="post" id="form">')
     $('#add_theme_form').append(form);
 
 }
+/*<button data-id="${id}" data-name="${name}" data-hours="${hours}"  data-number="${number}"
+data-coef_special="${cs}" data-coefdiary="${cd}", data-coef_theme="${ct}" class="btn btn-outline-success my_btn edit_theme">`).text('Редагувати');
+  */
+function createEditionThemeView(a) {
+    let form = $('<form class="container" method="post" id="form_them_edit">')
+    let input_name = create_input_group('text', 'Назва', a.data('name'), "theme");
+    let input_num =  create_input_group('number', 'Порядковий номер', a.data('number'), "theme", 1);
+    let coef_sp = create_input_group('number', 'Коефіцієнт спеціальних оцінок',  a.data('coef_special'), "coef-special", 0, "", 0.01)
+    let coef_d =   create_input_group('number', 'Коефіцієнт поточних оцінок', a.data('coefdiary'), "coef-diary", 0, "", 0.01)
+    let coef_th =   create_input_group('number', 'Коефіцієнт тематичної оцінок', a.data('coef_theme'), "coef-theme", 0, "", 0.01)
+    form.append(input_name);
+    form.append(input_num);
+    form.append(coef_sp);
+    form.append(coef_d);
+    form.append(coef_th);
+    let submit = $(`<input type="submit" class="input-group-text">`);
+    form.append(submit);
+    createWindow(form)
+}
+function createViewLessonsFromThemeById(id){
+//todo ajax to get lessons
+    $('#content').empty();
+    createLessonDiv(id);
+}
+function createWindow(innerItem){
+    let back =$(` <div class = "backgr" id="bacground_adding_parents">`);
+    let form = $(` <div class="forming">`);
+    $('.body').before(back.append(form.append(innerItem)));
+}
+
+
 $(document).on('click', '#create_marks_by_period', function(){
     console.log('here');
    //TODO get the period
@@ -315,6 +377,32 @@ function cellDate(data){
 }
 
 /**********************HTML*******************/
+let lessons = ({
+    id: id,
+    theme: theme,
+    date: date,
+    hometask: ht
+})=>{
+    let div = $(`<div data-id = ${id} class="lesson_list">`);
+    let header = $(` <div class="header">`);
+    let button_edit = $(`<button data-id="${id}" data-theme="${theme}" data-date="${cutData(date)}" data-hometask="${ht}" class="btn btn-outline-success my_btn edit_lesson">`).text('Редагувати');
+    let button_delete = $(`<button data-id="${id}" class="btn btn-outline-dark delete_lesson">`).text('Видалити');
+    let span = $(`<span>`).text(theme);
+    let btn_div = $(`<div class="btn-group">`).append(button_edit).append(button_delete);
+    header.append(span).append(btn_div);
+    div.append(header);
+    let information = $(` <div class="information">`);
+    let div_data = $(` <div>`).text('Дата проведення: '+date.toLocaleDateString());
+    information.append(div_data)
+    if(ht !== undefined && ht.length!=0) {
+        let div_hours = $(` <div>`).text('Домашнє завдання: ' + ht);
+        information.append(div_hours);
+    }
+
+    div.append(information);
+    return div;
+
+}
 let themes = ({id: id,
                name: name,
                hours: hours,
@@ -334,7 +422,7 @@ data-coef_special="${cs}" data-coefdiary="${cd}", data-coef_theme="${ct}" class=
 
     let information = $(` <div class="information">`);
     let div_number = $(` <div>`).text('Порядковий номер: '+number);
-    let div_hours = $(` <div>`).text('Кількість годин'+hours);
+    let div_hours = $(` <div>`).text('Кількість годин: '+hours);
     let div_coeficients = $(` <div>`).text('Коефіцієнти оцінок: спеціальні: '+cs+", поточні: "+cd+", тематична: "+ct);
 
     information.append(div_number).append(div_hours).append(div_coeficients);
