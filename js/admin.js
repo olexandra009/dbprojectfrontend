@@ -452,8 +452,6 @@ function creatingSubjectList(){
     theme.append($(`<div id="add_subject_form">`));
     subject_button.append(theme);
     //list of subject
-    //TODO AJAX request for subjects names
-
     $.ajax({
         url: "/getSubjects",
         type: "GET",
@@ -465,10 +463,10 @@ function creatingSubjectList(){
         }
     });
 
-    let data = [{name: 'English'}, {name: 'Математика'}, {name: 'Алгебра'}];
-    data.forEach(sb=> {
-        subject_list.append(subject_name_list_view(sb))
-    });
+//    let data = [{name: 'English'}, {name: 'Математика'}, {name: 'Алгебра'}];
+//    data.forEach(sb=> {
+//        subject_list.append(subject_name_list_view(sb))
+//    });
     $("#content").empty().append(subject_button).append(subject_list);
 }
 //show concrete subjects
@@ -486,7 +484,9 @@ function  createConcreteSubjectList(name) {
     $.ajax({
         url: "/getSubjectInGroup",
         type: "GET",
+        data: {subject: name},
         success: function(subjectsInGroup){
+            console.log("subjectsInGroup");
             console.log(subjectsInGroup);
         }
     });
@@ -520,10 +520,18 @@ function createFormForAddingConcreteSubject(){
         type: "GET",
         contentType: "application/json",
         success: function (classes) {
+            //if second semester of 2020, then show classes registered in 2019, if summer or first semester of 2020 then show classes registered in 2020
+            let date = new Date();
+            let year = date.getFullYear();
+            let month = date.getMonth();
+            if(month < 5)
+                year--;
+            classes = classes.filter(a => a.start_year == year);
+            
             classes.sort(function(a,b){
-                return a.start_year - b.start_year || a.class_number - b.class_number || a.class_char - b.class_char;
+                return a.class_number - b.class_number || a.class_char - b.class_char;
             });
-            let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char + "(" + a.start_year + ")"), "Клас" , "", "Оберіть клас", "class");
+            let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас" , "", "Оберіть клас", "class");
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(inputBook).append(inputClass).append(submit);
             $('#form_c_subject').remove();
