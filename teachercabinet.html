@@ -1,84 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" href="styles/cabinet.css">
-    <link rel="stylesheet" type="text/css" href="styles/header.css">
-    <link rel="stylesheet" type="text/css" href="styles/login.css">
+    <html>
+        <head>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+            <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <link rel="stylesheet" type="text/css" href="styles/cabinet.css">
+            <link rel="stylesheet" type="text/css" href="styles/header.css">
+            <link rel="stylesheet" type="text/css" href="styles/login.css">
 
-    <!---<script src="../node_modules/jquery/dist/jquery.js"></script>--->
-    <title>Online journal</title>
-</head>
-<body>
-    <div class="body cabinet image">
-        <header>
-            <nav class="navbar navbar-dark bg-mine fixed-top justify-content-between">
-                <a class="navbar-brand">Online Journal</a>
-                <div class="divinline">
-                    <div class="user">
-                        <div>Петренко Анна Федорівна</div>
-                        <div> Роль: вчитель </div>
-                    </div>
-                    <button class="btn mine btn-outline-success my-2 my-sm-0">Вийти</button>
-                </div>
-            </nav>
-            <nav class="navbar navbar-dark bg-mine justify-content-between">
-                <a class="navbar-brand">Online Journal</a>
-                <div class="divinline">
-                    <div class="user">
-                        <div>Name</div>
-                        <div>Role </div>
-                    </div>
-                    <button class="btn mine btn-outline-success my-2 my-sm-0">Вийти</button>
-                </div>
-            </nav>
-        </header>
-        <div class="container-fluid">
-            <div class="row">
-                <!--Left menu-->
-                <nav class="col-md-2 d-md-block mbg-light sidebar">
-                    <div class="sidebar-sticky">
-                        <ul class="nav flex-column">
-                            <li class="nav-item tcab active" id="t_cab"> <a class="nav-link "> Мій кабінет </a> </li>
-                            <li class="nav-item ht" id="my_class"> <a class="nav-link "> Мій клас </a> </li> <!--optional-->
-                            <li class="nav-item ht" id="my_subject"> <a class="nav-link "> Мої предмети </a> </li>
-                            <li class="nav-item ht" id="ex_subject"> <a class="nav-link "> Предмети на заміну </a> </li>
-                        </ul>
-                    </div>
-                </nav>
-                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-                    <div class="content bglight" id = "mycabinet">
-                        <label class="info">Прізвище: </label>
-                        <label class="info">Ім'я: </label>
-                        <label class="info">По-батькові: </label>
-                        <label class="info">Дата народження: </label>
-                        <label class="info">Стать: </label>
-                        <label class="info">Адреса: </label>
-                        <label class="info">Телефони: </label>
-                        <label class="info">Пільги: </label>
-                        <label class="info">Тип навчання: </label>
-                    </div>
-                    <div class="hidden bglight" id="editcabinfo"> <!--Взагалі можливо відправляти через форму, але я не хочу-->
-                        <input class="info" name="last_name" placeholder="Прізвище">
-                        <input class="info" name="first_name" placeholder="Ім'я">
-                        <input class="info" name="second_name" placeholder="По-батькові">
-                        <input class="info" name="address" placeholder="Адреса">
-                        <input class="info" name="phones">
-                        <input class="info" name="qwalification">
-                    </div>
-                    <div id="content" class="container bglight hidden">
+            <!---<script src="../node_modules/jquery/dist/jquery.js"></script>--->
+            <title>Online journal</title>
+        </head>
+        <body>
+            <div class="body cabinet image">
+                <header>
+                    <nav class="navbar navbar-dark bg-mine fixed-top justify-content-between">
+                        <a class="navbar-brand">Online Journal</a>
+                        <div class="divinline">
+                            <div class="user">
+                                <div>Петренко Анна Федорівна</div>
+                                <div> Роль: вчитель </div>
+                            </div>
+                            <button class="btn mine btn-outline-success my-2 my-sm-0" onclick="logout()">Вийти</button>
+                        </div>
+                    </nav>
+                    <nav class="navbar navbar-dark bg-mine justify-content-between">
+                        <a class="navbar-brand">Online Journal</a>
+                        <div class="divinline">
+                            <div class="user">
+                                <div>Name</div>
+                                <div>Role </div>
+                            </div>
+                            <button class="btn mine btn-outline-success my-2 my-sm-0" onclick="logout()">Вийти</button>
+                        </div>
+                    </nav>
+                </header>
+                <div class="container-fluid">
+                    <div class="row">
+                        <!--Left menu-->
+                        <nav class="col-md-2 d-md-block mbg-light sidebar">
+                            <div class="sidebar-sticky">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item tcab active" id="t_cab"> <a class="nav-link "> Мій кабінет </a> </li>
+                                    <li class="nav-item ht" id="my_class"> <a class="nav-link "> Мій клас </a> </li> <!--optional-->
+                                    <li class="nav-item ht" id="my_subject"> <a class="nav-link "> Мої предмети </a> </li>
+                                    <li class="nav-item ht" id="ex_subject"> <a class="nav-link "> Предмети на заміну </a> </li>
+                                </ul>
+                            </div>
+                        </nav>
+                        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+                            <div class="content bglight" id = "mycabinet">
+                                <label class="info">Прізвище: </label>
+                                <label class="info">Ім'я: </label>
+                                <label class="info">По-батькові: </label>
+                                <label class="info">Дата народження: </label>
+                                <label class="info">Стать: </label>
+                                <label class="info">Адреса: </label>
+                                <label class="info">Телефони: </label>
+                                <label class="info">Пільги: </label>
+                                <label class="info">Тип навчання: </label>
+                            </div>
+                            <div class="hidden bglight" id="editcabinfo"> <!--Взагалі можливо відправляти через форму, але я не хочу-->
+                                <input class="info" name="last_name" placeholder="Прізвище">
+                                <input class="info" name="first_name" placeholder="Ім'я">
+                                <input class="info" name="second_name" placeholder="По-батькові">
+                                <input class="info" name="address" placeholder="Адреса">
+                                <input class="info" name="phones">
+                                <input class="info" name="qwalification">
+                            </div>
+                            <div id="content" class="container bglight hidden">
 
+                            </div>
+                        </main>
                     </div>
-                </main>
+                </div>
+
             </div>
-        </div>
-
-    </div>
-    <script src="js/teachercabinet.js"></script>
-</body>
-</html>
+            <script src="js/teachercabinet.js"></script>
+            <script>
+                function logout(){
+                    $.ajax({
+                        url: "/logout",
+                        type: "POST",
+                        contentType: "application/json",
+                        success: function(res){
+                            location.reload();
+                        }
+                    });
+                }
+            </script>
+        </body>
+    </html>

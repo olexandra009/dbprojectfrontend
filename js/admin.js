@@ -513,7 +513,7 @@ function addingClassView(){
 }
 
 function createFormForAddingClass(){
-    let form = $('<form class="container" method="post" id="form_class">');
+    let form = $('<form class="container" method="post" id="form_class" action="createClass">');
     let input_surname = create_input_group('number', "Номер", "", "number");
     let input_name = create_input_group('text', "Літера", "", "letter");
     let input_second_name = create_input_group('number', "Рік початку навчання", "2019", "start_studing");
