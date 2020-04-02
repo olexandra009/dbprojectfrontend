@@ -248,6 +248,15 @@ table#marks>tr>td {
     text-align: center;
     min-width: 50px;
 }
+table#attend > tr > td.caption_surname {
+    text-align: start;
+}
+
+table#attend>tr>td {
+    padding: 3px;
+    text-align: center;
+    min-width: 50px;
+}
 .theme_list, .lesson_list {
     border: 0.5px solid;
     padding: 1%;

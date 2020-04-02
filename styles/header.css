@@ -25,3 +25,12 @@
 .mine.btn-outline-success:hover{
     background-color: #727272;
 }
+td.hovered{
+    background-color: aqua;
+}
+tr.hovered{
+    background-color: chartreuse;
+}
+td.thovered{
+    background-color: cadetblue;
+}
