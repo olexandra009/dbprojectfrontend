@@ -41,18 +41,25 @@ let attend = [
 
 
 $(document).on('mouseenter', 'td', function () {
+
     let id = $(this).data('column');
     let query = "td[data-column="+id+"]";
     $(query).addClass('hovered');
-    $(this).parent().addClass('hovered');
-
+ //.addClass('hovered');
+$("."+( $($(this).parent()).attr('class').split(/\s+/)[[0]])).removeClass('hovered').addClass('hovered');
     $(this).addClass('thovered');
 }) ;
 $(document).on('mouseleave', 'td', function () {
+    console.log("============================================")
+    console.log($(this));
+    console.log($(this).parent());
+    console.log(  $("."+( $($(this).parent()).attr('class'))));
+    console.log("============================================")
     let id = $(this).data('column');
     let query = "td[data-column="+id+"]";
     $(query).removeClass('hovered');
-    $(this).parent().removeClass('hovered');
+    $("."+( $($(this).parent()).attr('class').split(/\s+/)[[0]])).removeClass('hovered');
+
     $(this).removeClass('thovered');
 }) ;
 /*------------------Listeners-----------------------*/
@@ -234,6 +241,51 @@ $(document).on('click', 'td[data-type="attend"]', function(){
     }
 
 } );
+let thememarkflag = false;
+let endmarkflag = false;
+$(document).on('click', '#show_marks_theme', function () {
+    console.log('here');
+    let theme= $('#theme_id_select').children("option:selected").val()
+    $('#fst_table').removeClass('col-md-7').removeClass('col-md-12').removeClass('col-md-9');
+    if(endmarkflag && thememarkflag){   // true and true => show the end mark only
+        console.log(1);
+        $('#fst_table').addClass('col-md-9');
+        $('#sec_table').removeClass('hidden').addClass('hidden');
+    }else if(endmarkflag && !thememarkflag){ //true and false => show all marktypes
+        $('#fst_table').addClass('col-md-7');
+        console.log(10);
+        createThemeMarksView(theme);
+        $('#sec_table').removeClass('hidden')
+    }else if(!endmarkflag && thememarkflag){//show only dayli
+        console.log(11);
+        $('#fst_table').addClass('col-md-12');
+        $('#sec_table').removeClass('hidden').addClass('hidden');
+    } else {//only theme
+        console.log(100);
+        $('#fst_table').addClass('col-md-10');
+        createThemeMarksView(theme);
+        $('#sec_table').removeClass('hidden')
+    }
+    thememarkflag = !thememarkflag;
+});
+$(document).on('click', 'show_end_marks', function () {
+    $('#fst_table').removeClass('col-md-7').removeClass('col-md-12').removeClass('col-md-9');
+    if(endmarkflag && thememarkflag){   // true and true => show the theme mark only
+        $('#fst_table').addClass('col-md-9');
+        $('#thr_table').removeClass('hidden').addClass('hidden');
+    }else if(endmarkflag && !thememarkflag){ //true and false => show all marktypes
+        $('#fst_table').addClass('col-md-7');
+        createEndMarksView();
+    }else if(!endmarkflag && thememarkflag){//show only dayli
+        $('#fst_table').addClass('col-md-12');
+        $('#thr_table').removeClass('hidden').addClass('hidden');
+    } else {//only theme
+        $('#fst_table').addClass('col-md-10');
+        createEndMarksView();
+    }
+    endmarkflag = !endmarkflag;
+});
+
 
 /************************Function***************************/
 /*-----Left-menu navigating-----*/
@@ -417,7 +469,7 @@ function createAttendByPeriod(){
     table.append(capt.append(tr));
 
     data_names.forEach(student=> {
-        let td = $(`<tr id="table-row-${student.id}">`);
+        let td = $(`<tr id="table-row-${student.id}"  class="table-row-${student.id}">`);
         let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
         td.append(first_tr);
         table.append(td);
@@ -446,7 +498,32 @@ data-mark-visible="${mark.visible}">`).text('H');
     }
     $('#attend_view_table').removeClass('hidden');
 }
+function  createThemeMarksView(theme){
+    let table = $('#marks_theme');
+    let caption = $('#table_theme_caption');
+    let column = 1000;
+    let date_cell = $(`<td data-column="${column}" data-type="theme">`).text(theme);
+    caption.append(date_cell);
 
+    data_names.forEach(st=>{
+        let tr = $(`<tr id="table-th-row-${st.id}" class="table-row-${st.id}">`);
+        let mark= them_marks.find(el=> el.id==st.id);
+        if(mark===undefined) {
+            console.log('undefineed')
+            let td = $(`<td data-column="${column}" data-theme=${mark.theme}  data-type="theme">`);
+            tr.append(td);
+
+        }else {
+            console.log('theme')
+
+            let td = $(`<td data-column="${column}" data-theme=${mark.theme} data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
+data-mark-visible="${mark.visible}">`).text(mark.value);
+            tr.append(td);
+
+        }
+        table.append(tr);
+    })
+}
 
 function createMarksByPeriod(){
     //TODO get the period
@@ -457,7 +534,7 @@ function createMarksByPeriod(){
     $('#marks_view_table').removeClass('hidden');
     let caption = $('#table_caption');
     data_names.forEach(student=> {
-        let td = $(`<tr id="table-row-${student.id}">`);
+        let td = $(`<tr id="table-row-${student.id}" class="table-row-${student.id}">`);
         let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
         td.append(first_tr);
         table.append(td);
@@ -541,22 +618,49 @@ function createPeriodForm() {
 }
 
 
+
 function createMarksView(){
     let div = $(`<div id="choose_period">`);
     let dataform = $(`<div class="form">`); //можливо краще форму?
-    let inputdate1 = create_selected_input(['theme1', 'theme2', 'theme3'], 'Tема:', '', 'Оберіть тему', 'theme');
+    let inputdate1 = create_selected_input(['theme1', 'theme2', 'theme3'], 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
 
     let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
     div.append(dataform.append(inputdate1).append(submit));
     let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
+    let btn_div = $(`<div class="btn-group">`)
     let button = $(`<button class="btn btn-outline-dark" id="add_new_column_mark">`).text("Додати стовпчик");
-    marks_view.append(button);
-    let div_table_wrapper=$(`<div id="marks_table_wrapper">`);
-    let table = $(`<table id='marks' >`);
+    let button_ = $(`<button class="btn btn-outline-dark" id="show_marks_theme">`).text("Тематична оцінка");
+    let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
+    btn_div.append(button).append(button_).append(button_end);
+    marks_view.append(btn_div);
+    let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
+    let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
+    let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
+    let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
+    let div_second_table_caption = $(`<div class="table_header" >`).text('Тематична оцінка');
+    let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
+    let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
+    let table = $(`<table id='marks'>`);
     let caption = $(`<tr id="table_caption">`);
+    let table_theme = $(`<table id='marks_theme' >`);
+    let caption_theme = $(`<tr id="table_theme_caption">`);
+    let table_end = $(`<table id='marks_end'>`);
+    let caption_end = $(`<tr id="table_end_caption">`);
     let tr = $(`<td>`).text('Прізвище');
+    div_first_table.append(div_first_table_caption);
     table.append(caption.append(tr));
-    marks_view.append(div_table_wrapper.append(table));
+    div_first_table.append(table);
+
+    div_second_table.append(div_second_table_caption);
+    table_theme.append(caption_theme);
+    div_second_table.append(table_theme);
+
+    div_third_table.append(div_third_table_caption);
+    table_end.append(caption_end);
+    div_third_table.append(table_end);
+
+    div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
+    marks_view.append(div_table_wrapper);
     $('#content').append(div).append(marks_view);
 }
 //TODO add more arguments for specificating
