@@ -145,7 +145,7 @@ $(document).on('click', '#add_subject', function (){
 // Предмети => Назви предметів => Конкретний предмет Додати предмет
 $(document).on('click', '#add_c_subject', function () {
     if(!createCSubject) {
-        createFormForAddingConcreteSubject();
+        createFormForAddingConcreteSubject($('#add_c_subject').attr('name'));
         createCSubject = true;
     } else {
         $('#form_c_subject').remove();
@@ -463,43 +463,43 @@ function creatingSubjectList(){
         }
     });
 
-//    let data = [{name: 'English'}, {name: 'Математика'}, {name: 'Алгебра'}];
-//    data.forEach(sb=> {
-//        subject_list.append(subject_name_list_view(sb))
-//    });
+    //    let data = [{name: 'English'}, {name: 'Математика'}, {name: 'Алгебра'}];
+    //    data.forEach(sb=> {
+    //        subject_list.append(subject_name_list_view(sb))
+    //    });
     $("#content").empty().append(subject_button).append(subject_list);
 }
 //show concrete subjects
-function  createConcreteSubjectList(name) {
+function createConcreteSubjectList(name) {
     let subject_button = $(`<div id="subject_add">`);
     let subject_list = $(`<div>`);
     //button for add subject
     let theme = $(`<div class="cotainer c_subject">`);
-    theme.append($(`<button class="btn my_btn btn-outline-success" id="add_c_subject">`).text('Cтворити предмет'));
+    theme.append($(`<button class="btn my_btn btn-outline-success" id="add_c_subject" name="${name}">`).text('Cтворити предмет'));
     theme.append($(`<div id="add_subject_c_form">`));
     subject_button.append(theme);
     //list of subject
-    //TODO AJAX request for subjects
 
     $.ajax({
         url: "/getSubjectInGroup",
         type: "GET",
         data: {subject: name},
         success: function(subjectsInGroup){
-            console.log("subjectsInGroup");
+            subjectsInGroup = subjectsInGroup.filter(a => a.subject_name == name);
             console.log(subjectsInGroup);
+            let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
+                             {id: '5AG2', name: 'English', class_name: '5-A'},
+                             {id: '5BG1', name: 'English', class_name: '5-B'}];
+            data_subj.forEach(sb => {
+                console.log(sb);
+                console.log(name);
+                subject_list.append(subject_list_view(name, sb))
+            });
+            $("#content").empty().append(subject_button).append(subject_list);
         }
     });
 
-    let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
-                     {id: '5AG2', name: 'English', class_name: '5-A'},
-                     {id: '5BG1', name: 'English', class_name: '5-B'}];
-    data_subj.forEach(sb => {
-        console.log(sb);
-        console.log(name);
-        subject_list.append(subject_list_view(name, sb))
-    });
-    $("#content").empty().append(subject_button).append(subject_list);
+
 }
 
 function createFormForAddingSubject() {
@@ -510,9 +510,12 @@ function createFormForAddingSubject() {
     $('#form_subject').remove();
     $('#add_subject_form').append(form);
 }
-function createFormForAddingConcreteSubject(){
+function createFormForAddingConcreteSubject(subjName){
     //TODO AJAX request for class
     let form = $('<form class="container" method="post" id="form_c_subject" action="createSubjectInGroup">');
+    //hidden input just to send the subjName
+    let hiddenSubjNameInput = $('<input type="text" name="subjName" style="display: none" value="' + subjName + '">');
+    form.append(hiddenSubjNameInput);
     let inputBook = create_input_group('text', "Підручник", "", "book");
 
     $.ajax({
@@ -527,7 +530,7 @@ function createFormForAddingConcreteSubject(){
             if(month < 5)
                 year--;
             classes = classes.filter(a => a.start_year == year);
-            
+
             classes.sort(function(a,b){
                 return a.class_number - b.class_number || a.class_char - b.class_char;
             });
@@ -538,12 +541,6 @@ function createFormForAddingConcreteSubject(){
             $('#add_subject_c_form').append(form);
         }
     });
-
-    //    let inputClass = create_selected_input(['5-А', '6-B'], "Клас" , "", "Оберіть клас", "class");
-    //    let submit = $(`<input type="submit" class="input-group-text">`);
-    //    form.append(inputBook).append(inputClass).append(submit);
-    //    $('#form_c_subject').remove();
-    //    $('#add_subject_c_form').append(form);
 }
 /*************Class-page function ****************/
 function addingClassView(){
