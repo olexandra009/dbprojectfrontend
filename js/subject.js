@@ -201,6 +201,22 @@ $(document).on('click', '#create_marks_by_period', function(){
     // send theme value
     createMarksByPeriod();
 });
+$(document).on('click', 'tr#table_caption > td[data-type="dairy"]', function(){
+        //todo show asking delete
+});
+
+$(document).on('click', 'tr#table_caption > td[data-type="special"]', function(){
+
+    //todo show asking delete
+    // rename and change type
+});
+
+
+$(document).on('click', 'td[data-type="dairy"], td[data-type="special"]', function(){
+    if($(this).parent().attr('id') === "table_caption") return;
+    showMarkEditView($(this));
+});
+
 $(document).on('click', 'td[data-type="attend"]', function(){
 
     if($(this).parent().attr('id') === "table_caption"){
@@ -373,6 +389,26 @@ function createNewDairyMarkColumn(date){
         row.append(td);
     })
 }
+
+function showMarkEditView(a) {
+    let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
+    let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
+    let visible = (a.data('mark-visible')==true);
+   console.log(a.data('mark-visible'))
+    console.log(visible);
+    let div = $(`<div>`)
+    //maybe make in form
+    let input_value = create_input_group('number', 'Значення:', value, 'value', '1', '12', '1');
+    let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
+    let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
+    let div_btn = $(`<div class="btn-group">`);
+    let confirm = $(`<button class="btn btn-outline-dark" id="mark_edition">`).text('Зберегти');
+    let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
+    div_btn.append(confirm).append(cancel);
+    div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
+   createWindow(div);
+}
+
 function createAttendByPeriod(){
     let table = $('#attend');
     table.empty();
@@ -550,11 +586,12 @@ function create_selected_input(data, label, id, value) {
     return group.append(prep.append(span)).append(select);
 }
 
-function create_input_group(input_type, label, value, name, min, max, step){
+function create_input_group(input_type, label, value, name, min, max, step, checked){
     let group =$(`<div class="input-group mb-1">`);
     let pregroup = $(`<div class="input-group-prepend">`);
     let span = $(`<span class="input-group-text">`).text(label);
     let input = $(`<input type="${input_type}" value = "${value}" min="${min}" step="${step}" max="${max}" name="${name}" class="form-control">`);
+    if(checked) input.attr('checked', 'true');
     return group.append(pregroup.append(span)).append(input);
 }
 
