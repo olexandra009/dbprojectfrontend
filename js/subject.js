@@ -122,6 +122,103 @@ $(document).on('click', '#back, #cancel', function(){
     $("#bacground_adding_parents").remove()
 });
 
+$(document).on('click', '#add_attend_column', function(){
+    let input_date = create_input_group('date', 'Дата:', '', 'date_creating');
+    let button_ok = $(`<button class="btn btn-outline-dark" id="ok">`).text('Створити');
+    let button_cancel = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
+    let div = $(`<div>`);
+    let btn_div = $(`<div class="btn-group">`);
+    btn_div.append(button_ok).append(button_cancel);
+    div.append(input_date).append(btn_div);
+    createWindow(div);
+});
+$(document).on('click', '#ok', function(){
+        let date =  document.getElementsByName('date_creating')[0].valueAsDate;
+        //send to server that there values of attend-dates
+        createNewAttendColumn(date);
+        $("#bacground_adding_parents").remove();
+    }
+);
+
+$(document).on('click', '#add_new_column_mark', function(){
+    let data = ["Спеціальні оцінки", "Поточні оцінки"];
+   let input=   create_selected_input(data, "Тип", "select_type_of_marks", "Оберіть тип оцінки");
+    let div = $(`<div>`);
+    div.append(input);
+    createWindow(div);
+});
+$(document).on('click', "#create_column_mark", function () {
+    if($(this).data('mark') === undefined) {
+        let type = document.getElementsByName('marks_work_type')[0].value;
+        let name = document.getElementsByName('marks_name')[0].value;
+        createNewSpecialMarkColumn(type, name);
+        $("#bacground_adding_parents").remove();
+        return;
+    }
+    let date = document.getElementsByName('date_mark')[0].valueAsDate;
+    createNewDairyMarkColumn(date);
+    $("#bacground_adding_parents").remove();
+})
+
+function createSpecialMarks() {
+  let div = $(`<div id="special_mark_creating">`);
+  let input_name = create_input_group('text', 'Назва', '', 'marks_name');
+  let input_worktype = create_input_group('text', 'Тип роботи', '', 'marks_work_type');
+    let btn_div= $(`<div class="btn-group">`);
+    let cancel  = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
+    let submit = $(`<button class="btn btn-outline-dark" id="create_column_mark">`).text('Створити');
+
+    btn_div.append(submit).append(cancel);
+  div.append(input_name).append(input_worktype).append(btn_div);
+  return div;
+}
+
+function createDiaryMarks() {
+    let div = $(`<div id="diary_mark_creating">`);
+   let input_date = create_input_group('date', 'Дата:', '', 'date_mark');
+    let btn_div= $(`<div class="btn-group">`);
+    let cancel  = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
+   let submit  = $(`<button class="btn btn-outline-dark" id ="create_column_mark" data-mark="diary">`).text('Створити');
+    btn_div.append(submit).append(cancel);
+    div.append(input_date).append(btn_div);
+    return div;
+}
+
+$(document).on('change', '#select_type_of_marks', function(){
+    $(`#special_mark_creating`).remove();
+    $(`#diary_mark_creating`).remove();
+  if($(this).children("option:selected").val() == 'Спеціальні оцінки')
+      $(`#forming`).append(createSpecialMarks());
+  else
+      $(`#forming`).append(createDiaryMarks());
+
+});
+$(document).on('click', '#create_attend_by_period', function () {
+    createAttendByPeriod();
+});
+$(document).on('click', '#create_marks_by_period', function(){
+    //todo get theme value
+    // send theme value
+    createMarksByPeriod();
+});
+$(document).on('click', 'td[data-type="attend"]', function(){
+
+    if($(this).parent().attr('id') === "table_caption"){
+        //todo show asking delete
+        return;
+    }
+    if( $(this).text() !=='H') {
+        //todo send to server date id and subject
+        // wait for answer and add id of cell to id
+        $(this).text('H');
+    } else {
+        //todo send to server date id and subject
+        // wait for answer of succsefull change
+        $(this).text('');
+    }
+
+} );
+
 /************************Function***************************/
 /*-----Left-menu navigating-----*/
 function nextMenu(item_to_activate) {
@@ -239,26 +336,10 @@ function createViewLessonsFromThemeById(id){
 }
 function createWindow(innerItem){
     let back =$(` <div class = "backgr" id="bacground_adding_parents">`);
-    let form = $(` <div class="forming">`);
+    let form = $(` <div class="forming" id="forming">`);
     $('.body').before(back.append(form.append(innerItem)));
 }
-$(document).on('click', '#add_attend_column', function(){
-      let input_date = create_input_group('date', 'Дата:', '', 'date_creating');
-      let button_ok = $(`<button class="btn btn-outline-dark" id="ok">`).text('Створити');
-      let button_cancel = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
-      let div = $(`<div>`);
-      let btn_div = $(`<div class="btn-group">`);
-      btn_div.append(button_ok).append(button_cancel);
-      div.append(input_date).append(btn_div);
-      createWindow(div);
-});
-$(document).on('click', '#ok', function(){
-    let date =  document.getElementsByName('date_creating')[0].valueAsDate;
-    //send to server that there values of attend-dates
-    createNewAttendColumn(date);
-    $("#bacground_adding_parents").remove();
-}
-);
+
 function createNewAttendColumn(date){
     let table_caption = $('#table_caption');
     let start =$(table_caption.children()[table_caption.children().length-1]).data('column')+1;
@@ -270,7 +351,29 @@ function createNewAttendColumn(date){
         row.append(td);
     })
 }
-$(document).on('click', '#create_attend_by_period', function () {
+function createNewSpecialMarkColumn(type, name){
+    let table_caption = $('#table_caption');
+    let start =$(table_caption.children()[table_caption.children().length-1]).data('column')+1;
+    let t = $(`<td data-column="${start}" data-work-type="${type}" data-type="special" data-mark-name="${name}">`).text(type);
+    table_caption.append(t);
+    data_names.forEach(st => {
+        let row = $("#table-row-"+st.id);
+        let td = $(`<td data-column="${start}" data-work-type="${type}" data-type="special" data-mark-name="${name}">`);
+        row.append(td);
+    })
+}
+function createNewDairyMarkColumn(date){
+    let table_caption = $('#table_caption');
+    let start =$(table_caption.children()[table_caption.children().length-1]).data('column')+1;
+    let t = $(`<td data-column="${start}" data-date="${cutData(date)}" data-type="dairy">`).text(cellDate(date));
+    table_caption.append(t);
+    data_names.forEach(st => {
+        let row = $("#table-row-"+st.id);
+        let td = $(`<td data-column="${start}" data-date="${cutData(date)}" data-type="dairy">`)
+        row.append(td);
+    })
+}
+function createAttendByPeriod(){
     let table = $('#attend');
     table.empty();
     let capt = $(`<tr id="table_caption">`);
@@ -286,17 +389,15 @@ $(document).on('click', '#create_attend_by_period', function () {
 
     for(let i = 0; i<attend.length; i++) //for every data-marks
     {
-        console.log('here');
         let mark_cell = attend[i];
-        console.log(mark_cell);
         let date_format = cellDate(mark_cell.date);
-        console.log(date_format);
         let date_cell = $(`<td data-column="${i}" data-date=${cutData(mark_cell.date)} data-type="attend">`).text(date_format);
         capt.append(date_cell);
         for(let j = 0; j<data_names.length; j++ ){
             let id = data_names[j].id;
-            let mark= mark_cell.n_attend_id.find(el=> el===id);
+            let mark= mark_cell.n_attend_id.find(el=> el==id);
             let row = $("#table-row-"+id);
+
             if(mark===undefined) {
                 let td = $(`<td data-column="${i}" data-date=${cutData(mark_cell.date)} data-type="attend">`);
                 row.append(td);
@@ -308,73 +409,59 @@ data-mark-visible="${mark.visible}">`).text('H');
         }
     }
     $('#attend_view_table').removeClass('hidden');
-});
-$(document).on('click', 'td[data-type="attend"]', function(){
+}
 
-    if($(this).parent().attr('id') === "table_caption"){
-        //todo show asking delete
-        return;
-    }
-   if( $(this).text() !=='H') {
-       //todo send to server date id and subject
-       // wait for answer and add id of cell to id
-       $(this).text('H');
-   } else {
-       //todo send to server date id and subject
-       // wait for answer of succsefull change
-       $(this).text('');
-   }
 
-} );
-
-$(document).on('click', '#create_marks_by_period', function(){
-    console.log('here');
-   //TODO get the period
-   // make AJAX request
+function createMarksByPeriod(){
+    //TODO get the period
+    // make AJAX request
 
 
     let table = $('#marks');
+    $('#marks_view_table').removeClass('hidden');
     let caption = $('#table_caption');
-        data_names.forEach(student=> {
-            let td = $(`<tr id="table-row-${student.id}">`);
-            let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
-            td.append(first_tr);
-            table.append(td);
-        });
+    data_names.forEach(student=> {
+        let td = $(`<tr id="table-row-${student.id}">`);
+        let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        td.append(first_tr);
+        table.append(td);
+    });
 
-        let column = 0;
-   //поточні оцінки
-        for(let i = 0; i<dairy_data_marks.length; i++) //for every data-marks
-        {
-            if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
-                continue;
-            let mark_cell = dairy_data_marks[i];
-            let date_format = cellDate(mark_cell.date);
-            let date_cell = $(`<td data-column="${i}" data-date=${mark_cell.date} data-type="dairy">`).text(date_format);
-            caption.append(date_cell);
-            for(let j = 0; j<data_names.length; j++ ){
-                 let id = data_names[j].id;
-                 let mark= mark_cell.marks.find(el=> el.id===id);
-                 let row = $("#table-row-"+id);
-                 if(mark===undefined) {
-                     let td = $(`<td data-column="${i}" data-date=${mark_cell.date} data-type="dairy">`);
-                     row.append(td);
-                     continue;
-                 }
-                let td = $(`<td data-column="${i}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
-data-mark-visible="${mark.visible}">`).text(mark.value);
+    let column = 0;
+    //поточні оцінки
+    for(let i = 0; i<dairy_data_marks.length; i++)
+    {
+        console.log(column);
+        console.log(dairy_data_marks[i].marks);
+        if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
+            continue;
+        let mark_cell = dairy_data_marks[i];
+        let date_format = cellDate(mark_cell.date);
+        let date_cell = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`).text(date_format);
+        caption.append(date_cell);
+        for(let j = 0; j<data_names.length; j++ ){
+            let id = data_names[j].id;
+            let mark= mark_cell.marks.find(el=> el.id==id);
+            let row = $("#table-row-"+id);
+            if(mark===undefined) {
+                let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`);
                 row.append(td);
+                continue;
             }
-            column=i;
+            let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
+data-mark-visible="${mark.visible}">`).text(mark.value);
+            row.append(td);
         }
         column++;
-       //спеціальні оцінки
+    }
+    column++;
+    console.log("before marks"+column);
+    //спеціальні оцінки
     let i;
     for(i = 0; i<special_data_marks.length; i++) //for every data-marks
     {
 
         let mark_cell = special_data_marks[i];
-        console.log(mark_cell.name);
         let date_cell = $(`<td data-column="${column}" data-type="special" 
                             data-mark-work-type = ${mark_cell.type}
                             data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
@@ -382,17 +469,13 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
         for(let j = 0; j<data_names.length; j++ ){
             let id = data_names[j].id;
 
-            let mark= mark_cell.marks.find(el=> el.id===id);
+            let mark= mark_cell.marks.find(el=> el.id==id);
             let row = $("#table-row-"+id);
-            console.log(id +" "+ mark);
 
-            console.log(row);
             if(mark===undefined) {
 
                 let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type} data-mark-name="${mark_cell.name}">`);
                 row.append(td);
-                console.log("undefined here");
-                console.log(td);
                 continue;
             }
             let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type}
@@ -403,29 +486,8 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
         column++;
     }
 
-  /*  //тематична
-    for(let j = 0; j<data_names.length; j++ ){
-        let id = data_names[j].id;
+}
 
-        let mark= them_marks.find(el=> el.id==id);
-        let row = $("#table-row-"+id);
-        if(mark===undefined) {
-            let td = $(`<td data-column="${i+column}" data-type="theme" data-theme="${mark.theme}">`);
-            row.append(td);
-            console.log("undefined here");
-            console.log(td);
-            continue;
-        }
-        let td = $(`<td data-column="${i}"data-type="theme" data-theme="${mark.theme}" data-mark-value="${mark.value}"
-data-mark-visible="${mark.visible}">`).text(mark.value);
-        row.append(td);*/
-
-    //}
-
-
-
-
-});
 
 function createPeriodForm() {
     let div = $(`<div id="choose_attend_period">`);
@@ -450,9 +512,11 @@ function createMarksView(){
 
     let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
     div.append(dataform.append(inputdate1).append(submit));
-    let marks_view = $(`<div id="marks_view_table">`);
+    let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
+    let button = $(`<button class="btn btn-outline-dark" id="add_new_column_mark">`).text("Додати стовпчик");
+    marks_view.append(button);
     let div_table_wrapper=$(`<div id="marks_table_wrapper">`);
-    let table = $(`<table id='marks'>`);
+    let table = $(`<table id='marks' >`);
     let caption = $(`<tr id="table_caption">`);
     let tr = $(`<td>`).text('Прізвище');
     table.append(caption.append(tr));
