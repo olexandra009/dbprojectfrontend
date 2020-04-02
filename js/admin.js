@@ -487,13 +487,19 @@ function createConcreteSubjectList(name) {
         success: function(subjectsInGroup){
             subjectsInGroup = subjectsInGroup.filter(a => a.subject_name == name);
             console.log(subjectsInGroup);
-            let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
-                             {id: '5AG2', name: 'English', class_name: '5-A'},
-                             {id: '5BG1', name: 'English', class_name: '5-B'}];
-            data_subj.forEach(sb => {
-                console.log(sb);
-                console.log(name);
-                subject_list.append(subject_list_view(name, sb))
+            
+//            let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
+//                             {id: '5AG2', name: 'English', class_name: '5-A'},
+//                             {id: '5BG1', name: 'English', class_name: '5-B'}];
+            subjectsInGroup.forEach(sb => {                
+                let classId = sb.class_id.substring(0, sb.class_id.length-4);
+                let class_letter = classId.substring(classId.length-1, classId.length);
+                classId = classId.substring(0, classId.length-1);
+                let class_number = classId;
+                let class_name = class_number + "-" + class_letter;
+                
+                //TODO figure out what to do with group number (5AG1, 5AG2)
+                subject_list.append(subject_list_view(name, {id: class_number + class_letter + "G?", class_name: class_name}))
             });
             $("#content").empty().append(subject_button).append(subject_list);
         }
@@ -907,7 +913,7 @@ let subject_name_list_view = ({
 };
 
 let subject_list_view = (name, {
-    id:id,
+    id: id,
     class_name: class_name,
 }) => {
     let $subject = $(`<button data-id="${id}" type="button" class="btn my_btn sd_btn btn-outline-success my-2 btn-lg btn-block">`);
