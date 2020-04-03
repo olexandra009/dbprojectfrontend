@@ -1,3 +1,4 @@
+//
 let student_names = [{
     id: "N13404024",
     name: "Іваненко Ольга Степанівна",
@@ -106,6 +107,13 @@ $(document).on('click', 'td[data-type="attend"]', function () {
     //will work with global array
     showViewAttend($(this));
 });
+
+$(document).on('click','.subject-btn', function(){
+    createSubjectMarksView($(this).data('id'));
+    //TODO get themes from subject and create filtration form like in subject.js
+    // then choose them get marks and give readonly marks show
+
+});
 /************************Function***************************/
 function nextMenu(item_to_activate) {
     removeClass();
@@ -151,11 +159,9 @@ function  createDetailStudentView(id){
 
 }
 function createSubjectView(){
-    /*AJAX*/
     let data_subj = class_subject;
     $("#content").empty();
     data_subj.forEach(subj=>{console.log(subj);
-        console.log(subject_view_maker('',subj));
         $('#content').append(subject_view_maker('', subj))});
 
 }
@@ -241,6 +247,9 @@ function showViewAttend(a){
     }
     div.append(attending_caption).append(attending_info);
     createWindow(div);
+}
+
+function createSubjectMarksView(id) {
 
 }
 
@@ -362,7 +371,7 @@ let subject_view_maker =  (subj,{
     class_name: class_name, // 5-A
 
 }) => {
-    if (subj == null) subj = 'subject-btn';
+    subj = 'subject-btn';
     let $subject = $(`<button data-id="${id}" type="button" class="btn my_btn ${subj} btn-outline-success my-2 btn-lg btn-block">`);
     $subject.text(name+" "+class_name+" "+id);
     return $subject;
