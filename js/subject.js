@@ -36,6 +36,13 @@ let attend = [
     {date: new Date(2019, 4, 28), n_attend_id : [3]}
     ];
 
+let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', comment:'here'},
+        {id:2, value: '8', visible:'true', comment:'here'},
+        {id:3, value: '8', visible:'true', comment:'here'}]},
+    {type: 'dpa', marks:[{id:1, value: '11', visible:'true', comment:'here'},
+            {id:2, value: '10', visible:'true', comment:'here'},
+            {id:3, value: '8', visible:'true', comment:'here'}]} ]
+
 
 
 
@@ -50,11 +57,6 @@ $("."+( $($(this).parent()).attr('class').split(/\s+/)[[0]])).removeClass('hover
     $(this).addClass('thovered');
 }) ;
 $(document).on('mouseleave', 'td', function () {
-    console.log("============================================")
-    console.log($(this));
-    console.log($(this).parent());
-    console.log(  $("."+( $($(this).parent()).attr('class'))));
-    console.log("============================================")
     let id = $(this).data('column');
     let query = "td[data-column="+id+"]";
     $(query).removeClass('hovered');
@@ -206,6 +208,8 @@ $(document).on('click', '#create_attend_by_period', function () {
 $(document).on('click', '#create_marks_by_period', function(){
     //todo get theme value
     // send theme value
+    console.log("Here");
+
     createMarksByPeriod();
 });
 $(document).on('click', 'tr#table_caption > td[data-type="dairy"]', function(){
@@ -244,46 +248,63 @@ $(document).on('click', 'td[data-type="attend"]', function(){
 let thememarkflag = false;
 let endmarkflag = false;
 $(document).on('click', '#show_marks_theme', function () {
-    console.log('here');
+    console.log('TH');
+    console.log('th: '+thememarkflag+ ' en: '+endmarkflag);
     let theme= $('#theme_id_select').children("option:selected").val()
-    $('#fst_table').removeClass('col-md-7').removeClass('col-md-12').removeClass('col-md-9');
+    $('#fst_table').removeClass('col-md-10').removeClass('col-md-9').removeClass('col-md-12').removeClass('col-md-6');
     if(endmarkflag && thememarkflag){   // true and true => show the end mark only
-        console.log(1);
+        console.log("th "+1);
         $('#fst_table').addClass('col-md-9');
         $('#sec_table').removeClass('hidden').addClass('hidden');
     }else if(endmarkflag && !thememarkflag){ //true and false => show all marktypes
-        $('#fst_table').addClass('col-md-7');
-        console.log(10);
+        $('#fst_table').addClass('col-md-6');
+        console.log("th "+10);
         createThemeMarksView(theme);
         $('#sec_table').removeClass('hidden')
     }else if(!endmarkflag && thememarkflag){//show only dayli
-        console.log(11);
+        console.log("th "+11);
         $('#fst_table').addClass('col-md-12');
         $('#sec_table').removeClass('hidden').addClass('hidden');
     } else {//only theme
-        console.log(100);
+        console.log("th "+100);
         $('#fst_table').addClass('col-md-10');
         createThemeMarksView(theme);
         $('#sec_table').removeClass('hidden')
     }
     thememarkflag = !thememarkflag;
+    console.log("TH end: ");
+    console.log('th: '+thememarkflag+ ' en: '+endmarkflag);
+    console.log( $('#fst_table').attr('class'));
 });
-$(document).on('click', 'show_end_marks', function () {
-    $('#fst_table').removeClass('col-md-7').removeClass('col-md-12').removeClass('col-md-9');
-    if(endmarkflag && thememarkflag){   // true and true => show the theme mark only
-        $('#fst_table').addClass('col-md-9');
+
+
+$(document).on('click', '#show_end_marks', function () {
+    console.log('EN');
+    console.log('th: '+thememarkflag+ ' en: '+endmarkflag);
+    $('#fst_table').removeClass('col-md-6').removeClass('col-md-9').removeClass('col-md-10').removeClass('col-md-12');
+    if(endmarkflag && thememarkflag){// true and true => show the theme mark only
+        console.log("en "+1);
+        $('#fst_table').addClass('col-md-10');
         $('#thr_table').removeClass('hidden').addClass('hidden');
     }else if(endmarkflag && !thememarkflag){ //true and false => show all marktypes
-        $('#fst_table').addClass('col-md-7');
-        createEndMarksView();
-    }else if(!endmarkflag && thememarkflag){//show only dayli
+        console.log("en "+10);
         $('#fst_table').addClass('col-md-12');
-        $('#thr_table').removeClass('hidden').addClass('hidden');
-    } else {//only theme
-        $('#fst_table').addClass('col-md-10');
+         $('#thr_table').removeClass('hidden').addClass('hidden');
+    }else if(!endmarkflag && !thememarkflag){//show only end
+        console.log("en "+11);
+        $('#fst_table').addClass('col-md-9');
+        createEndMarksView();
+      //  $('#fst_table').addClass('col-md-6');
+       // $('#thr_table').removeClass('hidden').addClass('hidden');
+    } else {//true and false => show all marktypes
+        console.log("en "+100);
+        $('#fst_table').addClass('col-md-6');
         createEndMarksView();
     }
     endmarkflag = !endmarkflag;
+    console.log("EN end: ");
+    console.log('th: '+thememarkflag+ ' en: '+endmarkflag);
+    console.log( $('#fst_table').attr('class'));
 });
 
 
@@ -498,9 +519,54 @@ data-mark-visible="${mark.visible}">`).text('H');
     }
     $('#attend_view_table').removeClass('hidden');
 }
+
+
+function createEndMarksView() {
+
+    let table = $('#marks_end');
+    let caption = $(`<tr id="table_end_caption">`);
+    table.empty();
+    table.append(caption);
+    data_names.forEach(st=>{
+        let tr = $(`<tr id="table-end-row-${st.id}" class="table-row-${st.id}">`);
+        table.append(tr);
+    })
+    let column = 2000;
+    for(let i = 0; i < end_marks.length; i++){
+        let mark = end_marks[i];
+        let date_cell = $(`<td data-column="${column}" data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
+        caption.append(date_cell);
+        data_names.forEach(st=>{
+            let marks= mark.marks.find(el=> el.id==st.id);
+            let row = $("#table-end-row-"+st.id);
+             console.log(row);
+            console.log(marks);
+            if(marks===undefined) {
+                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
+                row.append(td);
+            }else{
+                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="dairy" data-mark-value="${marks.value}"
+data-mark-visible="${marks.visible} data-mark-comment="${marks.comment}">`).text(marks.value);
+                row.append(td);
+                console.log("-------------------------");
+                console.log(row);
+                console.log("-------------------------");
+            }
+        })
+        column++;
+
+
+    }
+    $('#thr_table').removeClass('hidden')
+  //  let date_cell = $(`<td data-column="${column}" data-type="theme">`).text(theme);
+  //  caption.append(date_cell);
+}
 function  createThemeMarksView(theme){
     let table = $('#marks_theme');
-    let caption = $('#table_theme_caption');
+    table.empty();
+    let caption = $(`<tr id="table_theme_caption">`);
+    table.append(caption);
+
     let column = 1000;
     let date_cell = $(`<td data-column="${column}" data-type="theme">`).text(theme);
     caption.append(date_cell);
@@ -531,8 +597,13 @@ function createMarksByPeriod(){
 
 
     let table = $('#marks');
+    table.empty();
+  //  let caption = $('#table_caption');
+    let caption = $(`<tr id="table_caption">`);
+    let tr = $(`<td>`).text('Прізвище');
+    table.append(caption.append(tr));
     $('#marks_view_table').removeClass('hidden');
-    let caption = $('#table_caption');
+
     data_names.forEach(student=> {
         let td = $(`<tr id="table-row-${student.id}" class="table-row-${student.id}">`);
         let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
@@ -641,22 +712,21 @@ function createMarksView(){
     let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
     let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
     let table = $(`<table id='marks'>`);
-    let caption = $(`<tr id="table_caption">`);
     let table_theme = $(`<table id='marks_theme' >`);
-    let caption_theme = $(`<tr id="table_theme_caption">`);
+
     let table_end = $(`<table id='marks_end'>`);
-    let caption_end = $(`<tr id="table_end_caption">`);
-    let tr = $(`<td>`).text('Прізвище');
+
+
     div_first_table.append(div_first_table_caption);
-    table.append(caption.append(tr));
+
     div_first_table.append(table);
 
     div_second_table.append(div_second_table_caption);
-    table_theme.append(caption_theme);
+
     div_second_table.append(table_theme);
 
     div_third_table.append(div_third_table_caption);
-    table_end.append(caption_end);
+
     div_third_table.append(table_end);
 
     div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
