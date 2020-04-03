@@ -152,23 +152,28 @@ $(document).on('click', '#ok', function(){
 );
 
 $(document).on('click', '#add_new_column_mark', function(){
-    let data = ["Спеціальні оцінки", "Поточні оцінки"];
-   let input=   create_selected_input(data, "Тип", "select_type_of_marks", "Оберіть тип оцінки");
+    let data = ["Спеціальні оцінки", "Поточні оцінки", "Підсумкові"];
+    let input=   create_selected_input(data, "Тип", "select_type_of_marks", "Оберіть тип оцінки");
     let div = $(`<div>`);
     div.append(input);
     createWindow(div);
 });
 
 $(document).on('click', "#create_column_mark", function () {
-    if($(this).data('mark') === undefined) {
+    if($(this).data('mark-special') != undefined) {
         let type = document.getElementsByName('marks_work_type')[0].value;
         let name = document.getElementsByName('marks_name')[0].value;
         createNewSpecialMarkColumn(type, name);
         $("#bacground_adding_parents").remove();
         return;
     }
-    let date = document.getElementsByName('date_mark')[0].valueAsDate;
-    createNewDairyMarkColumn(date);
+    else if($(this).data('mark-diary') != undefined) {
+        let date = document.getElementsByName('date_mark')[0].valueAsDate;
+        createNewDairyMarkColumn(date);
+    } else{
+        let date = document.getElementsByName('marks_type')[0].value;
+        createNewEndMarkColumn(date);
+    }
     // noinspection JSJQueryEfficiency
     $("#bacground_adding_parents").remove();
 });
@@ -177,10 +182,13 @@ $(document).on('click', "#create_column_mark", function () {
 $(document).on('change', '#select_type_of_marks', function(){
     $(`#special_mark_creating`).remove();
     $(`#diary_mark_creating`).remove();
+    $('#end_mark_creating').remove();
     if($(this).children("option:selected").val() == 'Спеціальні оцінки')
       $(`#forming`).append(createSpecialMarks());
-    else
+    else if($(this).children("option:selected").val() == 'Поточні оцінки')
       $(`#forming`).append(createDiaryMarks());
+    else
+      $(`#forming`).append(createEndMarks());
 
 });
 $(document).on('click', '#create_attend_by_period', function () {
@@ -199,11 +207,21 @@ $(document).on('click', 'tr#table_caption > td[data-type="special"]', function()
     //todo show asking delete
     // rename and change type
 });
+$(document).on('click', 'tr#table_caption > td[data-type="end"]', function(){
+    //todo (if it is not auto mark)
+    // show asking delete and edit name
+});
 
 
-$(document).on('click', 'td[data-type="dairy"], td[data-type="special"]', function(){
+$(document).on('click', 'td[data-type="dairy"], td[data-type="special"], td[data-type="end"]', function(){
+    //todo check if the end mark is editable (if not let to edit comment and visible)
     if($(this).parent().attr('id') == "table_caption") return;
     showMarkEditView($(this));
+});
+$(document).on('click', 'td[data-type="theme"]', function(){
+    //todo check if the end mark is editable (if not let to edit comment and visible)
+    if($(this).parent().attr('id') == "table_caption") return;
+    showMarkPartEditView($(this));
 });
 
 $(document).on('click', 'td[data-type="attend"]', function(){
@@ -291,7 +309,7 @@ function createSpecialMarks() {
     let input_worktype = create_input_group('text', 'Тип роботи', '', 'marks_work_type');
     let btn_div= $(`<div class="btn-group">`);
     let cancel  = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
-    let submit = $(`<button class="btn btn-outline-dark" id="create_column_mark">`).text('Створити');
+    let submit = $(`<button class="btn btn-outline-dark" id="create_column_mark" data-mark-special="special">`).text('Створити');
     btn_div.append(submit).append(cancel);
     div.append(input_name).append(input_worktype).append(btn_div);
     return div;
@@ -302,12 +320,22 @@ function createDiaryMarks() {
     let input_date = create_input_group('date', 'Дата:', '', 'date_mark');
     let btn_div= $(`<div class="btn-group">`);
     let cancel  = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
-    let submit  = $(`<button class="btn btn-outline-dark" id ="create_column_mark" data-mark="diary">`).text('Створити');
+    let submit  = $(`<button class="btn btn-outline-dark" id ="create_column_mark" data-mark-diary="diary">`).text('Створити');
     btn_div.append(submit).append(cancel);
     div.append(input_date).append(btn_div);
     return div;
 }
 
+function createEndMarks() {
+    let div = $(`<div id="end_mark_creating">`);
+    let btn_div= $(`<div class="btn-group">`);
+    let input_type = create_input_group('text', 'Тип:', '', 'marks_type');
+    let cancel  = $(`<button class="btn btn-outline-dark" id="cancel">`).text('Скасувати');
+    let submit  = $(`<button class="btn btn-outline-dark" id ="create_column_mark" data-mark-end="end">`).text('Створити');
+    btn_div.append(submit).append(cancel);
+    div.append(input_type).append(btn_div);
+    return div;
+}
 function  createLessonDiv(id){
     console.log(id);
     let content =   $('#content');
@@ -438,6 +466,36 @@ function createNewDairyMarkColumn(date){
         row.append(td);
     });
 }
+function createNewEndMarkColumn(type){
+    console.log("here")
+    let table_caption = $('#table_end_caption');
+    let start =$(table_caption.children()[table_caption.children().length-1]).data('column')+1;
+    console.log(start)
+    let t = $(`<td data-column="${start}" data-type-mark="${type}" data-type="end">`).text(type);
+    table_caption.append(t);
+    data_names.forEach(st => {
+        let row = $("#table-end-row-"+st.id);
+        let td = $(`<td data-column="${start}"  data-type-mark="${type}" data-type="end">`);
+        row.append(td);
+    });
+}
+
+function showMarkPartEditView(a) {
+    let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
+    let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
+    let visible = (a.data('mark-visible')==true);
+    let div = $(`<div>`);
+    //maybe make in form
+    let input_value = create_input_group('number', 'Значення:', value, 'value', '1', '12', '1', '', true);
+    let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
+    let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
+    let div_btn = $(`<div class="btn-group">`);
+    let confirm = $(`<button class="btn btn-outline-dark" id="mark_edition">`).text('Зберегти');
+    let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
+    div_btn.append(confirm).append(cancel);
+    div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
+    createWindow(div);
+}
 
 function showMarkEditView(a) {
     let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
@@ -460,12 +518,12 @@ function createAttendByPeriod(){
     let table = $('#attend');
     table.empty();
     let capt = $(`<tr id="table_caption">`);
-    let tr = $(`<td>`).text('Прізвище');
+    let tr = $(`<td data-column="-1">`).text('Прізвище');
     table.append(capt.append(tr));
 
     data_names.forEach(student=> {
         let td = $(`<tr id="table-row-${student.id}"  class="table-row-${student.id}">`);
-        let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
         td.append(first_tr);
         table.append(td);
     });
@@ -518,7 +576,7 @@ function createEndMarksView() {
                 let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
                 row.append(td);
             }else{
-                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="dairy" data-mark-value="${marks.value}"
+                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
 data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
                 row.append(td);
             }
@@ -527,9 +585,7 @@ data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).t
 
 
     }
-    $('#thr_table').removeClass('hidden')
-  //  let date_cell = $(`<td data-column="${column}" data-type="theme">`).text(theme);
-  //  caption.append(date_cell);
+    $('#thr_table').removeClass('hidden');
 }
 function  createThemeMarksView(theme){
     let table = $('#marks_theme');
@@ -564,13 +620,13 @@ function createMarksByPeriod(){
     let table = $('#marks');
     table.empty();
     let caption = $(`<tr id="table_caption">`);
-    let tr = $(`<td>`).text('Прізвище');
+    let tr = $(`<td  data-column="-1">`).text('Прізвище');
     table.append(caption.append(tr));
     $('#marks_view_table').removeClass('hidden');
 
     data_names.forEach(student=> {
         let td = $(`<tr id="table-row-${student.id}" class="table-row-${student.id}">`);
-        let first_tr = $(`<td class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
         td.append(first_tr);
         table.append(td);
     });
@@ -707,12 +763,13 @@ function create_selected_input(data, label, id, value) {
     return group.append(prep.append(span)).append(select);
 }
 
-function create_input_group(input_type, label, value, name, min, max, step, checked){
+function create_input_group(input_type, label, value, name, min, max, step, checked, readonly){
     let group =$(`<div class="input-group mb-1">`);
     let pregroup = $(`<div class="input-group-prepend">`);
     let span = $(`<span class="input-group-text">`).text(label);
     let input = $(`<input type="${input_type}" value = "${value}" min="${min}" step="${step}" max="${max}" name="${name}" class="form-control">`);
     if(checked) input.attr('checked', 'true');
+    if(readonly) input.attr('readonly', 'true');
     return group.append(pregroup.append(span)).append(input);
 }
 /*******************Helper function***************************/
