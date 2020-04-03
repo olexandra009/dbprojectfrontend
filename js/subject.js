@@ -467,10 +467,8 @@ function createNewDairyMarkColumn(date){
     });
 }
 function createNewEndMarkColumn(type){
-    console.log("here")
     let table_caption = $('#table_end_caption');
     let start =$(table_caption.children()[table_caption.children().length-1]).data('column')+1;
-    console.log(start)
     let t = $(`<td data-column="${start}" data-type-mark="${type}" data-type="end">`).text(type);
     table_caption.append(t);
     data_names.forEach(st => {
@@ -544,8 +542,7 @@ function createAttendByPeriod(){
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${i}" data-date=${cutData(mark_cell.date)} data-type="attend" data-mark-value="${mark.value}"
-data-mark-visible="${mark.visible}">`).text('H');
+            let td = $(`<td data-column="${i}" data-date=${cutData(mark_cell.date)} data-type="attend">`).text('H');
             row.append(td);
         }
     }

@@ -259,6 +259,29 @@ table#attend>tr>td {
     text-align: center;
     min-width: 50px;
 }
+
+
+table#attend_table > tr > td.caption_surname {
+    text-align: start;
+    min-width: 200px;
+}
+
+table#attend_table>tr>td {
+    padding: 3px;
+    text-align: center;
+    min-width: 50px;
+}
+table#attend_table > tr > td.caption_surname {
+    text-align: start;
+    min-width: 200px;
+}
+
+table#attend_table>tr>td {
+    padding: 3px;
+    text-align: center;
+    min-width: 50px;
+}
+
 .theme_list, .lesson_list {
     border: 0.5px solid;
     padding: 1%;
@@ -289,7 +312,11 @@ table#marks_end{
   }
 
 
-table#marks_end>tr>td , table#marks_theme>tr>td {
+table#attend_table{
+    max-width: 100%;
+    overflow-x: auto;
+}
+table#marks_end>tr>td , table#marks_theme>tr>td,  table#attend_table>tr>td{
     padding: 3px;
     text-align: center;
     min-width: 50px;
