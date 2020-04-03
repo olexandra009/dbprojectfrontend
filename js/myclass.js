@@ -20,27 +20,27 @@ let class_subject = [{id: '5AG1', name: 'English', class_name:'5-A'},
     {id: '5BG1', name: 'English', class_name:'5-B'}];
 
 let data_attend =  [{date: new Date(2020,1,4), absent: [{student_id:"N13404024",
-                                                                             number_of_subject: 1,
+                                                                             number_of_lessons: 1,
                                                                              reason:'',
-                                                                             subject: [{id:'5AG1', name:'English'}]}]},
+                                                                             lessons: [{id:'5AG1', name:'English'}]}]},
                     {date: new Date(2020,1,5), absent: [{student_id:"N13404025",
                                                                              number_of_subject: 2,
                                                                              reason:'по-хворобі',
-                                                                             subject: [{id:'5AG2', name:'English'},
+                                                                             lessons: [{id:'5AG2', name:'English'},
                                                                                        {id:'5AG1', name:'English'}]}]},
                     {date: new Date(2020,1,6), absent: [{student_id:"N13404025",
-                                                                            number_of_subject: 2,
+                                                                            number_of_lessons: 2,
                                                                             reason:'по-хворобі',
-                                                                            subject: [{id:'5AG2', name:'English'},
+                                                                             lessons: [{id:'5AG2', name:'English'},
                                                                                 {id:'5AG1', name:'English'}]},
                                                                             {student_id:"N13404026",
-                                                                                number_of_subject: 1,
+                                                                                number_of_lessons: 1,
                                                                                 reason:'',
-                                                                                subject: [{id:'5AG1', name:'English'}]},
+                                                                                lessons: [{id:'5AG1', name:'English'}]},
                         ]},
 ];
 
-
+/*
 $(document).on('mouseenter', 'td', function () {
 
     let id = $(this).data('column');
@@ -56,7 +56,7 @@ $(document).on('mouseleave', 'td', function () {
     $("."+( $($(this).parent()).attr('class').split(/\s+/)[[0]])).removeClass('hovered');
 
     $(this).removeClass('thovered');
-}) ;
+}) ;*/
 
 /************************Listeners************************/
 //Left-menu navigation
@@ -98,9 +98,13 @@ $(document).on('click', '#back_to_st-list', function () {
 
 });
 
+$(document).on('click', '#cancel', function () {
+    $("#bacground_adding_parents").remove();
+})
+
 $(document).on('click', 'td[data-type="attend"]', function () {
     //will work with global array
-    showViewAttend();
+    showViewAttend($(this));
 });
 /************************Function***************************/
 function nextMenu(item_to_activate) {
@@ -170,7 +174,7 @@ function createAttendingView()
     marks_view.append(table);
     $('#content').append(div).append(marks_view);
 }
-//{date:, absent:[student_id:, number_of_subject:, reason:, subject:[id:, name:]]}
+//{date:, absent:[student_id:, number_of_lessons:, reason:, lessons:[id:, name:]]}
 function  createAttendingViewTable(){
     let table = $('#attend_table');
     let tablecaption = $(`<tr id="caption_surnames">`);
@@ -192,7 +196,7 @@ function  createAttendingViewTable(){
             let row = $("#table-row-"+st.id);
             let text = 'H';
             if(absent==undefined) text=''
-            let td = $(`<td data-column="${column}" data-date=${cutData(att.date)} data-type="attend">`).text(text);
+            let td = $(`<td data-column="${column}" data-st-id="${st.id}" data-date=${cutData(att.date)} data-attend="${text}" data-type="attend">`).text(text);
             row.append(td);
         })
         column++;
@@ -200,8 +204,44 @@ function  createAttendingViewTable(){
 
     $("#attend_view_table").removeClass('hidden');
 }
-function showViewAttend(){
-    
+//{date:, absent:[student_id:, number_of_lessons:, reason:, lessons:[id:, name:]]}
+function showViewAttend(a){
+    let div = $(`<div>`);
+    let button_back = $(`<button type="reset" id="cancel" class="btn-outline-dark btn">`).text('Назад');
+    let date =a.data('date');
+    let stid =a.data('st-id');
+    div.append(button_back);
+    let attending_caption = $(`<div class="attending_caption">`);
+    let span_name = $(`<span>`).text(student_names.find(st=>st.id==stid).name);
+    let span_date = $(`<span>`).text(date);
+    let attending_info = $(`<div class="attending_info">`);
+    attending_caption.append(span_name).append(span_date);
+    let attend = (a.data('attend')=='')?true:false;//'Присутній(я) на всіх уроках':'Не було на уроках: ';
+    let div_attend= $(`<div class="attending">`).text(attend?'Присутній(я) на всіх уроках':'Не було на уроках:');
+    let dateDate =  new Date(Date.parse(date));
+    attending_info.append(div_attend);
+    if(!attend) {
+        let div_lesson = $(`<div>`);
+        let attending = data_attend.find(att => att.date.toLocaleDateString() == dateDate.toLocaleDateString());
+        console.log(attending);
+        console.log(stid);
+        let student_attend = attending.absent.find(st=>st.student_id==stid);
+        console.log(student_attend);
+        student_attend.lessons.forEach(lessons=> {
+            let div_l = $(`<div class="input-group-text">`).text(lessons.name);
+            div_lesson.append(div_l);}
+            );
+        let input_reason = create_input_group('text', 'Причина:', student_attend.reason, 'reason');
+        let divbutt = $(`<div class="btn-group">`);
+        let button_ok = $(`<button type="submit" id="sendReason" class="btn-outline-dark btn">`).text('Зберегти');
+        let button_cancel = $(`<button type="reset" id="cancel" class="btn-outline-dark btn">`).text('Скасувати');
+        divbutt.append(button_ok).append(button_cancel);
+        attending_info.append(div_lesson).append(input_reason).append(divbutt);
+
+    }
+    div.append(attending_caption).append(attending_info);
+    createWindow(div);
+
 }
 
 function create_selected_input(data, label, id, value) {
@@ -235,6 +275,12 @@ function cellDate(data){
         ("0" + data.getDate()) : data.getDate())+ "." +(((data.getMonth()+1) < 10) ?
         ("0" + (data.getMonth()+1)) : (data.getMonth()+1) );
 }
+function createWindow(innerItem){
+    let back =$(` <div class = "backgr" id="bacground_adding_parents">`);
+    let form = $(` <div class="forming" id="forming">`);
+    $('.body').before(back.append(form.append(innerItem)));
+}
+
 /*****************************HTML*****************************/
 let student_list_view = ({
           id: id, //номер особистої справи

@@ -325,3 +325,13 @@ table#marks_end>tr>td , table#marks_theme>tr>td,  table#attend_table>tr>td{
 div#thr_table {
     overflow-x: auto;
 }
+.attending_caption {
+    justify-content: space-between;
+    display: flex;
+    font-size: 1.3rem;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+.attending {
+    margin-bottom: 2%;
+}
