@@ -243,9 +243,9 @@ $(document).on('click', 'td[data-type="attend"]', function(){
 
 $(document).on('click', '#show_marks_theme', function () {
     let theme= $('#theme_id_select').children("option:selected").val();
-    $('#fst_table').removeClass('col-md-10').removeClass('col-md-9').removeClass('col-md-12').removeClass('col-md-6');
+    $('#fst_table').removeClass('col-md-10').removeClass('col-md-8').removeClass('col-md-12').removeClass('col-md-6');
     if(endmarkflag && thememarkflag){
-        $('#fst_table').addClass('col-md-9');
+        $('#fst_table').addClass('col-md-8');
         $('#sec_table').removeClass('hidden').addClass('hidden');
     }else if(endmarkflag && !thememarkflag){
         $('#fst_table').addClass('col-md-6');
@@ -264,7 +264,7 @@ $(document).on('click', '#show_marks_theme', function () {
 
 
 $(document).on('click', '#show_end_marks', function () {
-    $('#fst_table').removeClass('col-md-6').removeClass('col-md-9').removeClass('col-md-10').removeClass('col-md-12');
+    $('#fst_table').removeClass('col-md-6').removeClass('col-md-8').removeClass('col-md-10').removeClass('col-md-12');
     if(endmarkflag && thememarkflag){
         $('#fst_table').addClass('col-md-10');
         $('#thr_table').removeClass('hidden').addClass('hidden');
@@ -272,7 +272,7 @@ $(document).on('click', '#show_end_marks', function () {
         $('#fst_table').addClass('col-md-12');
         $('#thr_table').removeClass('hidden').addClass('hidden');
     }else if(!endmarkflag && !thememarkflag){
-        $('#fst_table').addClass('col-md-9');
+        $('#fst_table').addClass('col-md-8');
         createEndMarksView();
     } else {
         $('#fst_table').addClass('col-md-6');

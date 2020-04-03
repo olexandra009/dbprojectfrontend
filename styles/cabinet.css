@@ -294,3 +294,7 @@ table#marks_end>tr>td , table#marks_theme>tr>td {
     text-align: center;
     min-width: 50px;
 }
+
+div#thr_table {
+    overflow-x: auto;
+}
