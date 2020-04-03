@@ -241,6 +241,7 @@ form.container.filter {
 }
 table#marks > tr > td.caption_surname {
     text-align: start;
+    min-width: 200px;
 }
 
 table#marks>tr>td {
@@ -250,6 +251,7 @@ table#marks>tr>td {
 }
 table#attend > tr > td.caption_surname {
     text-align: start;
+    min-width: 200px;
 }
 
 table#attend>tr>td {
@@ -285,3 +287,10 @@ table#marks_end{
       width: 100%;
       overflow-x: auto;
   }
+
+
+table#marks_end>tr>td , table#marks_theme>tr>td {
+    padding: 3px;
+    text-align: center;
+    min-width: 50px;
+}
