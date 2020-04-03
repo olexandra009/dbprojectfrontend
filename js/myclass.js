@@ -100,7 +100,7 @@ $(document).on('click', '#back_to_st-list', function () {
 
 $(document).on('click', '#cancel', function () {
     $("#bacground_adding_parents").remove();
-})
+});
 
 $(document).on('click', 'td[data-type="attend"]', function () {
     //will work with global array
@@ -195,10 +195,10 @@ function  createAttendingViewTable(){
             let absent = att.absent.find(el=> el.student_id==st.id);
             let row = $("#table-row-"+st.id);
             let text = 'H';
-            if(absent==undefined) text=''
+            if(absent==undefined) text='';
             let td = $(`<td data-column="${column}" data-st-id="${st.id}" data-date=${cutData(att.date)} data-attend="${text}" data-type="attend">`).text(text);
             row.append(td);
-        })
+        });
         column++;
     });
 
@@ -216,7 +216,7 @@ function showViewAttend(a){
     let span_date = $(`<span>`).text(date);
     let attending_info = $(`<div class="attending_info">`);
     attending_caption.append(span_name).append(span_date);
-    let attend = (a.data('attend')=='')?true:false;//'Присутній(я) на всіх уроках':'Не було на уроках: ';
+    let attend = (a.data('attend') == '');//'Присутній(я) на всіх уроках':'Не було на уроках: ';
     let div_attend= $(`<div class="attending">`).text(attend?'Присутній(я) на всіх уроках':'Не було на уроках:');
     let dateDate =  new Date(Date.parse(date));
     attending_info.append(div_attend);
