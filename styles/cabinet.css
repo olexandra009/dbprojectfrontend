@@ -338,3 +338,6 @@ div#thr_table {
 button#current_students_rating, button#attend_student_report, button#end_mark_report {
     margin: auto;
 }
+div#changing_group_div {
+    margin-bottom: 2%;
+}

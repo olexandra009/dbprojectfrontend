@@ -113,6 +113,38 @@ $(document).on('click','.subject-btn', function(){
     // then choose them get marks and give readonly marks show
 
 });
+$(document).on('click', '#current_students_rating', function(){
+    //todo send file with table of student and subjects and avarange mark
+});
+$(document).on('click', '#attend_student_report', function(){
+    //todo send file with information about every student attend
+    // and about all class
+});
+
+$(document).on('click', '#end_mark_report', function(){
+    //todo send file with information about every student in class
+    // end marks
+});
+let changinggroupflag = false;
+
+$(document).on('click', '#changing_group', function(){
+    if(changinggroupflag){
+        $('#changing_group_form').remove();
+        changinggroupflag = !changinggroupflag;
+        return;
+    };
+    changinggroupflag=!changinggroupflag;
+    let div= $(`<div id="changing_group_form">`);
+    //todo get AJAX NAME OF SUBJECT ONLY
+    let class_s =[];
+    class_subject.forEach(st=>{class_s.push(st.name)})
+    console.log(class_s);
+    let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет');
+    let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
+    div.append(select).append(btn);
+    $('#changing_group_div').append(div);
+});
+
 /************************Function***************************/
 function nextMenu(item_to_activate) {
     removeClass();
@@ -134,11 +166,13 @@ function createMyStudentList(){
     //AJAX
     let data = student_names;
     $('#content').empty();
-
+    let div = $(`<div id="changing_group_div" >`);
+    let form_for_changing_group = $(`<button class="btn btn-outline-success my_btn" id="changing_group">`).text("Змінити групу");
+    div.append(form_for_changing_group);
     let container = $(`<div class="container">`);
 
     data.forEach(student => container.append(student_list_view(student)));
-    $("#content").append(container);
+    $("#content").append(div).append(container);
 }
 function  createDetailStudentView(id){
     //todo AJAX request for detail information by student id
