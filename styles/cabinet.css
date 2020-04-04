@@ -341,3 +341,10 @@ button#current_students_rating, button#attend_student_report, button#end_mark_re
 div#changing_group_div {
     margin-bottom: 2%;
 }
+.form-control:disabled, .form-control[readonly]{
+    background-color: #f8f8f8;
+}
+.custom-select:disabled {
+    color: #495057;
+    background-color: #f8f8f8;
+}

@@ -286,11 +286,12 @@ function createSubjectMarksView(id) {
 
 }
 
-function create_selected_input(data, label, id, value) {
+function create_selected_input(data, label, id, value, name, readonly) {
     let group =$(`<div class="input-group mb-1">`);
     let prep = $(`<div class="input-group-prepend">`);
     let span = $(`<span class="input-group-text">`).text(label);
-    let select = $(`<select class="custom-select" id="${id}">`);
+    let select = $(`<select class="custom-select" name='${name}' id="${id}">`);
+    if(readonly) select.attr('disabled', 'true');
     select.append($(`<option value="" disabled selected>`).text(value));
     data.forEach(option=> {let opt = $(`<option value="${option}">`).text(option);
         select.append(opt)});
@@ -357,7 +358,9 @@ let student_list_view = ({
 };
 let student_detail_view =({
     id: id, //номер особистої справи
-    name: name,
+    first_name: name,
+    second_name: secname,
+    last_name: surname,
     bday: bday,
     type: type,
     sex: sex,
@@ -365,51 +368,74 @@ let student_detail_view =({
     address: address,
     p : p //пільги
 }) => {
+
     let button = $(`<div class="btn my_btn btn-outline-success" id="back_to_st-list">`).text('Назад');
     let student_block = $(`<div>`);
-    let empty_r = $(`<div class="row" style="height: 20px">`);
-    let r_name = $(`<div class="row">`);
-    let r_sex = $(`<div class="row">`);
-    let st_name = $(`<div class="col-md-9">`).text(name);
-    let t_sex = $(`<div class="col-md-4">`).text('Стать: '+sex);
-   // let st_sex = $(`<div class="col-md-1">`).text(sex);
-    r_name.append(st_name);
-    r_sex.append(t_sex);
-        //.append(st_sex);
-    let r_bday =  $(`<div class="row">`);
-    let t_bday =  $(`<div class="col-md-4">`).text('Дата народження:');
-    let st_bday = $(`<div class="">`).text(bday);
-    r_bday.append(t_bday).append(st_bday);
-    let r_t_addr =   $(`<div class="row">`);
-    let t_addr= $(`<div class="col-md-12">`).text('Адреса:');
-    let st_addr = $(`<div class="col-md-12">`).text(address);
-    r_t_addr.append(t_addr).append(st_addr);
-   student_block.append(button).append(empty_r).append(r_name)
-       .append(r_sex).append(r_bday).append(r_t_addr);
-    if(array_t!=null&&array_t.length != 0) {
-        let r_phone =  $(`<div class="row">`);
-        let t_phone = $(`<div class="col-12">`).text('Телефони:');
-        let st_phone = $(`<div class="col-12">`);
-        array_t.forEach(ph => st_phone.append($(`<div>`).text(ph)));
-        r_phone.append(t_phone).append(st_phone);
-        student_block.append(r_phone);
-    }
-    if(p!=null&&p.length != 0) {
-        let r_p =  $(`<div class="row">`);
-        let t_p = $(`<div>`).text('Пільги:');
-        let st_p = $(`<div>`);
-        p.forEach(ph => st_p.append($(`<div>`).text(ph)));
-        r_p.append(t_p).append(st_p);
-        student_block.append(r_p);
-    }
-    let r_t =   $(`<div class="row">`);
-    let t_type= $(`<div class="col-4">`).text('Тип навчання:');
-    let st_type = $(`<div>`).text(type);
-    r_t.append(t_type).append(st_type);
-    student_block.append(r_t);
-    let pers = $(`<div class="res_person" data-id = "${id}">`).text("Відповідальні особи");
-    let marks = $(`<div class="st_mark" data-id = "${id}">`).text("Оцінки");
-    student_block.append(pers).append(marks);
+    let input_key = create_input_group('text', 'Номер особової справи', id, 'id', '','','','', true);
+    let input_name = create_input_group('text', "Прізвище", surname, 'last_name', '', '', '', '', true);
+    let input_2name = create_input_group('text', "Ім'я", name, 'first_name', '', '', '', '', true);
+    let input_sname = create_input_group('text', "По батькові", secname, 'second_name', '', '', '', '', true);
+    let input_sex = create_selected_input(['Жіноча', 'Чоловіча'], "Стать", '', sex, 'sex',  true);
+    let input_bday = create_input_group('data', "Дата народження", bday, 'bday', '', '', '', '', true);
+    //todo change address to city/street/building/flat
+    let input_address = create_input_group('text', "Адреса", address, 'address', '', '', '', '', true);
+    student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday).append(input_address);
+    let i = 0;
+    if(array_t!=undefined&&array_t!=='')
+    array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, '','','','',true);
+    i++;
+    student_block.append(in_ph);});
+    i= 0;
+    if(p!=undefined&&p!=='')
+    p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, '','','','',true);
+        i++;
+        student_block.append(in_ph);});
+    let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', true);
+    student_block.append(input_type);
+
+    //  let empty_r = $(`<div class="row" style="height: 20px">`);
+   //  let r_name = $(`<div class="row">`);
+   //  let r_sex = $(`<div class="row">`);
+   //  let st_name = $(`<div class="col-md-9">`).text(name);
+   //  let t_sex = $(`<div class="col-md-4">`).text('Стать: '+sex);
+   // // let st_sex = $(`<div class="col-md-1">`).text(sex);
+   //  r_name.append(st_name);
+   //  r_sex.append(t_sex);
+   //      //.append(st_sex);
+   //  let r_bday =  $(`<div class="row">`);
+   //  let t_bday =  $(`<div class="col-md-4">`).text('Дата народження:');
+   //  let st_bday = $(`<div class="">`).text(bday);
+   //  r_bday.append(t_bday).append(st_bday);
+   //  let r_t_addr =   $(`<div class="row">`);
+   //  let t_addr= $(`<div class="col-md-12">`).text('Адреса:');
+   //  let st_addr = $(`<div class="col-md-12">`).text(address);
+   //  r_t_addr.append(t_addr).append(st_addr);
+   // student_block.append(button).append(empty_r).append(r_name)
+   //     .append(r_sex).append(r_bday).append(r_t_addr);
+   //  if(array_t!=null&&array_t.length != 0) {
+   //      let r_phone =  $(`<div class="row">`);
+   //      let t_phone = $(`<div class="col-12">`).text('Телефони:');
+   //      let st_phone = $(`<div class="col-12">`);
+   //      array_t.forEach(ph => st_phone.append($(`<div>`).text(ph)));
+   //      r_phone.append(t_phone).append(st_phone);
+   //      student_block.append(r_phone);
+   //  }
+   //  if(p!=null&&p.length != 0) {
+   //      let r_p =  $(`<div class="row">`);
+   //      let t_p = $(`<div>`).text('Пільги:');
+   //      let st_p = $(`<div>`);
+   //      p.forEach(ph => st_p.append($(`<div>`).text(ph)));
+   //      r_p.append(t_p).append(st_p);
+   //      student_block.append(r_p);
+   //  }
+   //  let r_t =   $(`<div class="row">`);
+   //  let t_type= $(`<div class="col-4">`).text('Тип навчання:');
+   //  let st_type = $(`<div>`).text(type);
+   //  r_t.append(t_type).append(st_type);
+   //  student_block.append(r_t);
+   //  let pers = $(`<div class="res_person" data-id = "${id}">`).text("Відповідальні особи");
+   //  let marks = $(`<div class="st_mark" data-id = "${id}">`).text("Оцінки");
+   //  student_block.append(pers).append(marks);
     return student_block;
 };
 /*------Subject-creator-----*/
