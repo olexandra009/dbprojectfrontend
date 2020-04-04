@@ -125,6 +125,13 @@ $(document).on('click', '#end_mark_report', function(){
     //todo send file with information about every student in class
     // end marks
 });
+$(document).on('click', '#edit_st', function(){
+    $('.st-info-ed').removeAttr('readonly').removeAttr('disabled');
+    $('#edit_st').addClass('hidden');
+    let button = $(`<button class="btn btn-outline-success my_btn"  id="save_student_change">`).text('Зберегти зміни');
+    $('.student_info_list').append(button);
+
+});
 let changinggroupflag = false;
 
 $(document).on('click', '#changing_group', function(){
@@ -139,7 +146,7 @@ $(document).on('click', '#changing_group', function(){
     let class_s =[];
     class_subject.forEach(st=>{class_s.push(st.name)})
     console.log(class_s);
-    let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет');
+    let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
     let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
     div.append(select).append(btn);
     $('#changing_group_div').append(div);
@@ -178,7 +185,9 @@ function  createDetailStudentView(id){
     //todo AJAX request for detail information by student id
     let data = {
         id: id,
-        name: "Іваненко Ольга Степанівна",
+        last_name: "Іваненко",
+        first_name: "Ольга",
+        second_name: "Степанівна",
         bday: "09.09.2005",
         type: "очна",
         sex: 'Жіноча',
@@ -203,8 +212,8 @@ function createAttendingView()
 {
     let div = $(`<div id="choose_attend_period">`);
     let dataform = $(`<div class="form">`); //можливо краще форму?
-    let inputdate1 = create_input_group('date', 'Дата початку', '', 'start_date');
-    let inputdate2 = create_input_group('date', 'Кінцева дата', '', 'end_date');
+    let inputdate1 = create_input_group('date', 'Дата початку', '', 'start_date', '','','',true);
+    let inputdate2 = create_input_group('date', 'Кінцева дата', '', 'end_date','','','',true);
 
     let submit = $(`<input type="submit" id="create_attend_by_period" class="input-group-text">`);
     div.append(dataform.append(inputdate1).append(inputdate2).append(submit));
@@ -286,25 +295,37 @@ function createSubjectMarksView(id) {
 
 }
 
-function create_selected_input(data, label, id, value, name, readonly) {
+function create_selected_input(data, label, id, value, name, class_, readonly, required) {
     let group =$(`<div class="input-group mb-1">`);
     let prep = $(`<div class="input-group-prepend">`);
     let span = $(`<span class="input-group-text">`).text(label);
-    let select = $(`<select class="custom-select" name='${name}' id="${id}">`);
+    let select = $(`<select class="custom-select ${class_}" name='${name}' id="${id}">`);
     if(readonly) select.attr('disabled', 'true');
+    if(required) select.attr('required', 'true');
     select.append($(`<option value="" disabled selected>`).text(value));
     data.forEach(option=> {let opt = $(`<option value="${option}">`).text(option);
         select.append(opt)});
     return group.append(prep.append(span)).append(select);
 }
 
-function create_input_group(input_type, label, value, name, min, max, step, checked, readonly){
+function create_input_group(input_type, label, value, name, class_, checked, readonly,required){
     let group =$(`<div class="input-group mb-1">`);
     let pregroup = $(`<div class="input-group-prepend">`);
     let span = $(`<span class="input-group-text">`).text(label);
-    let input = $(`<input type="${input_type}" value = "${value}" min="${min}" step="${step}" max="${max}" name="${name}" class="form-control">`);
+    let input = $(`<input type="${input_type}" value = "${value}"  name="${name}" class="form-control ${class_}">`);
     if(checked) input.attr('checked', 'true');
     if(readonly) input.attr('readonly', 'true');
+    if(required) input.attr('required', 'true');
+    return group.append(pregroup.append(span)).append(input);
+}
+function create_input_group_num(input_type, label, value, name, class_, min, max, step, checked, readonly, required){
+    let group =$(`<div class="input-group mb-1">`);
+    let pregroup = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let input = $(`<input type="${input_type}"  value = "${value}" min="${min}" step="${step}" max="${max}" name="${name}" class="form-control ${class_}">`);
+    if(checked) input.attr('checked', 'true');
+    if(readonly) input.attr('readonly', 'true');
+    if(required) input.attr('required', 'true');
     return group.append(pregroup.append(span)).append(input);
 }
 /*******************Helper function***************************/
@@ -368,74 +389,36 @@ let student_detail_view =({
     address: address,
     p : p //пільги
 }) => {
-
+    let student_block = $(`<div class="student_info_list">`);
+    let divbuttons =  $(`<div class="justify-content-between m-2">`);
     let button = $(`<div class="btn my_btn btn-outline-success" id="back_to_st-list">`).text('Назад');
-    let student_block = $(`<div>`);
-    let input_key = create_input_group('text', 'Номер особової справи', id, 'id', '','','','', true);
-    let input_name = create_input_group('text', "Прізвище", surname, 'last_name', '', '', '', '', true);
-    let input_2name = create_input_group('text', "Ім'я", name, 'first_name', '', '', '', '', true);
-    let input_sname = create_input_group('text', "По батькові", secname, 'second_name', '', '', '', '', true);
-    let input_sex = create_selected_input(['Жіноча', 'Чоловіча'], "Стать", '', sex, 'sex',  true);
-    let input_bday = create_input_group('data', "Дата народження", bday, 'bday', '', '', '', '', true);
+    let edit = $(`<div class="btn my_btn btn-outline-success" id="edit_st">`).text('Редагувати');
+    divbuttons.append(button).append(edit);
+    let input_key = create_input_group('text', 'Номер особової справи', id, 'id', 'st-info-ed','',true, true);
+    student_block.append(divbuttons);
+    student_block.append(input_key);
+    let input_name = create_input_group('text', "Прізвище", surname, 'last_name', 'st-info-ed', '', true, true);
+    let input_2name = create_input_group('text', "Ім'я", name, 'first_name', 'st-info-ed', '', true, true);
+    let input_sname = create_input_group('text', "По батькові", secname, 'second_name', 'st-info-ed', '', true, true);
+    let input_sex = create_selected_input(['Жіноча', 'Чоловіча'], "Стать", '', sex, 'sex',  'st-info-ed', true, true);
+    let input_bday = create_input_group('data', "Дата народження", bday, 'bday', 'st-info-ed', '', true, true);
     //todo change address to city/street/building/flat
-    let input_address = create_input_group('text', "Адреса", address, 'address', '', '', '', '', true);
+    let input_address = create_input_group('text', "Адреса", address, 'address', 'st-info-ed', '', true, true);
     student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday).append(input_address);
     let i = 0;
     if(array_t!=undefined&&array_t!=='')
-    array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, '','','','',true);
+    array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, true);
     i++;
     student_block.append(in_ph);});
     i= 0;
     if(p!=undefined&&p!=='')
-    p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, '','','','',true);
+    p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
         i++;
         student_block.append(in_ph);});
-    let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', true);
+    let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
+    let buttonparents =$(`<button class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
     student_block.append(input_type);
-
-    //  let empty_r = $(`<div class="row" style="height: 20px">`);
-   //  let r_name = $(`<div class="row">`);
-   //  let r_sex = $(`<div class="row">`);
-   //  let st_name = $(`<div class="col-md-9">`).text(name);
-   //  let t_sex = $(`<div class="col-md-4">`).text('Стать: '+sex);
-   // // let st_sex = $(`<div class="col-md-1">`).text(sex);
-   //  r_name.append(st_name);
-   //  r_sex.append(t_sex);
-   //      //.append(st_sex);
-   //  let r_bday =  $(`<div class="row">`);
-   //  let t_bday =  $(`<div class="col-md-4">`).text('Дата народження:');
-   //  let st_bday = $(`<div class="">`).text(bday);
-   //  r_bday.append(t_bday).append(st_bday);
-   //  let r_t_addr =   $(`<div class="row">`);
-   //  let t_addr= $(`<div class="col-md-12">`).text('Адреса:');
-   //  let st_addr = $(`<div class="col-md-12">`).text(address);
-   //  r_t_addr.append(t_addr).append(st_addr);
-   // student_block.append(button).append(empty_r).append(r_name)
-   //     .append(r_sex).append(r_bday).append(r_t_addr);
-   //  if(array_t!=null&&array_t.length != 0) {
-   //      let r_phone =  $(`<div class="row">`);
-   //      let t_phone = $(`<div class="col-12">`).text('Телефони:');
-   //      let st_phone = $(`<div class="col-12">`);
-   //      array_t.forEach(ph => st_phone.append($(`<div>`).text(ph)));
-   //      r_phone.append(t_phone).append(st_phone);
-   //      student_block.append(r_phone);
-   //  }
-   //  if(p!=null&&p.length != 0) {
-   //      let r_p =  $(`<div class="row">`);
-   //      let t_p = $(`<div>`).text('Пільги:');
-   //      let st_p = $(`<div>`);
-   //      p.forEach(ph => st_p.append($(`<div>`).text(ph)));
-   //      r_p.append(t_p).append(st_p);
-   //      student_block.append(r_p);
-   //  }
-   //  let r_t =   $(`<div class="row">`);
-   //  let t_type= $(`<div class="col-4">`).text('Тип навчання:');
-   //  let st_type = $(`<div>`).text(type);
-   //  r_t.append(t_type).append(st_type);
-   //  student_block.append(r_t);
-   //  let pers = $(`<div class="res_person" data-id = "${id}">`).text("Відповідальні особи");
-   //  let marks = $(`<div class="st_mark" data-id = "${id}">`).text("Оцінки");
-   //  student_block.append(pers).append(marks);
+    student_block.append(buttonparents);
     return student_block;
 };
 /*------Subject-creator-----*/

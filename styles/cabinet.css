@@ -348,3 +348,9 @@ div#changing_group_div {
     color: #495057;
     background-color: #f8f8f8;
 }
+.justify-content-between {
+    display: flex;
+}
+.btn-outline-dark .input-group-text :active, :focus{
+    color: black;
+}
