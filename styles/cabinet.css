@@ -335,3 +335,6 @@ div#thr_table {
 .attending {
     margin-bottom: 2%;
 }
+button#current_students_rating, button#attend_student_report, button#end_mark_report {
+    margin: auto;
+}

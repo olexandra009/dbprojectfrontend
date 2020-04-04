@@ -81,6 +81,7 @@ $(document).on('click', '#create_attend_by_period', function () {
 });
 $(document).on('click', '#report', function () {
     nextMenu('report');
+    createMenuReportsButtons();
 });
 $(document).on('click', '#back_to_cabinet', function () {
      window.location.href='./teachercabinet.html';
@@ -94,9 +95,7 @@ $(document).on('click', '.st-list', function () {
 });
 //back_to_st-list
 $(document).on('click', '#back_to_st-list', function () {
-
     createMyStudentList();
-
 });
 
 $(document).on('click', '#cancel', function () {
@@ -288,6 +287,21 @@ function createWindow(innerItem){
     let back =$(` <div class = "backgr" id="bacground_adding_parents">`);
     let form = $(` <div class="forming" id="forming">`);
     $('.body').before(back.append(form.append(innerItem)));
+}
+function createMenuReportsButtons(){
+
+    let divbuttons = $('<div>');
+    let row1 =$('<div class="row m-1">');
+    let row2 = row1.clone();
+    let row3 = row1.clone();
+    let rating_button = $('<button class="btn-outline-success my_btn btn col-7" id="current_students_rating">').text('Поточний рейтинг учнів');
+    row1.append(rating_button);
+    let attend_button = $(`<button class="btn btn-outline-success my_btn  col-7" id="attend_student_report">` ).text('Кількість пропущених днів');
+    row2.append(attend_button);
+    let end_button = $(`<button class="btn btn-outline-success my_btn  col-7" id="end_mark_report">`).text('Список підсумкових оцінок');
+    row3.append(end_button);
+    divbuttons.append(row1).append(row2).append(row3);
+    $('#content').append(divbuttons);
 }
 
 /*****************************HTML*****************************/
