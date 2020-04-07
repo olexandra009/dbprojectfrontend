@@ -661,7 +661,6 @@ function createFormForAddingStudent(){
     let input_second_name = create_input_group('text', "По батькові", "", "second_name");
     let birthday = create_input_group('date', "Дата народження", "", "birthday");
     let address = create_input_group('text', "Адреса", "", "address");
-    let who = create_input_group('text', "Ким є", "", "who");
 
     let phone = create_input_group_with_button('text', 'Телефон','add_phone');
     let benefits = create_input_group_with_button('text', 'Пільги','add_benefits');
@@ -671,7 +670,7 @@ function createFormForAddingStudent(){
     let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
     form.append(input_surname).append(input_name).append(input_second_name)
-        .append(phone).append(birthday).append(address).append(benefits).append(parents).append(who)
+        .append(phone).append(birthday).append(address).append(benefits).append(parents)
         .append(selectedType).append(selectedClass);
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
@@ -805,13 +804,17 @@ function createPersonForm(){
     let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "second_name");
-    let address = create_input_group('text', "Адреса", "", "address");
+    let city = create_input_group('text', "Місто", "", "city");
+    let street = create_input_group('text', "Вулиця", "", "street");
+    let building = create_input_group('text', "Будинок", "", "building");
+    let apartment = create_input_group('text', "Квартира", "", "apartment");
     let phone = create_input_group_with_button('text', 'Телефон','add_phone');
     let workplace = create_input_group('text', "Місце роботи", "", "workplace");
-    div.append(input_surname).append(input_name).append(input_second_name)
-        .append(phone).append(address).append(workplace);
+    let role = create_input_group('text','Ким є',"","role")
+    div.append(input_surname).append(input_name).append(input_second_name).append(city).append(street).append(building).append(apartment)
+        .append(phone).append(workplace).append(role);
     let buttons = $(`<div>`);
-    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block">`);
+    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block">`).text("Додати");
     let cancel = $(`<button class="input-group-text" id="cn_add_parents" style="display:inline-block">`).text("Скасувати");
     buttons.append(submit).append(cancel);
     div.append(buttons);
