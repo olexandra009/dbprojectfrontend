@@ -339,11 +339,16 @@ function createFormForAddingTeacher(){
     let input_surname = create_input_group('text', "Прізвище","","last_name");
     let input_name = create_input_group('text', "Ім'я","","first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "second_name");
+    let input_city = create_input_group('text','Місто','','city');
+    let input_street = create_input_group('text','Вулиця','','street');
+    let input_building = create_input_group('text','Будинок','','building');
+    let input_apartment = create_input_group('text','Квартира','','apartment');
     let qwalification = create_input_group('text', "Кваліфікація", "", "qwalification");
-    let date_work = create_input_group('date', "Початок роботи","","date_st_w");
     let date_qwal = create_input_group('date', "Підтвердження", "", "date_qw");
+    let date_work = create_input_group('date', "Початок роботи","","date_st_w");
 
-    form.append(input_surname).append(input_name).append(input_second_name)
+
+    form.append(input_surname).append(input_name).append(input_second_name).append(input_city).append(input_street).append(input_building).append(input_apartment)
         .append(qwalification).append(date_qwal).append(date_work);
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
@@ -359,6 +364,10 @@ function createTeacherViewById(id){
         surname:'Гребень',
         first_name: 'Оксана',
         second_name: 'Сергіївна',
+        city:'',
+        street:'',
+        building:'',
+        apartment:'',
         qualification: 'Вчитель молодших класів',
         confirm: new Date(2019, 10, 9),
         start: new Date(2005, 9,1)
@@ -371,7 +380,7 @@ function createTeacherViewById(id){
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_teacher" class="btn my_btn btn-outline-success" data-id="${data.t_n}" 
 data-name="${data.first_name}" data-surname="${data.surname}" 
-data-sec_name="${data.second_name}" data-qualification="${data.qualification}" 
+data-sec_name="${data.second_name}" data-city="${data.city}" data-street="${data.street}" data-building="${data.building}" data-apartment="${data.apartment}" data-qualification="${data.qualification}" 
 data-confirm="${data_confirm}" data-start="${data_start}" 
 data-end="${data.end}">`).text('Редагувати');
 
@@ -381,11 +390,14 @@ data-end="${data.end}">`).text('Редагувати');
     let first_name = createInformationViewRows("Ім'я", data.first_name);
     let second_name = createInformationViewRows("По батькові", data.second_name);
     let last_name = createInformationViewRows("Прізвище", data.surname);
+    let city = createInformationViewRows("Прізвище", data.city);
+    let street = createInformationViewRows("Прізвище", data.street);
+    let building = createInformationViewRows("Прізвище", data.building);
+    let apartment = createInformationViewRows("Прізвище", data.street);
     let qualification = createInformationViewRows("Кваліфікація", data.qualification);
     let confirm = createInformationViewRows("Дата підтвердження", data_confirm);
     let start = createInformationViewRows("Початок роботи", data_start);
-    div.append(row).append(tn).append(first_name).append(second_name)
-        .append(last_name).append(qualification).append(confirm).append(start);
+    div.append(row).append(tn).append(first_name).append(second_name).append(last_name).append(city).append(street).append(building).append(apartment).append(qualification).append(confirm).append(start);
     //TODO last date work
     let button_subject = $(`<div class="row input-group">`);
     let bs =  $(` <button id="teacher_subject_view" class="btn btn-block input-group-text" 
@@ -407,6 +419,10 @@ data-id="${data.t_n}">`).text('Видалити');
     $("#bacground_adding_parents").remove();
     createWindow(div);
 }
+
+
+
+
 
 function createEditTeacherViewById(a){
     let div = $(`<div class="container">`);
