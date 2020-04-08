@@ -660,12 +660,16 @@ function createFormForAddingStudent(){
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
     let birthday = create_input_group('date', "Дата народження", "", "birthday");
+<<<<<<< HEAD
     let sex = create_selected_input(['ч','ж'], 'Стать', "sex_type", "Оберіть стать", "sex");
     let city = create_input_group('text', "Місто", "", "city");
     let street = create_input_group('text', "Вулиця", "", "street");
     let building = create_input_group('text', "Будинок", "", "building");
     let apartment = create_input_group('text', "Квартира", "", "apartment");
     let who = create_input_group('text', "Ким є", "", "who");
+=======
+    let address = create_input_group('text', "Адреса", "", "address");
+>>>>>>> 86720eb2e14827ab87681c8e72f6f0bcaa2623a4
 
     //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон','add_phone');
@@ -685,6 +689,7 @@ function createFormForAddingStudent(){
 
             let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
+<<<<<<< HEAD
             form.append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment).append(benefits).append(parents).append(who)
                 .append(selectedType).append(selectedClass);
@@ -706,6 +711,15 @@ function checkAddingStudent(){
     if(document.forms['form_student']['building'].value == '') return false;
     if(document.forms['form_student']['class_name'].value == '') return false;
     //TODO відповідальні особи Not Null
+=======
+    form.append(input_surname).append(input_name).append(input_second_name)
+        .append(phone).append(birthday).append(address).append(benefits).append(parents)
+        .append(selectedType).append(selectedClass);
+    let submit = $(`<input type="submit" class="input-group-text">`);
+    form.append(submit);
+    $('#form_student').remove();
+    $('#student_add').append(form);
+>>>>>>> 86720eb2e14827ab87681c8e72f6f0bcaa2623a4
 }
 function createStudentViewById(id) {
     //TODO Ajax request to get all information about student

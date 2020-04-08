@@ -339,16 +339,11 @@ function createFormForAddingTeacher(){
     let input_surname = create_input_group('text', "Прізвище","","last_name");
     let input_name = create_input_group('text', "Ім'я","","first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "second_name");
-    let input_city = create_input_group('text','Місто','','city');
-    let input_street = create_input_group('text','Вулиця','','street');
-    let input_building = create_input_group('text','Будинок','','building');
-    let input_apartment = create_input_group('text','Квартира','','apartment');
     let qwalification = create_input_group('text', "Кваліфікація", "", "qwalification");
-    let date_qwal = create_input_group('date', "Підтвердження", "", "date_qw");
     let date_work = create_input_group('date', "Початок роботи","","date_st_w");
+    let date_qwal = create_input_group('date', "Підтвердження", "", "date_qw");
 
-
-    form.append(input_surname).append(input_name).append(input_second_name).append(input_city).append(input_street).append(input_building).append(input_apartment)
+    form.append(input_surname).append(input_name).append(input_second_name)
         .append(qwalification).append(date_qwal).append(date_work);
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
@@ -364,10 +359,6 @@ function createTeacherViewById(id){
         surname:'Гребень',
         first_name: 'Оксана',
         second_name: 'Сергіївна',
-        city:'',
-        street:'',
-        building:'',
-        apartment:'',
         qualification: 'Вчитель молодших класів',
         confirm: new Date(2019, 10, 9),
         start: new Date(2005, 9,1)
@@ -380,7 +371,7 @@ function createTeacherViewById(id){
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_teacher" class="btn my_btn btn-outline-success" data-id="${data.t_n}" 
 data-name="${data.first_name}" data-surname="${data.surname}" 
-data-sec_name="${data.second_name}" data-city="${data.city}" data-street="${data.street}" data-building="${data.building}" data-apartment="${data.apartment}" data-qualification="${data.qualification}" 
+data-sec_name="${data.second_name}" data-qualification="${data.qualification}" 
 data-confirm="${data_confirm}" data-start="${data_start}" 
 data-end="${data.end}">`).text('Редагувати');
 
@@ -390,14 +381,11 @@ data-end="${data.end}">`).text('Редагувати');
     let first_name = createInformationViewRows("Ім'я", data.first_name);
     let second_name = createInformationViewRows("По батькові", data.second_name);
     let last_name = createInformationViewRows("Прізвище", data.surname);
-    let city = createInformationViewRows("Прізвище", data.city);
-    let street = createInformationViewRows("Прізвище", data.street);
-    let building = createInformationViewRows("Прізвище", data.building);
-    let apartment = createInformationViewRows("Прізвище", data.street);
     let qualification = createInformationViewRows("Кваліфікація", data.qualification);
     let confirm = createInformationViewRows("Дата підтвердження", data_confirm);
     let start = createInformationViewRows("Початок роботи", data_start);
-    div.append(row).append(tn).append(first_name).append(second_name).append(last_name).append(city).append(street).append(building).append(apartment).append(qualification).append(confirm).append(start);
+    div.append(row).append(tn).append(first_name).append(second_name)
+        .append(last_name).append(qualification).append(confirm).append(start);
     //TODO last date work
     let button_subject = $(`<div class="row input-group">`);
     let bs =  $(` <button id="teacher_subject_view" class="btn btn-block input-group-text" 
@@ -419,10 +407,6 @@ data-id="${data.t_n}">`).text('Видалити');
     $("#bacground_adding_parents").remove();
     createWindow(div);
 }
-
-
-
-
 
 function createEditTeacherViewById(a){
     let div = $(`<div class="container">`);
@@ -503,17 +487,17 @@ function createConcreteSubjectList(name) {
         success: function(subjectsInGroup){
             subjectsInGroup = subjectsInGroup.filter(a => a.subject_name == name);
             console.log(subjectsInGroup);
-
-            //            let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
-            //                             {id: '5AG2', name: 'English', class_name: '5-A'},
-            //                             {id: '5BG1', name: 'English', class_name: '5-B'}];
+            
+//            let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
+//                             {id: '5AG2', name: 'English', class_name: '5-A'},
+//                             {id: '5BG1', name: 'English', class_name: '5-B'}];
             subjectsInGroup.forEach(sb => {                
                 let classId = sb.class_id.substring(0, sb.class_id.length-4);
                 let class_letter = classId.substring(classId.length-1, classId.length);
                 classId = classId.substring(0, classId.length-1);
                 let class_number = classId;
                 let class_name = class_number + "-" + class_letter;
-
+                
                 //TODO figure out what to do with group number (5AG1, 5AG2)
                 subject_list.append(subject_list_view(name, {id: class_number + class_letter + "G?", class_name: class_name}))
             });
@@ -655,57 +639,28 @@ function addingStudentView(){
 
 
 function createFormForAddingStudent(){
-    let form = $('<form class="container" method="post" onsubmit="return checkAddingStudent()" name="form_student" id="form_student" action="createStudent">');
+    let form = $('<form class="container" method="post" id="form_student">');
     let input_surname = create_input_group('text', "Прізвище","","last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
-    let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
+    let input_second_name = create_input_group('text', "По батькові", "", "second_name");
     let birthday = create_input_group('date', "Дата народження", "", "birthday");
-    let sex = create_selected_input(['ч','ж'], 'Стать', "sex_type", "Оберіть стать", "sex");
-    let city = create_input_group('text', "Місто", "", "city");
-    let street = create_input_group('text', "Вулиця", "", "street");
-    let building = create_input_group('text', "Будинок", "", "building");
-    let apartment = create_input_group('text', "Квартира", "", "apartment");
+    let address = create_input_group('text', "Адреса", "", "address");
     let who = create_input_group('text', "Ким є", "", "who");
 
-    //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон','add_phone');
     let benefits = create_input_group_with_button('text', 'Пільги','add_benefits');
-    let selectedType = create_selected_input(['очна','заочна'], 'Тип навчання', "type_edu", "Тип викладання", "studying_type");
-    $.ajax({
-        url: "/getClasses",
-        type: "GET",
-        contentType: "application/json",
-        success: function (classes) {
-            classes.sort(function(a,b){
-                return a.class_number - b.class_number || a.class_char - b.class_char || a.start_year - b.start_year;
-            })
-            classes = classes.map(item => item.class_number + '-' + item.class_char + ' ' + item.start_year);
-            
-            let selectedClass = create_selected_input(classes, 'Клас', "class_type", "Оберіть клас", "class_name");
+    let selectedType = create_selected_input(['очна','заочна'], 'Тип навчання', "type_edu", "Тип викладання");
+    let selectedClass = create_selected_input(['2','4'], 'Клас', "class_type", "Оберіть клас");
 
-            let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
+    let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
-            form.append(input_surname).append(input_name).append(input_second_name)
-                .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment).append(benefits).append(parents).append(who)
-                .append(selectedType).append(selectedClass);
-            let submit = $(`<input type="submit" class="input-group-text">`);
-            form.append(submit);
-            $('#form_student').remove();
-            $('#student_add').append(form);
-        }
-    });
-}
-function checkAddingStudent(){
-    if(document.forms['form_student']['last_name'].value == '') return false;
-    if(document.forms['form_student']['first_name'].value == '') return false;
-    if(document.forms['form_student']['patronymic'].value == '') return false;
-    if(document.forms['form_student']['birthday'].value == '') return false;
-    if(document.forms['form_student']['sex'].value == '') return false;
-    if(document.forms['form_student']['city'].value == '') return false;
-    if(document.forms['form_student']['street'].value == '') return false;
-    if(document.forms['form_student']['building'].value == '') return false;
-    if(document.forms['form_student']['class_name'].value == '') return false;
-    //TODO відповідальні особи Not Null
+    form.append(input_surname).append(input_name).append(input_second_name)
+        .append(phone).append(birthday).append(address).append(benefits).append(parents).append(who)
+        .append(selectedType).append(selectedClass);
+    let submit = $(`<input type="submit" class="input-group-text">`);
+    form.append(submit);
+    $('#form_student').remove();
+    $('#student_add').append(form);
 }
 function createStudentViewById(id) {
     //TODO Ajax request to get all information about student
@@ -834,17 +789,13 @@ function createPersonForm(){
     let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "second_name");
-    let city = create_input_group('text', "Місто", "", "city");
-    let street = create_input_group('text', "Вулиця", "", "street");
-    let building = create_input_group('text', "Будинок", "", "building");
-    let apartment = create_input_group('text', "Квартира", "", "apartment");
+    let address = create_input_group('text', "Адреса", "", "address");
     let phone = create_input_group_with_button('text', 'Телефон','add_phone');
     let workplace = create_input_group('text', "Місце роботи", "", "workplace");
-    let role = create_input_group('text','Ким є',"","role")
-    div.append(input_surname).append(input_name).append(input_second_name).append(city).append(street).append(building).append(apartment)
-        .append(phone).append(workplace).append(role);
+    div.append(input_surname).append(input_name).append(input_second_name)
+        .append(phone).append(address).append(workplace);
     let buttons = $(`<div>`);
-    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block">`).text("Додати");
+    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block">`);
     let cancel = $(`<button class="input-group-text" id="cn_add_parents" style="display:inline-block">`).text("Скасувати");
     buttons.append(submit).append(cancel);
     div.append(buttons);
