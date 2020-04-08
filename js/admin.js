@@ -316,13 +316,21 @@ function filterTeacherCreating(){
 }
 //Create teacher-list
 function creatingTeacherList(){
-    //TODO Ajax request for teacher
-    let data = [{t_n:'TN13455', name: 'Гребень Оксана Сергіївна', qwl: 'квал1'},
-                {t_n:'TN1355', name: 'Гребень Оксана Сергіївна', qwl: 'квал2'},
-                {t_n:'TN1455', name: 'Гребень Оксана Сергіївна', qwl: 'квал3'}];
-    let container = $(`<div class="container">`);
-    data.forEach(th => { container.append(teacher_list(th))});
-    $('#content').append(container);
+    $.ajax({
+        url: "/getTeachers",
+        type: "GET",
+        contentType: "application/json",
+        success: function(teachers){
+            let data = teachers.map(function(teacher){
+                return {t_n: teacher.tabel_number, name: teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic,
+                        qwl: teacher.qualification_name}
+            })
+
+            let container = $(`<div class="container">`);
+            data.forEach(th => { container.append(teacher_list(th))});
+            $('#content').append(container);
+        }
+    });
 }
 //create button to add teacher
 function addingTeacherView(){
@@ -335,89 +343,94 @@ function addingTeacherView(){
 }
 //create form for adding teacher
 function createFormForAddingTeacher(){
-    let form = $('<form class="container" method="post" id="form_teacher">');
+    let form = $('<form class="container" method="post" id="form_teacher" name="form_teacher" onsubmit="checkAddingTeacher()" action="createTeacher">');
+    let input_tabel_number = create_input_group('number', "Табельний номер","","tabel_number");
     let input_surname = create_input_group('text', "Прізвище","","last_name");
     let input_name = create_input_group('text', "Ім'я","","first_name");
-    let input_second_name = create_input_group('text', "По батькові", "", "second_name");
+    let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
     let input_city = create_input_group('text','Місто','','city');
     let input_street = create_input_group('text','Вулиця','','street');
     let input_building = create_input_group('text','Будинок','','building');
     let input_apartment = create_input_group('text','Квартира','','apartment');
-    let qwalification = create_input_group('text', "Кваліфікація", "", "qwalification");
-    let date_qwal = create_input_group('date', "Підтвердження", "", "date_qw");
+    let qwalification = create_input_group('text', "Кваліфікація", "", "qualification");
+    let date_qwal = create_input_group('date', "Підтвердження", "", "date_qualification");
     let date_work = create_input_group('date', "Початок роботи","","date_st_w");
 
 
-    form.append(input_surname).append(input_name).append(input_second_name).append(input_city).append(input_street).append(input_building).append(input_apartment)
-        .append(qwalification).append(date_qwal).append(date_work);
+    form.append(input_tabel_number).append(input_surname).append(input_name).append(input_second_name).append(input_city).append(input_street).append(input_building)
+        .append(input_apartment).append(qwalification).append(date_qwal).append(date_work);
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
     $('#form_teacher').remove();
     $('#teacher_add').append(form);
 }
+function checkAddingTeacher(){
+    if(document.forms['form_teacher']['tabel_number'].value == '') return false;
+    if(document.forms['form_teacher']['last_name'].value == '') return false;
+    if(document.forms['form_teacher']['first_name'].value == '') return false;
+    if(document.forms['form_teacher']['patronymic'].value == '') return false;
+    if(document.forms['form_teacher']['city'].value == '') return false;
+    if(document.forms['form_teacher']['street'].value == '') return false;
+    if(document.forms['form_teacher']['building'].value == '') return false;
+    if(document.forms['form_teacher']['qualification'].value == '') return false;
+    if(document.forms['form_teacher']['date_qualification'].value == '') return false;
+    if(document.forms['form_teacher']['date_st_w'].value == '') return false;
+}
 
 //show information about teacher
 function createTeacherViewById(id){
-    //TODO AJAX request for full teacher information
-    let data = {
-        t_n:id,
-        surname:'Гребень',
-        first_name: 'Оксана',
-        second_name: 'Сергіївна',
-        city:'',
-        street:'',
-        building:'',
-        apartment:'',
-        qualification: 'Вчитель молодших класів',
-        confirm: new Date(2019, 10, 9),
-        start: new Date(2005, 9,1)
-    };
-    let data_confirm = cutData(data.confirm);
-    let data_start = cutData(data.start);
+    $.ajax({
+        url: "/getTeachers/" + id,
+        type: "GET",
+        contentType: "application/json",
+        success: function(data){
 
-    let div = $(`<div class="container">`); // обгортка
-    let row=$(`<div class="row row_button">`);
-    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let button = $(` <button id="edit_teacher" class="btn my_btn btn-outline-success" data-id="${data.t_n}" 
-data-name="${data.first_name}" data-surname="${data.surname}" 
-data-sec_name="${data.second_name}" data-city="${data.city}" data-street="${data.street}" data-building="${data.building}" data-apartment="${data.apartment}" data-qualification="${data.qualification}" 
-data-confirm="${data_confirm}" data-start="${data_start}" 
+            let div = $(`<div class="container">`); // обгортка
+            let row=$(`<div class="row row_button">`);
+            let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+            let button = $(` <button id="edit_teacher" class="btn my_btn btn-outline-success" data-id="${data.tabel_number}" 
+data-name="${data.teacher_name}" data-surname="${data.surname}" 
+data-sec_name="${data.patronymic}" data-city="${data.city}" data-street="${data.street}" data-building="${data.building}" data-apartment="${data.apartment}" data-qualification="${data.qualification_name}" 
+data-confirm="${data.last_qualification_date}" data-start="${data.work_start_date}" 
 data-end="${data.end}">`).text('Редагувати');
 
-    row.append(back);
-    row.append(button);
-    let tn = createInformationViewRows("Табельний номер", data.t_n);
-    let first_name = createInformationViewRows("Ім'я", data.first_name);
-    let second_name = createInformationViewRows("По батькові", data.second_name);
-    let last_name = createInformationViewRows("Прізвище", data.surname);
-    let city = createInformationViewRows("Прізвище", data.city);
-    let street = createInformationViewRows("Прізвище", data.street);
-    let building = createInformationViewRows("Прізвище", data.building);
-    let apartment = createInformationViewRows("Прізвище", data.street);
-    let qualification = createInformationViewRows("Кваліфікація", data.qualification);
-    let confirm = createInformationViewRows("Дата підтвердження", data_confirm);
-    let start = createInformationViewRows("Початок роботи", data_start);
-    div.append(row).append(tn).append(first_name).append(second_name).append(last_name).append(city).append(street).append(building).append(apartment).append(qualification).append(confirm).append(start);
-    //TODO last date work
-    let button_subject = $(`<div class="row input-group">`);
-    let bs =  $(` <button id="teacher_subject_view" class="btn btn-block input-group-text" 
+            row.append(back);
+            row.append(button);
+            let tn = createInformationViewRows("Табельний номер", data.tabel_number);
+            let first_name = createInformationViewRows("Ім'я", data.teacher_name);
+            let second_name = createInformationViewRows("По батькові", data.patronymic);
+            let last_name = createInformationViewRows("Прізвище", data.surname);
+            let city = createInformationViewRows("Місто", data.city);
+            let street = createInformationViewRows("Вулиця", data.street);
+            let building = createInformationViewRows("Будинок", data.building);
+            let apartment = createInformationViewRows("Квартира", data.apartment);
+            let qualification = createInformationViewRows("Кваліфікація", data.qualification_name);
+            let confirm = createInformationViewRows("Дата підтвердження", data.last_qualification_date);
+            let start = createInformationViewRows("Початок роботи", data.work_start_date);
+            div.append(row).append(tn).append(first_name).append(second_name).append(last_name).append(city).append(street).append(building).append(apartment).append(qualification).append(confirm).append(start);
+            //TODO last date work
+            let button_subject = $(`<div class="row input-group">`);
+            let bs =  $(` <button id="teacher_subject_view" class="btn btn-block input-group-text" 
 data-id="${data.t_n}">`).text('Предмети');
-    button_subject.append(bs);
-    let button_ex =  $(`<div class="row input-group">`);
-    let be=  $(` <button id="teacher_ex_subject_view" class="btn btn-block input-group-text" 
+            button_subject.append(bs);
+            let button_ex =  $(`<div class="row input-group">`);
+            let be=  $(` <button id="teacher_ex_subject_view" class="btn btn-block input-group-text" 
 data-id="${data.t_n}">`).text('Заміна');
-    button_ex.append(be);
-    //TODO add class
-    div.append(button_subject).append(button_ex);
-    let div_last=  $(`<div class="row btn-group mar">`);
-    let dismiss =  $(` <button id="teacher_dismiss" class=" my_btn btn-outline-success btn" 
+            button_ex.append(be);
+            //TODO add class
+            div.append(button_subject).append(button_ex);
+            let div_last=  $(`<div class="row btn-group mar">`);
+            let dismiss =  $(` <button id="teacher_dismiss" class=" my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Звільнити');
-    let delete_ =  $(` <button id="teacher_delete" class="my_btn btn-outline-success btn" 
+            let delete_ =  $(` <button id="teacher_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Видалити');
-    div_last.append(dismiss).append(delete_);
-    div.append(div_last);
-    $("#bacground_adding_parents").remove();
-    createWindow(div);
+            div_last.append(dismiss).append(delete_);
+            div.append(div_last);
+            $("#bacground_adding_parents").remove();
+            createWindow(div);
+
+        }
+    });
 }
 
 
@@ -680,7 +693,7 @@ function createFormForAddingStudent(){
                 return a.class_number - b.class_number || a.class_char - b.class_char || a.start_year - b.start_year;
             })
             classes = classes.map(item => item.class_number + '-' + item.class_char + ' ' + item.start_year);
-            
+
             let selectedClass = create_selected_input(classes, 'Клас', "class_type", "Оберіть клас", "class_name");
 
             let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
@@ -831,24 +844,34 @@ data-id="${a.data("id")}">`).text('Скасувати');
 
 function createPersonForm(){
     let div = $(` <div>` );
-    let input_surname = create_input_group('text', "Прізвище", "", "last_name");
-    let input_name = create_input_group('text', "Ім'я", "", "first_name");
-    let input_second_name = create_input_group('text', "По батькові", "", "second_name");
-    let city = create_input_group('text', "Місто", "", "city");
-    let street = create_input_group('text', "Вулиця", "", "street");
-    let building = create_input_group('text', "Будинок", "", "building");
-    let apartment = create_input_group('text', "Квартира", "", "apartment");
+    let input_surname = create_input_group('text', "Прізвище", "", "last_name_p");
+    let input_name = create_input_group('text', "Ім'я", "", "first_name_p");
+    let input_second_name = create_input_group('text', "По батькові", "", "second_name_p");
+    let city = create_input_group('text', "Місто", "", "city_p");
+    let street = create_input_group('text', "Вулиця", "", "street_p");
+    let building = create_input_group('text', "Будинок", "", "building_p");
+    let apartment = create_input_group('text', "Квартира", "", "apartment_p");
     let phone = create_input_group_with_button('text', 'Телефон','add_phone');
-    let workplace = create_input_group('text', "Місце роботи", "", "workplace");
-    let role = create_input_group('text','Ким є',"","role")
+    let workplace = create_input_group('text', "Місце роботи", "", "workplace_p");
     div.append(input_surname).append(input_name).append(input_second_name).append(city).append(street).append(building).append(apartment)
-        .append(phone).append(workplace).append(role);
+        .append(phone).append(workplace);
     let buttons = $(`<div>`);
-    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block">`).text("Додати");
+    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block" onclick="verifyPersonForm()">`).text("Додати");
     let cancel = $(`<button class="input-group-text" id="cn_add_parents" style="display:inline-block">`).text("Скасувати");
     buttons.append(submit).append(cancel);
     div.append(buttons);
     return div;
+}
+//TODO add responsible person form functionality
+function verifyPersonForm(){
+    console.log($('input[name="last_name_p"]').value);
+    if($('input[name="last_name_p"]').value == '') {
+        console.log("FALSE");
+        return false;
+    } else {
+        console.log("TRUE");
+    }
+    //    if($('input[name="last_name_p"]').value == '') return false;
 }
 /*******************Helper function***************************/
 function cutData(data){
