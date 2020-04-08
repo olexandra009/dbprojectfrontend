@@ -272,7 +272,7 @@ function appointTeacherForTheSubject(){
                     });
 
                     teachers = teachers.map(function(teacher){
-                        return teacher.tabel_number + " " + teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
+                        return teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
                     });
 
                     tch_subj = true;
@@ -310,25 +310,75 @@ function identifyClassroomLeaders(){
     // TODO get ajax all pairs class-teacher
     // TODO maybe change tch_list to form or change submit to button and one more
     //  listners
-    cls_le=true;
-    let tch_list = $(`<div id="cls_le_form">`);
-    let teacher_data = ["Teacher1", "Teacher2", "Teacher3"]; //ajax data
-    let classPairs  = [{'class':'5-A', 'teacher': 'Teacher1'}, //ajax data
-                       {'class':'6-A', 'teacher': 'Teacher2'},
-                       {'class':'7-A', 'teacher': ''}];
-    classPairs.forEach(({class: cn, teacher: tc}) =>
-                       {
-        if(tc===undefined|| tc == null || tc === '') {
-            let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
-            tch_list.append(input)
-        }else{
-            let input = create_selected_input(teacher_data, cn, "", tc);
-            tch_list.append(input)
+
+    $.ajax({
+        url: "/getTeachers",
+        type: "GET",
+        contentType: "application/json",
+        success: function(teachers){
+            $.ajax({
+                url: "/getTeacherClasses",
+                type: "GET",
+                contentType: "application/json",
+                success: function(teacherClasses){
+                    console.log(teacherClasses);
+                    teacherClasses.sort(function(a,b){
+                        return a.class.class_number - b.class.class_number || a.class.class_char - b.class.class_char;
+                    });
+
+                    cls_le=true;
+                    let tch_list = $(`<div id="cls_le_form">`);
+                    let teacher_data = teachers.map(function(teacher){
+                        return teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
+                    });
+                    
+                    let classPairs = teacherClasses.map(function(item){
+                        if(item.teacher) {
+                            return {class: item.class.class_id.substring(0, item.class.class_id.length - 5) + "-" + item.class.class_id.substring(item.class.class_id.length - 5, item.class.class_id.length - 4) + " " + item.class.class_id.substring(item.class.class_id.length - 4), 
+                                   teacher: item.teacher.surname + " " + item.teacher.teacher_name + " " + item.teacher.patronymic + " ID: " + item.teacher.tabel_number}
+                        } else {
+                            return {class: item.class.class_id.substring(0, item.class.class_id.length - 5) + "-" + item.class.class_id.substring(item.class.class_id.length - 5, item.class.class_id.length - 4) + " " + item.class.class_id.substring(item.class.class_id.length - 4), 
+                                   teacher: ''}
+                        }
+                    });
+                    
+                    classPairs.forEach(({class: cn, teacher: tc}) =>
+                                       {
+                        if(tc===undefined|| tc == null || tc === '') {
+                            let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
+                            tch_list.append(input)
+                        }else{
+                            let input = create_selected_input(teacher_data, cn, "", tc);
+                            tch_list.append(input)
+                        }
+                    });
+                    let submit = $(`<input type="submit" class="input-group-text">`);
+                    tch_list.append(submit);
+                    $('#cls_le').after(tch_list);
+                }
+            });
         }
     });
-    let submit = $(`<input type="submit" class="input-group-text">`);
-    tch_list.append(submit);
-    $('#cls_le').after(tch_list);
+
+    //    cls_le=true;
+    //    let tch_list = $(`<div id="cls_le_form">`);
+    //    let teacher_data = ["Teacher1", "Teacher2", "Teacher3"]; //ajax data
+    //    let classPairs  = [{'class':'5-A', 'teacher': 'Teacher1'}, //ajax data
+    //                       {'class':'6-A', 'teacher': 'Teacher2'},
+    //                       {'class':'7-A', 'teacher': ''}];
+    //    classPairs.forEach(({class: cn, teacher: tc}) =>
+    //                       {
+    //        if(tc===undefined|| tc == null || tc === '') {
+    //            let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
+    //            tch_list.append(input)
+    //        }else{
+    //            let input = create_selected_input(teacher_data, cn, "", tc);
+    //            tch_list.append(input)
+    //        }
+    //    });
+    //    let submit = $(`<input type="submit" class="input-group-text">`);
+    //    tch_list.append(submit);
+    //    $('#cls_le').after(tch_list);
 }
 /*************Teacher-page function ****************/
 //Create filter-form
