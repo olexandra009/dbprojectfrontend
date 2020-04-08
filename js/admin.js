@@ -255,16 +255,43 @@ function removing(item) {
 function appointTeacherForTheSubject(){
     //TODO Maybe change view for list of relevant subject and drop-down list of teachers
     // who working now. With value of relevant teacher
-    //TODO Ajax request for list of subject and list of teacher
     //TODO Close another buttons on click
-    tch_subj = true;
-    let form = $('<form class="container" method="post" id="tch_subj_form">');
-    let subj = create_selected_input(['очна','заочна'], 'Предмет:', "type_edu", "Оберіть предмет");
-    let tch = create_selected_input(['2','4'], 'Вчитель:', "class_type", "Оберіть вчителя");
-    let submit = $(`<input type="submit" class="input-group-text">`);
-    form.append(subj).append(tch).append(submit);
-    $(`#tch_subj`).after(form);
+    $.ajax({
+        url: "/getTeachers",
+        type: "GET",
+        contentType: "application/json",
+        success: function(teachers){
+            $.ajax({
+                url: "/getSubjectInGroup",
+                type: "GET",
+                success: function(subjectsInGroup){
+                    let subjects = subjectsInGroup.map(function(subj){
+                        return subj.subject_name + " " + subj.class_id.substring(0, subj.class_id.length - 5) + "-" + 
+                            subj.class_id.substring(subj.class_id.length - 5, subj.class_id.length - 4) + " " + subj.class_id.substring(subj.class_id.length - 4) + 
+                            " ID: " + subj.subject_id;
+                    });
+
+                    teachers = teachers.map(function(teacher){
+                        return teacher.tabel_number + " " + teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
+                    });
+
+                    tch_subj = true;
+                    let form = $('<form class="container" method="post" id="tch_subj_form" onsubmit="return checkAppointTeacherToSubj()" action="appointTeacherToSubj">');
+                    let subj = create_selected_input(subjects, 'Предмет:', "type_edu", "Оберіть предмет", "subject");
+                    let tch = create_selected_input(teachers, 'Вчитель:', "class_type", "Оберіть вчителя", "teacher");
+                    let submit = $(`<input type="submit" class="input-group-text">`);
+                    form.append(subj).append(tch).append(submit);
+                    $(`#tch_subj`).after(form);
+                }
+            });
+        }
+    });
 }
+function checkAppointTeacherToSubj(){
+    if(document.forms['tch_subj_form']['subject'].value == '') return false;
+    if(document.forms['tch_subj_form']['teacher'].value == '') return false;
+}
+
 function appointSubstituteTeacher(){
     //TODO Ajax request for list of subject and list of teacher
     //TODO Close another buttons on click
@@ -343,7 +370,7 @@ function addingTeacherView(){
 }
 //create form for adding teacher
 function createFormForAddingTeacher(){
-    let form = $('<form class="container" method="post" id="form_teacher" name="form_teacher" onsubmit="checkAddingTeacher()" action="createTeacher">');
+    let form = $('<form class="container" method="post" id="form_teacher" name="form_teacher" onsubmit="return checkAddingTeacher()" action="createTeacher">');
     let input_tabel_number = create_input_group('number', "Табельний номер","","tabel_number");
     let input_surname = create_input_group('text', "Прізвище","","last_name");
     let input_name = create_input_group('text', "Ім'я","","first_name");
