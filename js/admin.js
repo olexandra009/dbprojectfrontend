@@ -306,8 +306,7 @@ function appointSubstituteTeacher(){
 
 
 function identifyClassroomLeaders(){
-    // TODO get ajax all teacher array
-    // TODO get ajax all pairs class-teacher
+    // TODO send changed data to the server
     // TODO maybe change tch_list to form or change submit to button and one more
     //  listners
 
@@ -341,9 +340,7 @@ function identifyClassroomLeaders(){
                                    teacher: ''}
                         }
                     });
-                    
-                    classPairs.forEach(({class: cn, teacher: tc}) =>
-                                       {
+                    classPairs.forEach(({class: cn, teacher: tc}) =>    {
                         if(tc===undefined|| tc == null || tc === '') {
                             let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
                             tch_list.append(input)

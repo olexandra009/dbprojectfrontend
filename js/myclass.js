@@ -17,29 +17,29 @@ let student_names = [{
 }];
 
 let class_subject = [{id: '5AG1', name: 'English', class_name:'5-A'},
-    {id: '5AG2', name: 'English', class_name: '5-A'},
-    {id: '5BG1', name: 'English', class_name:'5-B'}];
+                     {id: '5AG2', name: 'English', class_name: '5-A'},
+                     {id: '5BG1', name: 'English', class_name:'5-B'}];
 
 let data_attend =  [{date: new Date(2020,1,4), absent: [{student_id:"N13404024",
-                                                                             number_of_lessons: 1,
-                                                                             reason:'',
-                                                                             lessons: [{id:'5AG1', name:'English'}]}]},
+                                                         number_of_lessons: 1,
+                                                         reason:'',
+                                                         lessons: [{id:'5AG1', name:'English'}]}]},
                     {date: new Date(2020,1,5), absent: [{student_id:"N13404025",
-                                                                             number_of_subject: 2,
-                                                                             reason:'по-хворобі',
-                                                                             lessons: [{id:'5AG2', name:'English'},
-                                                                                       {id:'5AG1', name:'English'}]}]},
+                                                         number_of_subject: 2,
+                                                         reason:'по-хворобі',
+                                                         lessons: [{id:'5AG2', name:'English'},
+                                                                   {id:'5AG1', name:'English'}]}]},
                     {date: new Date(2020,1,6), absent: [{student_id:"N13404025",
-                                                                            number_of_lessons: 2,
-                                                                            reason:'по-хворобі',
-                                                                             lessons: [{id:'5AG2', name:'English'},
-                                                                                {id:'5AG1', name:'English'}]},
-                                                                            {student_id:"N13404026",
-                                                                                number_of_lessons: 1,
-                                                                                reason:'',
-                                                                                lessons: [{id:'5AG1', name:'English'}]},
-                        ]},
-];
+                                                         number_of_lessons: 2,
+                                                         reason:'по-хворобі',
+                                                         lessons: [{id:'5AG2', name:'English'},
+                                                                   {id:'5AG1', name:'English'}]},
+                                                        {student_id:"N13404026",
+                                                         number_of_lessons: 1,
+                                                         reason:'',
+                                                         lessons: [{id:'5AG1', name:'English'}]},
+                                                       ]},
+                   ];
 
 /*
 $(document).on('mouseenter', 'td', function () {
@@ -75,8 +75,8 @@ $(document).on('click', '#attend', function () {
     console.log('here');
 });
 $(document).on('click', '#create_attend_by_period', function () {
-   //todo get period
-   // ajax for information
+    //todo get period
+    // ajax for information
     createAttendingViewTable();
 });
 $(document).on('click', '#report', function () {
@@ -84,7 +84,7 @@ $(document).on('click', '#report', function () {
     createMenuReportsButtons();
 });
 $(document).on('click', '#back_to_cabinet', function () {
-     window.location.href='./teachercabinet.html';
+    window.location.href='./mycabinet';
 });
 //student details
 $(document).on('click', '.st-list', function () {
@@ -204,7 +204,7 @@ function createSubjectView(){
     let data_subj = class_subject;
     $("#content").empty();
     data_subj.forEach(subj=>{console.log(subj);
-        $('#content').append(subject_view_maker('', subj))});
+                             $('#content').append(subject_view_maker('', subj))});
 
 }
 
@@ -278,7 +278,7 @@ function showViewAttend(a){
         student_attend.lessons.forEach(lessons=> {
             let div_l = $(`<div class="input-group-text">`).text(lessons.name);
             div_lesson.append(div_l);}
-            );
+                                      );
         let input_reason = create_input_group('text', 'Причина:', student_attend.reason, 'reason');
         let divbutt = $(`<div class="btn-group">`);
         let button_ok = $(`<button type="submit" id="sendReason" class="btn-outline-dark btn">`).text('Зберегти');
@@ -304,7 +304,7 @@ function create_selected_input(data, label, id, value, name, class_, readonly, r
     if(required) select.attr('required', 'true');
     select.append($(`<option value="" disabled selected>`).text(value));
     data.forEach(option=> {let opt = $(`<option value="${option}">`).text(option);
-        select.append(opt)});
+                           select.append(opt)});
     return group.append(prep.append(span)).append(select);
 }
 
@@ -331,13 +331,13 @@ function create_input_group_num(input_type, label, value, name, class_, min, max
 /*******************Helper function***************************/
 function cutData(data){
     return data.getFullYear() + "-" + ((data.getMonth()+1 < 10) ?
-        ("0" + (data.getMonth()+1)) : (data.getMonth()+1)) + "-" + ((data.getDate() < 10) ?
-        ("0" + data.getDate()) : data.getDate());
+                                       ("0" + (data.getMonth()+1)) : (data.getMonth()+1)) + "-" + ((data.getDate() < 10) ?
+                                                                                                   ("0" + data.getDate()) : data.getDate());
 }
 function cellDate(data){
     return  ((data.getDate() < 10) ?
-        ("0" + data.getDate()) : data.getDate())+ "." +(((data.getMonth()+1) < 10) ?
-        ("0" + (data.getMonth()+1)) : (data.getMonth()+1) );
+             ("0" + data.getDate()) : data.getDate())+ "." +(((data.getMonth()+1) < 10) ?
+                                                             ("0" + (data.getMonth()+1)) : (data.getMonth()+1) );
 }
 function createWindow(innerItem){
     let back =$(` <div class = "backgr" id="bacground_adding_parents">`);
@@ -362,19 +362,19 @@ function createMenuReportsButtons(){
 
 /*****************************HTML*****************************/
 let student_list_view = ({
-          id: id, //номер особистої справи
-          name: name,
-          bday: bday,
-          type: type
+    id: id, //номер особистої справи
+    name: name,
+    bday: bday,
+    type: type
 
 })=>{
-     let line = $(`<div class="row st-list" data-id="${id}">`);
-     let divname = $(`<div class="lt col-md-6 name">`).text(name);
-     let divid = $(`<div class="lt  col-md-2 id">`).text(id);
-     let divbday = $(`<div class="lt col-md-2 bday">`).text(bday);
-     let dtype  = $(`<div class="lt col-md-2 type">`).text(type);
-     line.append(divname).append(divid)
-         .append(divbday).append(dtype);
+    let line = $(`<div class="row st-list" data-id="${id}">`);
+    let divname = $(`<div class="lt col-md-6 name">`).text(name);
+    let divid = $(`<div class="lt  col-md-2 id">`).text(id);
+    let divbday = $(`<div class="lt col-md-2 bday">`).text(bday);
+    let dtype  = $(`<div class="lt col-md-2 type">`).text(type);
+    line.append(divname).append(divid)
+        .append(divbday).append(dtype);
     return line;
 };
 let student_detail_view =({
@@ -407,14 +407,14 @@ let student_detail_view =({
     student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday).append(input_address);
     let i = 0;
     if(array_t!=undefined&&array_t!=='')
-    array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, true);
-    i++;
-    student_block.append(in_ph);});
+        array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, true);
+                               i++;
+                               student_block.append(in_ph);});
     i= 0;
     if(p!=undefined&&p!=='')
-    p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
-        i++;
-        student_block.append(in_ph);});
+        p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
+                         i++;
+                         student_block.append(in_ph);});
     let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
     let buttonparents =$(`<button class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
     student_block.append(input_type);

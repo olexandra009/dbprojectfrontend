@@ -94,17 +94,6 @@
             </div> <!--container-fluid-->
         </div> <!--body cabinet-->
         <script src="js/studencabinet.js"></script>
-        <script>
-            function logout(){
-                $.ajax({
-                    url: "/logout",
-                    type: "POST",
-                    contentType: "application/json",
-                    success: function(res){
-                        location.reload();
-                    }
-                });
-            }
-        </script>
+        <script src="js/logout.js"></script>
     </body>
 </html>
