@@ -9,6 +9,7 @@ $(document).on('click', '#t_cab', function () {
     nextMenu('t_cab');
     document.getElementById('mycabinet').classList.remove('hidden');
     document.getElementById('content').classList.add('hidden');
+    getTeacherInfo();
 });
 
 
@@ -76,6 +77,24 @@ function createExSubjectView(){
                              console.log(subject_view_maker('ex-subj', subj))
                              $('#content').append(subject_view_maker('ex-subj', subj))})
 }
+
+//fills the info in the Мій Кабінет tab
+function getTeacherInfo(){
+    $.ajax({
+        url: "/getTeacher",
+        type: "GET",
+        contentType: "application/json",
+        success: function(teacher){
+            console.log(teacher.surname);
+            $('#info_surname').html("Прізвище: " + teacher.surname);
+            $('#info_name').html("Ім'я: " + teacher.teacher_name);
+            $('#info_patronymic').html("По-батькові: " + teacher.patronymic);
+            $('#info_birthday').html("Дата початку роботи: " + teacher.work_start_date.substr(0,10));
+            $('#info_address').html("Адреса: " + teacher.city + ", " + teacher.street + " " + teacher.building + "/" + teacher.apartment);
+            $('#info_phones').html("Телефони: ");
+        }
+    });
+}
 /*****************************HTML*****************************/
 /*------Subject-creator-----*/
 let subject_view_maker =  (subj,{
@@ -90,3 +109,5 @@ let subject_view_maker =  (subj,{
     return $subject;
 
 }
+
+window.onload = function(){ getTeacherInfo(); };
