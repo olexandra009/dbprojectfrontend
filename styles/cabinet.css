@@ -354,3 +354,6 @@ div#changing_group_div {
 .btn-outline-dark .input-group-text :active, :focus{
     color: black;
 }
+button#save_student_change {
+    margin-top: 1%;
+}
