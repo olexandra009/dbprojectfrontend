@@ -27,12 +27,17 @@ $(document).on('click', '#ex_subject', function () {
     nextMenu('ex_subject');
     createExSubjectView();
 });
-// subject-button
-$(document).on('click', '.subject-btn', function() {
-    //goto page with subject
-    window.location.href = './subject.html'
 
-});
+function openSubject(id){
+    window.location.href = './subject?id=' + id;
+}
+
+// subject-button
+//$(document).on('click', '.subject-btn', function() {
+//    //goto page with subject
+//    window.location.href = './subject.html'
+//
+//});
 /*------------------------------------------------------*/
 /************************Function***************************/
 /*-----Left-menu navigating-----*/
@@ -58,13 +63,22 @@ function removing(item, div) {
 /*------------------------AJAX--------------------------------*/
 function createSubjectView(){
     /*AJAX*/
-    let data_subj = [{id: '5AG1', name: 'English', class_name:'5-A'},
-                     {id: '5AG2', name: 'English', class_name: '5-A'},
-                     {id: '5BG1', name: 'English', class_name:'5-B'}]
-
-    data_subj.forEach(subj=>{console.log(subj);
-                             console.log(subject_view_maker('',subj))
-                             $('#content').append(subject_view_maker('', subj))})
+    
+    $.ajax({
+        url: "/getTeacherSubjects",
+        type: "GET",
+        contentType: "application/json",
+        success: function(subjects){
+            console.log(subjects);
+            subjects.forEach(subj=>{$('#content').append(subject_view_maker('', subj))});
+        }
+    });
+    
+//    let data_subj = [{id: '5AG1', name: 'English', class_name:'5-A'},
+//                     {id: '5AG2', name: 'English', class_name: '5-A'},
+//                     {id: '5BG1', name: 'English', class_name:'5-B'}]
+//
+//    data_subj.forEach(subj=>{$('#content').append(subject_view_maker('', subj))})
 }
 
 function createExSubjectView(){
@@ -73,9 +87,7 @@ function createExSubjectView(){
                      {id: '6AG2', name: 'English', class_name: '6-A'},
                      {id: '6BG1', name: 'English', class_name:'6-B'}]
 
-    data_subj.forEach(subj=>{console.log(subj);
-                             console.log(subject_view_maker('ex-subj', subj))
-                             $('#content').append(subject_view_maker('ex-subj', subj))})
+    data_subj.forEach(subj=>{$('#content').append(subject_view_maker('ex-subj', subj))})
 }
 
 //fills the info in the Мій Кабінет tab
@@ -85,7 +97,6 @@ function getTeacherInfo(){
         type: "GET",
         contentType: "application/json",
         success: function(teacher){
-            console.log(teacher.surname);
             $('#info_surname').html("Прізвище: " + teacher.surname);
             $('#info_name').html("Ім'я: " + teacher.teacher_name);
             $('#info_patronymic').html("По-батькові: " + teacher.patronymic);
@@ -98,14 +109,14 @@ function getTeacherInfo(){
 /*****************************HTML*****************************/
 /*------Subject-creator-----*/
 let subject_view_maker =  (subj,{
-    id: id,
-    name: name,
-    class_name: class_name, // 5-A
+    subject_id: id,
+    subject_name: name,
+    class_id: class_id, // 5-A
 
 }) => {
     if (subj == null||subj.length == 0) {subj = 'subject-btn'}
-    let $subject = $(`<button data-id="${id}" type="button" class="btn my_btn ${subj} btn-outline-success my-2 btn-lg btn-block">`);
-    $subject.text(name+" "+class_name+" "+id);
+    let $subject = $(`<button data-id="${id}" type="button" class="btn my_btn ${subj} btn-outline-success my-2 btn-lg btn-block" onclick="openSubject(${id})">`);
+    $subject.text(name+" "+class_id.substring(0,class_id.length-5) + '-' + class_id.substring(class_id.length - 5, class_id.length - 4));
     return $subject;
 
 }
