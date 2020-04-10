@@ -46,6 +46,11 @@ let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', co
 
 
 
+/******Check is it is when we get info subject exchange*****/
+//TODO THIS FLAG SHOW WHAT IS THIS SUBJECT
+let exchangeSubject = false;
+
+
 /*
 /*----hover in mark and attend table can throw exception but everything work ----*/
 
@@ -348,6 +353,11 @@ function  createLessonDiv(id){
     //todo ajax lessons by theme id
     lesson_names.forEach(l=>them_view.append(lessons(l)));
     content.append(them_view);
+    if(exchangeSubject){
+        $('#add_lesson').remove();
+        $('.edit_lesson').remove();
+        $('.delete_lesson').remove();
+    }
 }
 function  createThemeDiv(){
     let content =   $('#content');
@@ -358,6 +368,11 @@ function  createThemeDiv(){
     let them_view = $(`<div id="theme_view">`);
     theme_names.forEach(the=> them_view.append(themes(the)));
     content.append(them_view);
+    if(exchangeSubject){
+        $('#add_theme').remove();
+        $('.edit_theme').remove();
+        $('.delete_theme').remove();
+    }
 
 }
 
