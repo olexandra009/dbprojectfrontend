@@ -139,12 +139,12 @@ $(document).on('click', '#changing_group', function(){
         $('#changing_group_form').remove();
         changinggroupflag = !changinggroupflag;
         return;
-    };
+    }
     changinggroupflag=!changinggroupflag;
     let div= $(`<div id="changing_group_form">`);
     //todo get AJAX NAME OF SUBJECT ONLY
     let class_s =[];
-    class_subject.forEach(st=>{class_s.push(st.name)})
+    class_subject.forEach(st=>{class_s.push(st.name)});
     console.log(class_s);
     let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
     let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
@@ -152,6 +152,10 @@ $(document).on('click', '#changing_group', function(){
     $('#changing_group_div').append(div);
 });
 
+$(document).on('click', '#parents', function(){
+   //todo get id of person, name, and first phone.
+   // create rows of persons.
+});
 /************************Function***************************/
 function nextMenu(item_to_activate) {
     removeClass();
@@ -412,6 +416,7 @@ let student_detail_view =({
     student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday);
     student_block.append(input_address_sity).append(input_address_street).append(input_address_bulding).append(input_address_flat);
     let i = 0;
+    //TODO add opportunity to add several new phones and to delete some of them
     if(array_t!=undefined&&array_t!=='')
         array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, false);
                                i++;
@@ -422,7 +427,7 @@ let student_detail_view =({
                          i++;
                          student_block.append(in_ph);});
     let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
-    let buttonparents =$(`<button class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
+    let buttonparents =$(`<button id="parents" class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
     student_block.append(input_type);
     student_block.append(buttonparents);
     return student_block;
