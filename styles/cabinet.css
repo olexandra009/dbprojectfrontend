@@ -69,28 +69,28 @@ a.nav-link:hover {
     background-color: #303030;
 }
 .cabinet{
-	overflow: auto;
+    overflow: auto;
 }
 .info{
-	display: block;
+    display: block;
 }
 .hidden {
     display: none;
 }
 @media (min-width: 768px) {
-.mbg-light {
-    background-color: #595959f2;
-    color: white;
-    position: fixed;
-   
-}
+    .mbg-light {
+        background-color: #595959f2;
+        color: white;
+        position: fixed;
+
+    }
 }
 li#attend, li#administry, li#subj_attend{
     overflow: hidden;
     width: 100%;
 }
 input{
-  /*  margin-left: 1%;*/
+    /*  margin-left: 1%;*/
 }
 .input-group-text {
     background-color: #e9ecef00!important;
@@ -111,7 +111,7 @@ input[type="checkbox"] {
 }
 select
 {
-  /*  margin-left:1%*/
+    /*  margin-left:1%*/
 }
 /*Table*/
 td.marks, td.been {
@@ -239,44 +239,44 @@ form.container.filter {
 .mar {
     margin-top: 2%;
 }
-table#marks > tr > td.caption_surname {
+table#marks >tbody> tr > td.caption_surname {
     text-align: start;
     min-width: 200px;
 }
 
-table#marks>tr>td {
+table#marks>tbody>tr>td {
     padding: 3px;
     text-align: center;
     min-width: 50px;
 }
-table#attend > tr > td.caption_surname {
+table#attend >tbody> tr > td.caption_surname {
     text-align: start;
     min-width: 200px;
 }
 
-table#attend>tr>td {
+table#attend>tbody>tr>td {
     padding: 3px;
     text-align: center;
     min-width: 50px;
 }
 
 
+table#attend_table >tbody> tr > td.caption_surname {
+    text-align: start;
+    min-width: 200px;
+}
+
+table#attend_table>tbody>tr>td {
+    padding: 3px;
+    text-align: center;
+    min-width: 50px;
+}
 table#attend_table > tr > td.caption_surname {
     text-align: start;
     min-width: 200px;
 }
 
-table#attend_table>tr>td {
-    padding: 3px;
-    text-align: center;
-    min-width: 50px;
-}
-table#attend_table > tr > td.caption_surname {
-    text-align: start;
-    min-width: 200px;
-}
-
-table#attend_table>tr>td {
+table#attend_table>tbody>tr>td {
     padding: 3px;
     text-align: center;
     min-width: 50px;
@@ -303,20 +303,20 @@ table#marks{
     overflow-x: auto;
 }
 table#marks_theme{
-      width: 100%;
-      overflow-x: auto;
-  }
+    width: 100%;
+    overflow-x: auto;
+}
 table#marks_end{
-      width: 100%;
-      overflow-x: auto;
-  }
+    width: 100%;
+    overflow-x: auto;
+}
 
 
 table#attend_table{
     max-width: 100%;
     overflow-x: auto;
 }
-table#marks_end>tr>td , table#marks_theme>tr>td,  table#attend_table>tr>td{
+table#marks_end>tbody>tr>td , table#marks_theme>tbody>tr>td,  table#attend_table>tbody>tr>td{
     padding: 3px;
     text-align: center;
     min-width: 50px;
@@ -356,4 +356,7 @@ div#changing_group_div {
 }
 button#save_student_change {
     margin-top: 1%;
+}
+div#attend_view_table {
+    overflow-x: auto;
 }
