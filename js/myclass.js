@@ -402,12 +402,18 @@ let student_detail_view =({
     let input_sname = create_input_group('text', "По батькові", secname, 'second_name', 'st-info-ed', '', true, true);
     let input_sex = create_selected_input(['Жіноча', 'Чоловіча'], "Стать", '', sex, 'sex',  'st-info-ed', true, true);
     let input_bday = create_input_group('data', "Дата народження", bday, 'bday', 'st-info-ed', '', true, true);
-    //todo change address to city/street/building/flat
-    let input_address = create_input_group('text', "Адреса", address, 'address', 'st-info-ed', '', true, true);
-    student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday).append(input_address);
+    //todo change address information
+    let input_address_sity = create_input_group('text', "Місто", address, 'sity', 'st-info-ed', '', true, true);
+    let input_address_street = create_input_group('text', "Вулиця", address, 'street', 'st-info-ed', '', true, true);
+    let input_address_bulding = create_input_group('text', "Будинок", address, 'building', 'st-info-ed', '', true, true);
+    let input_address_flat = create_input_group('text', "Квартира", address, 'flat', 'st-info-ed', '', true, false);
+
+
+    student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday);
+    student_block.append(input_address_sity).append(input_address_street).append(input_address_bulding).append(input_address_flat);
     let i = 0;
     if(array_t!=undefined&&array_t!=='')
-        array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, true);
+        array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, false);
                                i++;
                                student_block.append(in_ph);});
     i= 0;
