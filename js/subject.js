@@ -131,6 +131,15 @@ $(document).on('click', '.edit_theme', function () {
 });
 $(document).on('click', '.delete_theme', function () {
     //todo delete theme
+    $.ajax({
+        url: "/deleteTopic",
+        type: "DELETE",        
+        data: {topic_id: $(this).data('id'), subject_id: urlParams.get('id')},
+        success: function(res){
+            location.reload();
+        }
+    });
+    console.log($(this).data('id'));
 });
 $(document).on('click', '.edit_lesson', function () {
     createEditionLessonView($(this));
@@ -435,17 +444,23 @@ function createThemeDivAdding(){
 }
 function createEditionThemeView(a) {
     let back = $(` <button id="back" type="reset" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let form = $('<form class="container" method="post" id="form_them_edit">');
-    let input_name = create_input_group('text', 'Назва', a.data('name'), "theme");
-    let input_num =  create_input_group('number', 'Порядковий номер', a.data('number'), "theme", 1);
-    let coef_sp = create_input_group('number', 'Коефіцієнт спеціальних оцінок',  a.data('coef_special'), "coef-special", 0, "", 0.01);
-    let coef_d =   create_input_group('number', 'Коефіцієнт поточних оцінок', a.data('coefdiary'), "coef-diary", 0, "", 0.01);
-    let coef_th =   create_input_group('number', 'Коефіцієнт тематичної оцінок', a.data('coef_theme'), "coef-theme", 0, "", 0.01);
+    let form = $('<form class="container" method="post" id="form_them_edit" action="editTopic">');
+    let input_name = create_input_group('text', 'Назва', a.data('name'), "topic_name");
+    let input_num =  create_input_group('number', 'Порядковий номер', a.data('number'), "topic_number", 1);
+    let coef_sp = create_input_group('number', 'Коефіцієнт спеціальних оцінок',  a.data('coef_special'), "coef_special", 0, "", 0.01);
+    let coef_d =   create_input_group('number', 'Коефіцієнт поточних оцінок', a.data('coefdiary'), "coef_diary", 0, "", 0.01);
+    let coef_th =   create_input_group('number', 'Коефіцієнт тематичної оцінок', a.data('coef_theme'), "coef_theme", 0, "", 0.01);
+    //hidden input for subject ID
+    let subj_id = $('<input type="number" hidden name="subject_id" value="' + urlParams.get('id') + '">');
+    //hidden input for topic ID
+    let topic_id = $('<input type="number" hidden name="topic_id" value="' + a.data('id') + '">');
     form.append(back).append(input_name);
     form.append(input_num);
     form.append(coef_sp);
     form.append(coef_d);
     form.append(coef_th);
+    form.append(subj_id);
+    form.append(topic_id);
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
     createWindow(form)
