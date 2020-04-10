@@ -46,8 +46,9 @@ let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', co
 
 
 
-
+/*
 /*----hover in mark and attend table can throw exception but everything work ----*/
+
 $(document).on('mouseenter', 'td', function () {
 
     let id = $(this).data('column');
