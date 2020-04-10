@@ -357,3 +357,6 @@ div#changing_group_div {
 button#save_student_change {
     margin-top: 1%;
 }
+div#attend_view_table {
+    overflow-x: auto;
+}
