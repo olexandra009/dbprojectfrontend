@@ -17,6 +17,7 @@ $(document).on('click', '.stcab', function () {
     let htdiv = document.getElementById('myhometask');
     cabitem.classList.add('active');
     htdiv.classList.add('hidden');
+    getStudentInfo();
 });
 /*---------Month-calendar navigation--------*/
 $(document).on('click', '.btn-month', function (e) {
@@ -202,3 +203,24 @@ let _dairyView = ({
 };
 
 /*--------------------------------------------*/
+//fills the info in the Мій Кабінет tab
+function getStudentInfo(){
+    $.ajax({
+        url: "/getStudent",
+        type: "GET",
+        contentType: "application/json",
+        success: function(student){
+            $('#info_surname').html("Прізвище: " + student.surname);
+            $('#info_name').html("Ім'я: " + student.student_name);
+            $('#info_patronymic').html("По-батькові: " + student.patronymic);
+            $('#info_birthday').html("Дата народження: " + student.birth_date.substr(0,10));
+            $('#info_sex').html("Стать: " + student.sex);
+            $('#info_address').html("Адреса: " + student.city + ", " + student.street + " " + student.building + "/" + student.apartment);
+            $('#info_phones').html("Телефони: ");
+            $('#info_privileges').html("Пільги: ");
+            $('#info_studyingType').html("Тип навчання: " + student.studying_type);
+        }
+    });
+}
+
+window.onload = function(){ getStudentInfo(); };
