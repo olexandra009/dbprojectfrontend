@@ -35,6 +35,8 @@ $(document).on('click', '#class', function () {
 $(document).on('click', '#parents', function () {
     nextMenu('parents');
     //TODO create parents view, add and edit for administrator
+    createParentsView();
+    creatingParentsList();
 });
 
 /*******************************************/
@@ -77,6 +79,7 @@ let createTeacher = false;
 let createSubject = false;
 let createCSubject = false;
 let createClass = false;
+let createPerson = false;
 
 //Вчителі => Додати вчителя
 $(document).on('click', '#add_teacher', function (){
@@ -186,12 +189,21 @@ $(document).on('click', '.st-list', function(){
 });
 $(document).on('click', '#edit_student', function(){
     createEditStudentViewById($('#edit_student'));
-})
+});
 $(document).on('click','#student_non', function () {
 
     let id = ($(this).data("id"));
     createStudentViewById(id);
 
+});
+$(document).on('click', '#add_parent', function (){
+    if(!createPerson) {
+        createFormForAddingParent();
+        createPerson = true;
+    } else {
+        $('#form_add_parent').remove();
+        createPerson= false;
+    }
 });
 
 //TODO adequate treatment of the filter-button
@@ -236,6 +248,9 @@ function removeClass() {
     document.getElementById('student_view').classList.add('hidden');
     document.getElementById('admin_button').classList.remove('hidden');
     document.getElementById('admin_button').classList.add('hidden');
+    document.getElementById('parent_add').classList.add('hidden');
+    document.getElementById('parent_add').classList.remove('hidden');
+
     document.getElementById('content').classList.remove('hidden');
 
     $('#content').empty();
@@ -609,6 +624,59 @@ function createConcreteSubjectList(name) {
     });
 
 
+}
+function createParentsView(){
+    let student_add = $('#parent_add');
+    student_add.empty();
+    let theme = $(`<div class="cotainer parents">`);
+    theme.append($(`<button class="btn my_btn btn-outline-success" id="add_parent">`).text('Додати відповідальну особу'));
+    theme.append($(`<div id="add_parents_form">`));
+    student_add.append(theme);
+    $('#parents_view').removeClass('hidden');
+}
+function creatingParentsList(){
+    //TODO AJAX request for getting students
+    let data = [{
+        id: "N13404024",
+        name: "Іваненко Ольга Степанівна",
+    }, {
+        id: "N13404025",
+        name: "Петров Ігор Артемович",
+    }, {
+        id: "N13404026",
+        name: "Яременко Анна Петрівна",
+    }];
+    let container = $(`<div class="container">`);
+    data.forEach(th => {
+        let line = $(`<div class="row par-list" data-id="${th.id}">`);
+        let divname = $(`<div class="lt col-md-6 name">`).text(th.name);
+
+        line.append(divname);
+        container.append(line);});
+
+    $('#content').append(container);
+}
+function createFormForAddingParent(){
+    let form = $('<form class="container" id="form_add_parent"  method="post"   name="form_student" action="">');
+    let input_surname = create_input_group('text', "Прізвище","","last_name");
+    let input_name = create_input_group('text', "Ім'я", "", "first_name");
+    let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
+    let city = create_input_group('text', "Місто", "", "city");
+    let street = create_input_group('text', "Вулиця", "", "street");
+    let building = create_input_group('text', "Будинок", "", "building");
+    let apartment = create_input_group('text', "Квартира", "", "apartment");
+
+    //TODO get phones and privileges values
+    let phone = create_input_group_with_button('text', 'Телефон','add_phone');
+    let workplace = create_input_group('text', "Місце роботи", "", "workplace");
+
+    form.append(input_surname).append(input_name).append(input_second_name)
+       .append(phone).append(city).append(street).append(building).append(apartment).append(workplace);
+
+    let submit = $(`<input type="submit" class="input-group-text">`);
+    form.append(submit);
+    $('#form_student').remove();
+    $('#parent_add').append(form);
 }
 
 function createFormForAddingSubject() {
