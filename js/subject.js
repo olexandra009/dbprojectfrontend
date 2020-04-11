@@ -226,7 +226,7 @@ $(document).on('click', 'tr#table_caption > td[data-type="special"]', function()
     // rename and change type
 });
 $(document).on('click', 'tr#table_caption > td[data-type="end"]', function(){
-    //todo (if it is not auto mark)
+    //todo (if it is not semestr or year)
     // show asking delete and edit name
 });
 

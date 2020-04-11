@@ -16,6 +16,29 @@ let student_names = [{
     type: "очна"
 }];
 
+let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
+    {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', visible:'true', teacher_id:'identyofteacher'}, {id:'2', value:'9', visible:'true'}]},
+    {date: new Date(2019, 3, 24), marks:[]},
+    {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7', visible:'true'}]},
+    {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12', visible:'true'}]}, ];
+let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', value:5, comment:"once more chance"}, {id:'2',value: 10, visible:'true' }]},
+    {name: "Test12", type: "test", marks: [{id:'1', value:'12', visible:'true'}, {id:'3', value:'6', visible: "true"}]}];
+
+let them_marks = [{id: '1', theme: 'theme1', value: '10', visible:'false'},
+    {id: '2', theme: 'theme1', value: '8', visible:'true'},
+    {id: '3', theme: 'theme1', value: '9', visible:'true'},];
+
+let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', comment:'here'},
+        {id:2, value: '8', visible:'true', comment:'here'},
+        {id:3, value: '8', visible:'true', comment:'here'}]},
+    {type: 'dpa', marks:[{id:1, value: '11', visible:'true', comment:'here'},
+            {id:2, value: '10', visible:'true', comment:'here'},
+            {id:3, value: '8', visible:'true', comment:'here'}]} ];
+
+let data_names = [{id: '1', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},
+    {id: '2', last_name: "Surname", first_name: "Name1", second_name: "Pobatkovi"},
+    {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},];
+
 let class_subject = [{id: '5AG1', name: 'English', class_name:'5-A'},
                      {id: '5AG2', name: 'English', class_name: '5-A'},
                      {id: '5BG1', name: 'English', class_name:'5-B'}];
@@ -59,7 +82,11 @@ $(document).on('mouseleave', 'td', function () {
     $(this).removeClass('thovered');
 }) ;*/
 
+
+
 /************************Listeners************************/
+let thememarkflag = false;
+let endmarkflag = false;
 //Left-menu navigation
 $(document).on('click', '#students', function () {
     nextMenu('students');
@@ -108,9 +135,9 @@ $(document).on('click', 'td[data-type="attend"]', function () {
 });
 
 $(document).on('click','.subject-btn', function(){
-    createSubjectMarksView($(this).data('id'));
     //TODO get themes from subject and create filtration form like in subject.js
     // then choose them get marks and give readonly marks show
+    createMarksView(['theme1', 'theme2', 'theme3'],$(this).data('id') );
 
 });
 $(document).on('click', '#current_students_rating', function(){
@@ -124,6 +151,11 @@ $(document).on('click', '#attend_student_report', function(){
 $(document).on('click', '#end_mark_report', function(){
     //todo send file with information about every student in class
     // end marks
+});
+$(document).on('click', '#create_marks_by_period', function(){
+    //todo get theme value and subject value
+    // send theme value
+    createMarksByPeriod();
 });
 $(document).on('click', '#edit_st', function(){
     $('.st-info-ed').removeAttr('readonly').removeAttr('disabled');
@@ -156,6 +188,51 @@ $(document).on('click', '#parents', function(){
    //todo get id of person, name, and first phone.
    // create rows of persons.
 });
+
+$(document).on('click', '#show_marks_theme', function () {
+    let theme= $('#theme_id_select').children("option:selected").val();
+    $('#fst_table').removeClass('col-md-10').removeClass('col-md-8').removeClass('col-md-12').removeClass('col-md-6');
+    if(endmarkflag && thememarkflag){
+        $('#fst_table').addClass('col-md-8');
+        $('#sec_table').removeClass('hidden').addClass('hidden');
+    }else if(endmarkflag && !thememarkflag){
+        $('#fst_table').addClass('col-md-6');
+        createThemeMarksView(theme);
+        $('#sec_table').removeClass('hidden');
+    }else if(!endmarkflag && thememarkflag){
+        $('#fst_table').addClass('col-md-12');
+        $('#sec_table').removeClass('hidden').addClass('hidden');
+    } else {
+        $('#fst_table').addClass('col-md-10');
+        createThemeMarksView(theme);
+        $('#sec_table').removeClass('hidden');
+    }
+    thememarkflag = !thememarkflag;
+});
+$(document).on('click', 'td[data-type="dairy"], td[data-type="special"], td[data-type="end"]', function(){
+    //todo check if the end mark is editable (if not let to edit comment and visible)
+    if($(this).parent().attr('id') == "table_caption") return;
+    showMarkView($(this));
+});
+
+$(document).on('click', '#show_end_marks', function () {
+    $('#fst_table').removeClass('col-md-6').removeClass('col-md-8').removeClass('col-md-10').removeClass('col-md-12');
+    if(endmarkflag && thememarkflag){
+        $('#fst_table').addClass('col-md-10');
+        $('#thr_table').removeClass('hidden').addClass('hidden');
+    }else if(endmarkflag && !thememarkflag){
+        $('#fst_table').addClass('col-md-12');
+        $('#thr_table').removeClass('hidden').addClass('hidden');
+    }else if(!endmarkflag && !thememarkflag){
+        $('#fst_table').addClass('col-md-8');
+        createEndMarksView();
+    } else {
+        $('#fst_table').addClass('col-md-6');
+        createEndMarksView();
+    }
+    endmarkflag = !endmarkflag;
+});
+
 /************************Function***************************/
 function nextMenu(item_to_activate) {
     removeClass();
@@ -204,6 +281,204 @@ function  createDetailStudentView(id){
     $("#content").append(container);
 
 }
+
+function createMarksView(data, subj_id){
+    let div = $(`<div id="choose_period">`);
+    let dataform = $(`<div class="form">`); //можливо краще форму?
+    let input=$(`<input type="hidden" name="subject_id", value="${subj_id}">`);
+    dataform.append(input);
+    let inputdate1 = create_selected_input(data, 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
+    let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
+    div.append(dataform.append(inputdate1).append(submit));
+    let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
+    let btn_div = $(`<div class="btn-group">`);
+    let button_ = $(`<button class="btn btn-outline-dark" id="show_marks_theme">`).text("Тематична оцінка");
+    let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
+    btn_div.append(button_).append(button_end);
+    marks_view.append(btn_div);
+    let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
+    let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
+    let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
+    let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
+    let div_second_table_caption = $(`<div class="table_header" >`).text('Тематична оцінка');
+    let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
+    let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
+    let table = $(`<table id='marks_'>`);
+    let table_theme = $(`<table id='marks_theme' >`);
+
+    let table_end = $(`<table id='marks_end'>`);
+    div_first_table.append(div_first_table_caption);
+   div_first_table.append(table);
+
+    div_second_table.append(div_second_table_caption);
+
+    div_second_table.append(table_theme);
+
+    div_third_table.append(div_third_table_caption);
+
+    div_third_table.append(table_end);
+
+    div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
+    marks_view.append(div_table_wrapper);
+    $('#content').empty();
+    $('#content').append(div).append(marks_view);
+}
+
+function createMarksByPeriod(){
+    //TODO get the theme
+    // make AJAX request
+    // get the marks from server (WE NEED ONLY VISIBLE MARKS WITH TEACHER ID)
+    let table = $('#marks_');
+    table.empty();
+    let caption = $(`<tr id="table_caption">`);
+    let tr = $(`<td  data-column="-1">`).text('Прізвище');
+    table.append(caption.append(tr));
+    $('#marks_view_table').removeClass('hidden');
+
+    data_names.forEach(student=> {
+        let td = $(`<tr id="table-row-${student.id}" class="table-row-${student.id}">`);
+        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        td.append(first_tr);
+        table.append(td);
+    });
+
+    let column = 0;
+    //поточні оцінки
+    for(let i = 0; i<dairy_data_marks.length; i++)
+    {
+        if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
+            continue;
+        let mark_cell = dairy_data_marks[i];
+        let date_format = cellDate(mark_cell.date);
+        let date_cell = $(`<td data-column="${column}"  data-date=${mark_cell.date} data-type="dairy">`).text(date_format);
+        caption.append(date_cell);
+        for(let j = 0; j<data_names.length; j++ ){
+            let id = data_names[j].id;
+            let mark= mark_cell.marks.find(el=> el.id==id);
+            let row = $("#table-row-"+id);
+            if(mark===undefined) {
+                let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`);
+                row.append(td);
+                continue;
+            }
+            let td = $(`<td data-column="${column}" data-teacher-id="${mark.teacher_id}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
+data-mark-visible="${mark.visible}">`).text(mark.value);
+            row.append(td);
+        }
+        column++;
+    }
+    column++;
+    //спеціальні оцінки
+    let i;
+    for(i = 0; i<special_data_marks.length; i++) //for every data-marks
+    {
+
+        let mark_cell = special_data_marks[i];
+        let date_cell = $(`<td data-column="${column}" data-type="special" 
+data-mark-work-type = ${mark_cell.type}
+data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
+        caption.append(date_cell);
+        for(let j = 0; j<data_names.length; j++ ){
+            let id = data_names[j].id;
+
+            let mark= mark_cell.marks.find(el=> el.id==id);
+            let row = $("#table-row-"+id);
+
+            if(mark===undefined) {
+
+                let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type} data-mark-name="${mark_cell.name}">`);
+                row.append(td);
+                continue;
+            }
+            let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type}
+data-mark-name="${mark_cell.name}" data-teacher-id="${mark.teacher_id}" data-mark-value="${mark.value}"
+data-mark-visible="${mark.visible}">`).text(mark.value);
+            row.append(td);
+        }
+        column++;
+    }
+
+}
+function  createThemeMarksView(theme){
+    let table = $('#marks_theme');
+    table.empty();
+    let caption = $(`<tr id="table_theme_caption">`);
+    table.append(caption);
+
+    let column = 1000;
+    let date_cell = $(`<td data-column="${column}" data-type="theme">`).text(theme);
+    caption.append(date_cell);
+
+    data_names.forEach(st=>{
+        let tr = $(`<tr id="table-th-row-${st.id}" class="table-row-${st.id}">`);
+        let mark= them_marks.find(el=> el.id==st.id);
+        if(mark==undefined) {
+            let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
+            tr.append(td);
+        }else {
+            let td = $(`<td data-column="${column}" data-theme=${theme} data-teacher-id="${mark.teacher_id}" data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
+data-mark-visible="${mark.visible}">`).text(mark.value);
+            tr.append(td);
+
+        }
+        table.append(tr);
+    })
+}
+
+
+function createEndMarksView() {
+
+    let table = $('#marks_end');
+    let caption = $(`<tr id="table_end_caption">`);
+    table.empty();
+    table.append(caption);
+    data_names.forEach(st=>{
+        let tr = $(`<tr id="table-end-row-${st.id}" class="table-row-${st.id}">`);
+        table.append(tr);
+    });
+    let column = 2000;
+    for(let i = 0; i < end_marks.length; i++){
+        let mark = end_marks[i];
+        let date_cell = $(`<td data-column="${column}" data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
+        caption.append(date_cell);
+        data_names.forEach(st=>{
+            let marks= mark.marks.find(el=> el.id==st.id);
+            let row = $("#table-end-row-"+st.id);
+
+            if(marks===undefined) {
+                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
+                row.append(td);
+            }else{
+                let td = $(`<td data-column="${column}"data-teacher-id="${mark.teacher_id}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
+data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
+                row.append(td);
+            }
+        });
+        column++;
+
+
+    }
+    $('#thr_table').removeClass('hidden');
+}
+
+//Аналогічний вид можна використати в кабінеті учня
+function showMarkView(a) {
+    // todo get techer name by id
+    //  a.data('teacher-id')
+    let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
+    let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
+    let div = $(`<div>`);
+    let input_value = create_input_group('number', 'Значення:', value, 'value', '','', true);
+    let input_comment = create_input_group('text', 'Коментар:', comment, 'comment','','', true );
+    //todo or make a-href and show info about teacher
+    let div_techer =  create_input_group('text', 'Вчитель', 'тут має бути імя вчителя', '', '','', true);
+    let div_btn = $(`<div class="btn-group">`);
+    let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Назад");
+    div_btn.append(cancel);
+    div.append(input_value).append(input_comment).append(div_techer).append(div_btn);
+    createWindow(div);
+}
+
 function createSubjectView(){
     let data_subj = class_subject;
     $("#content").empty();
