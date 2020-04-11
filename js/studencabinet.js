@@ -197,7 +197,7 @@ let _dairyView = ({
         $daycontainer.append($row);
         $daycontainer.append($row);
         $daycontainer.append($row);
-    })
+    });
     return $daycontainer;
 };
 
