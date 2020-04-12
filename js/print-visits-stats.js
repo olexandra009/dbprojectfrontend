@@ -3,9 +3,6 @@ $(document).ready(function () {
 });
 
 function load(){
-    $(".print-button").on("click", function (){
-        window.print();
-    });
     jQuery.ajax({
         //TODO send request to browser
         url: '',
@@ -27,7 +24,7 @@ function load(){
             $("#all-missed").append(allMissedNum).append(allMissedPer);
             $("#ill-missed").append(illMissedNum).append(illMissedPer);
             let today = new Date();
-            let displayedDate = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+            let displayedDate = today.getDate() + '.' + (today.getMonth() + 1) + '.' + today.getFullYear();
             $("#date-doc").text(displayedDate);
 
         },
