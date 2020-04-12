@@ -112,7 +112,8 @@ $(document).on('click', '#add_theme', function () {
 });
 $(document).on('click', '#add_lesson', function () {
     if(!createLesson) {
-        createLessonDivAdding();
+        let id = $(this).data('id');
+        createLessonDivAdding(id);
         createLesson=true;
         return;
     }
@@ -122,7 +123,7 @@ $(document).on('click', '#add_lesson', function () {
 
 $(document).on('click', '.theme_list', function (e) {
     if(e.target.type === "submit")return;
-    let id= $(this).data('id');
+    let id = $(this).data('id');
     createViewLessonsFromThemeById(id);
 });
 
@@ -358,18 +359,37 @@ function  createLessonDiv(id){
     console.log(id);
     let content =   $('#content');
     let theme = $(`<div class="cotainer lesson">`);
-    theme.append($(`<button class="btn my_btn btn-outline-success" id="add_lesson">`).text('Створити урок'));
+    theme.append($(`<button class="btn my_btn btn-outline-success" data-id="${id}" id="add_lesson">`).text('Створити урок'));
     theme.append($(`<div id="add_lesson_form">`));
     content.append(theme);
     let them_view = $(`<div id="lesson_view">`);
     //todo ajax lessons by theme id
-    lesson_names.forEach(l=>them_view.append(lessons(l)));
-    content.append(them_view);
-    if(exchangeSubject){
-        $('#add_lesson').remove();
-        $('.edit_lesson').remove();
-        $('.delete_lesson').remove();
-    }
+    $.ajax({
+        url: "/getLessons",
+        type: "GET",
+        data: {subject_id: urlParams.get('id'), topic_id: id},
+        success: function(lessons){
+            console.log(lessons);
+            //{id: '242145', theme: 'Theme of lesson 1', date: new Date(2020, 4, 5),hometask: 'write esse'}
+            lessons = lessons.map(function(l){
+                return {id: l.lesson_id, theme: l.lesson_topic, date: l.lesson_date.substr(0,10), hometask: l.homework};
+            });
+            lessons.forEach(l=>them_view.append(appendLessons(l)));
+            content.append(them_view);
+            if(exchangeSubject){
+                $('#add_lesson').remove();
+                $('.edit_lesson').remove();
+                $('.delete_lesson').remove();
+            }
+        }
+    });
+    //    lesson_names.forEach(l=>them_view.append(lessons(l)));
+    //    content.append(them_view);
+    //    if(exchangeSubject){
+    //        $('#add_lesson').remove();
+    //        $('.edit_lesson').remove();
+    //        $('.delete_lesson').remove();
+    //    }
 }
 function  createThemeDiv(){
     let content = $('#content');
@@ -407,19 +427,33 @@ function  createThemeDiv(){
 
 }
 
-function createLessonDivAdding() {
-    let form = $('<form class="container" method="post" id="form_l">');
+function createLessonDivAdding(id) {
+    console.log(id);
+    let destination = $('<iframe name="formDestination" hidden></iframe>');
+    $('#add_lesson_form').append(destination);
+    let form = $('<form class="container" method="post" id="form_l" action="createLesson" target="formDestination" onsubmit="return checkLessonAdding()">');
     //todo ajax lessons themes
-    let input_theme = create_input_group('text', 'Тема уроку', "", "lesson-theme");
-    let input_num = create_input_group('date', 'Дата проведення', "", "date");
-    let input_hometask =  create_input_group('text', 'Домашнє завдання', "", "lesson-theme");
+    let input_theme = create_input_group('text', 'Тема уроку', "", "lesson_topic");
+    let input_num = create_input_group('date', 'Дата проведення', "", "lesson_date");
+    let input_hometask =  create_input_group('text', 'Домашнє завдання', "", "homework");
+    //hidden input to send topic id
+    let topic_id = $('<input type="number" hidden name="topic_id" value="' + id + '">');
     form.append(input_theme);
     form.append(input_num);
     form.append(input_hometask);
+    form.append(topic_id);
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
     $('#form_l').remove();
     $('#add_lesson_form').append(form);
+}
+function checkLessonAdding(){
+    console.log("CHECK");
+    if(document.forms['form_l']['lesson_topic'].value == '') return false;
+    if(document.forms['form_l']['lesson_date'].value == '') return false;
+    setTimeout(function(){
+        createViewLessonsFromThemeById(document.forms['form_l']['topic_id'].value);
+    }, 100);
 }
 function createThemeDivAdding(){
     let form = $('<form class="container" method="POST" id="form" action="createTopic">');
@@ -838,7 +872,7 @@ function cellDate(data){
 }
 
 /**********************HTML*******************/
-let lessons = ({
+let appendLessons = ({
     id: id,
     theme: theme,
     date: date,
@@ -846,14 +880,14 @@ let lessons = ({
 })=>{
     let div = $(`<div data-id = ${id} class="lesson_list">`);
     let header = $(` <div class="header">`);
-    let button_edit = $(`<button data-id="${id}" data-theme="${theme}" data-date="${cutData(date)}" data-hometask="${ht}" class="btn btn-outline-success my_btn edit_lesson">`).text('Редагувати');
+    let button_edit = $(`<button data-id="${id}" data-theme="${theme}" data-date="${date}" data-hometask="${ht}" class="btn btn-outline-success my_btn edit_lesson">`).text('Редагувати');
     let button_delete = $(`<button data-id="${id}" class="btn btn-outline-dark delete_lesson">`).text('Видалити');
     let span = $(`<span>`).text(theme);
     let btn_div = $(`<div class="btn-group">`).append(button_edit).append(button_delete);
     header.append(span).append(btn_div);
     div.append(header);
     let information = $(` <div class="information">`);
-    let div_data = $(` <div>`).text('Дата проведення: '+date.toLocaleDateString());
+    let div_data = $(` <div>`).text('Дата проведення: '+date);
     information.append(div_data);
     if(ht !== undefined && ht.length!==0) {
         let div_hours = $(` <div>`).text('Домашнє завдання: ' + ht);
