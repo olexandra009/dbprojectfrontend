@@ -34,7 +34,6 @@ $(document).on('click', '#class', function () {
 
 $(document).on('click', '#parents', function () {
     nextMenu('parents');
-    //TODO create parents view, add and edit for administrator
     createParentsView();
     creatingParentsList();
 });
@@ -197,12 +196,25 @@ $(document).on('click', '.par-list', function(){
 $(document).on('click', '#edit_student', function(){
     createEditStudentViewById($('#edit_student'));
 });
+
+$(document).on('click', '#edit_parent', function(){
+    createEditParentViewById($('#edit_parent'));
+});
+
 $(document).on('click','#student_non', function () {
 
     let id = ($(this).data("id"));
     createStudentViewById(id);
 
 });
+$(document).on('click','#parent_non', function () {
+
+    let id = ($(this).data("id"));
+    createParentDetailViewById(id);
+
+});
+
+
 $(document).on('click', '#add_parent', function (){
     if(!createPerson) {
         createFormForAddingParent();
@@ -212,7 +224,16 @@ $(document).on('click', '#add_parent', function (){
         createPerson= false;
     }
 });
+$(document).on('click','#parent_delete', function () {
+    //todo delete parent
+});
 
+$(document).on('click','#parent_save_edit', function () {
+    //todo save edited person
+});
+$(document).on('click','#parent_save_edit', function () {
+    //todo save edited student
+});
 //TODO adequate treatment of the filter-button
 
 
@@ -881,13 +902,13 @@ function createParentDetailViewById(id) {
         address: "м. Київ, проспект Перемоги 45, кв. 11",
         phone: ["+380974004593", "+380634527612"],
     };
-    
+
     let div = $(`<div class="container">`); // обгортка
     let row=$(`<div class="row row_button">`);
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_parent" class="btn my_btn btn-outline-success" data-id="${data.id}" 
 data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
-data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}", data-phone =${data.phone.toString()},
+data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}" data-phone =${data.phone.toString()}
 data-work-place="${data.workplace}">`).text('Редагувати');
 
     row.append(back);
@@ -902,10 +923,8 @@ data-work-place="${data.workplace}">`).text('Редагувати');
         .append(last_name).append(address)
         .append(type);
     data.phone.forEach(person=>div.append(createInformationViewRows("Телефон:", person)));
-    let button_subject = $(`<div class="row input-group">`);
-    //TODO add class
     let div_last=  $(`<div class="row btn-group mar">`);
-    let delete_ =  $(` <button id="student_delete" class="my_btn btn-outline-success btn" 
+    let delete_ =  $(` <button id="parent_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Видалити');
     div_last.append(delete_);
     div.append(div_last);
@@ -1034,6 +1053,42 @@ data-id="${a.data("id")}">`).text('Скасувати');
     div.append(div_last);
     createWindow(div);
 }
+
+function createEditParentViewById(a){
+
+    let div = $(`<div class="container">`);
+    $("#bacground_adding_parents").remove();
+    let row=$(`<div class="row row_button">`);
+    let back = $(` <button id="parent_non" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let tn = create_input_group("text", "Персональний номер", a.data("id"), "id");
+    let first_name = create_input_group("text", "Ім'я", a.data("first_name"), "first_name");
+    let second_name = create_input_group("text", "По батькові", a.data("second_name"),"second_name" );
+    let last_name = create_input_group("text", "Прізвище", a.data("last_name"), "last_name");
+    let workplace = create_input_group("text", "Місце роботи", a.data("workplace"), "workplace");
+    let city = create_input_group("text", "Місто", a.data("address"), "address");
+    let street = create_input_group("text", "Вулиця", a.data("address"), "address");
+    let building = create_input_group("text", "Будинок", a.data("address"), "address");
+    let  flat = create_input_group("text", "Квартира", a.data("address"), "address");
+    let div_last=  $(`<div class="row btn-group mar">`);
+    let dismiss =  $(` <button id="parent_save_edit" class=" my_btn btn-outline-success btn" 
+data-id="${a.data("id")}">`).text('Зберегти');
+    let delete_ =  $(` <button id="parent_non" class="my_btn btn-outline-success btn" 
+data-id="${a.data("id")}">`).text('Скасувати');
+    row.append(back);
+    div.append(row).append(tn).append(first_name).append(second_name)
+        .append(last_name).append(city).append(street).append(building)
+        .append(flat);
+    let phone = (a.data("phone")).split(',');
+
+    //TODO Change person to selected items and get names
+    // add delete and new person add
+    phone.forEach(person=>div.append(create_input_group("tel","Телефон:", person, "phone")));
+
+    div_last.append(dismiss).append(delete_);
+    div.append(div_last);
+    createWindow(div);
+};
+
 
 
 function createPersonForm(){
