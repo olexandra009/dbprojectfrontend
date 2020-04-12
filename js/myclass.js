@@ -157,13 +157,30 @@ $(document).on('click', '#create_marks_by_period', function(){
     // send theme value
     createMarksByPeriod();
 });
+//клік на плюсик в формі телефонів
+$(document).on('click', '#add_phone', function (){
+    $(this).parent().parent()
+        .after(create_input_group_with_button('tel', 'Телефони', 'add_phone'));
+    $(this).parent().remove();
+});
+$(document).on('click', '#add_benefits', function (){
+    $(this).parent().parent().after(create_input_group_with_button('text', 'Пільги', 'add_benefits'));
+    $(this).parent().remove();
+});
+
 $(document).on('click', '#edit_st', function(){
     $('.st-info-ed').removeAttr('readonly').removeAttr('disabled');
     $('#edit_st').addClass('hidden');
     let button = $(`<button class="btn btn-outline-success my_btn"  id="save_student_change">`).text('Зберегти зміни');
     $('.student_info_list').append(button);
+    let tel = create_input_group_with_button('tel', 'Телефони', 'add_phone');
+    if( $('input[type="tel"]') == undefined)       $('#type_st').parent().before(benefits);
+    else  $('input[type="tel"]').last().parent().after(tel);
+    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
 
-});
+    if( $('input[label="Пільги"]').length == 0)   $('#type_st').parent().after(benefits);
+    else   $('input[label="Пільги"]').last().parent().after(benefits);
+        });
 let changinggroupflag = false;
 
 $(document).on('click', '#changing_group', function(){
@@ -660,7 +677,7 @@ function createMenuReportsButtons(){
 }
 
 /*****************************HTML*****************************/
-let student_list_view = ({
+let  student_list_view = ({
     id: id, //номер особистої справи
     name: name,
     bday: bday,
@@ -740,5 +757,18 @@ let subject_view_maker =  (subj,{
     return $subject;
 
 };
+function create_input_group_with_button(input_type, label_name, button_id){
+    let group = $(`<div class="input-group mb-1">`);
+    let prepend = $(`<div class="input-group-prepend">`);
+    let label = $(`<span class="input-group-text">`).text(label_name);
+
+    let input = $(`<input type="${input_type}" class="form-control">`);
+
+    let append= $(`<div class="input-group-append">`);
+    let button=$(`<button class="btn btn-outline-secondary" type="button" id="${button_id}">`).text("+");
+    return group.append(prepend.append(label))
+        .append(input).append(append.append(button));
+}
+
 
 createMyStudentList();
