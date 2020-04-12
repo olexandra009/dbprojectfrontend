@@ -248,8 +248,8 @@ function removeClass() {
     document.getElementById('student_view').classList.add('hidden');
     document.getElementById('admin_button').classList.remove('hidden');
     document.getElementById('admin_button').classList.add('hidden');
-    document.getElementById('parent_add').classList.add('hidden');
-    document.getElementById('parent_add').classList.remove('hidden');
+    document.getElementById('parents_view').classList.remove('hidden');
+    document.getElementById('parents_view').classList.add('hidden');
 
     document.getElementById('content').classList.remove('hidden');
 
