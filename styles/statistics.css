@@ -1,0 +1,40 @@
+body{
+    font-family: "Times New Roman", serif;
+    font-size: 16px;
+}
+
+footer{
+    position: fixed;
+    bottom:0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.footer-attr-left{
+    padding-left: 10%;
+    display: block;
+    float: left;
+}
+
+.footer-attr-right{
+    display: block;
+    float: right;
+    padding-right: 10%;
+}
+
+
+
+header{
+    padding: 15px;
+    font-size: 25px;
+    text-align: center;
+}
+
+@media print{
+    @page {
+        size: auto;
+        margin: 0;
+    }
+
+
+}
