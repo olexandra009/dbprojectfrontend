@@ -232,7 +232,7 @@ $(document).on('click','#parent_save_edit', function () {
     //todo save edited person
 });
 $(document).on('click','#parent_save_edit', function () {
-    //todo save edited student 
+    //todo save edited student
 });
 //TODO adequate treatment of the filter-button
 
