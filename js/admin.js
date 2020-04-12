@@ -1160,11 +1160,12 @@ data-id="${a.data("id")}">`).text('Скасувати');
 
     //TODO Change person to selected items and get names
     // add delete and new person add
-    persons.forEach(person => div.append(create_input_group("text", "Відповідальна особа:", person, "person")));
-    phone.forEach(person => div.append(create_input_group("tel", "Телефон:", person, "phone")));
-    benefits.forEach(person => div.append(create_input_group("text", "Пільги:", person, "benefit")));
 
-
+    persons.forEach(person=>div.append(create_input_group("text","Відповідальна особа:", person, "person")));
+    phone.forEach(person=>div.append(create_input_group("tel","Телефон:", person, "phone")));
+    div.append(create_input_group_with_button('tel', 'Телефон', 'add_phone', 'phone'));
+    benefits.forEach(person=>div.append(create_input_group("text", "Пільги:", person, "benefit")));
+    div.append(create_input_group_with_button('text', 'Пільги', 'add_benefits', 'benefit'));
     div_last.append(dismiss).append(delete_);
     div.append(div_last);
     createWindow(div);
