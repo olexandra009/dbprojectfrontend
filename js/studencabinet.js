@@ -50,9 +50,72 @@ $(document).on('click', '.btn-week', function (e) {
     createDayView(date, endDate);
 })
 /*-----------------*/
+$(document).on('click','.marks', function(){
+    showMarkView($(this))
+});
+$(document).on('click','.task', function(){
+   let task= $(this).data('task');
+   let div = $(`<div>`).text("Домашнє завдання: ");
+    let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Назад");
+    let p = $(`<p>`).text(task);
+   div.append(p).append(cancel);
+   createWindow(div);
+});
 
-
+$(document).on('click', '#cancel', function () {
+    $('#bacground_adding_parents').remove();
+});
+$(document).on('click', '.show_teacher', function () {
+    let id = $(this).data('teacher-id');
+   //todo get teacher info by teacher id
+    createTeacherView(id);
+});
 /*-----------------Functions--------------------*/
+function createTeacherView(id){
+    data= {name: 'Іванова Ольга Вікторівна', phone: ['+38093939213', '+34949492112'], qualification: 'Wow'};
+   let div = $(`<div>`);
+    let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Назад");
+    let input_value =create_input_group('text', 'ПІБ', data.name, "", "","",true);
+    let input_quality =create_input_group('text', 'Кваліфікація:', data.qualification, "", "","",true);
+  div.append(cancel).append(input_value).append(input_quality);
+    data.phone.forEach(p=> div.append(create_input_group('text', 'Телефони', p, '','','', true)))
+ //   let input_value =create_input_group('text', 'ПІБ', data.name, "", "","","true");
+    createWindow(div);
+}
+function showMarkView(a) {
+    // todo get teacher name by id
+    //  a.data('teacher-id')
+    let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
+    let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
+    let div = $(`<div>`);
+    let input_value = create_input_group('number', 'Значення:', value, 'value', '','', true);
+    let input_comment = create_input_group('text', 'Коментар:', comment, 'comment','','', true );
+    //todo or make a-href and show info about teacher
+    let div_techer =  create_input_group('text', 'Вчитель', 'тут має бути імя вчителя', '', '','', true);
+    div_techer.addClass('show_teacher');
+    div_techer.attr('data-teacher-id', a.data('teacher-id'));
+    let div_btn = $(`<div class="btn-group">`);
+    let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Назад");
+    div_btn.append(cancel);
+    div.append(input_value).append(input_comment).append(div_techer).append(div_btn);
+    createWindow(div);
+}
+
+function create_input_group(input_type, label, value, name, class_, checked, readonly,required){
+    let group =$(`<div class="input-group mb-1">`);
+    let pregroup = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let input = $(`<input type="${input_type}" value = "${value}"  name="${name}" class="form-control ${class_}">`);
+    if(checked) input.attr('checked', 'true');
+    if(readonly) input.attr('readonly', 'true');
+    if(required) input.attr('required', 'true');
+    return group.append(pregroup.append(span)).append(input);
+}
+function createWindow(innerItem){
+    let back =$(` <div class = "backgr" id="bacground_adding_parents">`);
+    let form = $(` <div class="forming" id="forming">`);
+    $('.body').before(back.append(form.append(innerItem)));
+}
 /*--------Creating calendar ---------*/
 
 //return weeks numbers
@@ -101,8 +164,15 @@ function createDayView(startperiod, endperiod) {
     $('#calendar_header').empty();
     $('#weekscal').empty();
     $('#dayscal').empty();
-    //get ajax from server
-    let testingObject = [{weekday: 'Понеділок', date: '16.04', subject: []}, {
+    //todo get ajax from server
+    // dairy marks, if it is last lesson of theme we need theme mark too, home task,
+
+    // subject =>> (id, name, task, mark{value: , id: }, attend)
+    let testingObject = [{weekday: 'Понеділок', date: '16.04.2019', subject: [{id:1,name:"Math", task:"2331+2321", mark: {value:10, id:11, teacher_id: 1, comment:'Hahaga'}, attend:''},
+                                                                         {id:2,name:"English", attend:'H'},
+                                                                         {id:3,name:"Sport", attend:''}]},
+        {
+
         weekday: 'Вівторок',
         date: '17.04',
         subject: []
@@ -166,7 +236,7 @@ let _weekView = ({
 let _dairyView = ({
                       weekday: weekday,
                       date: date,
-                      subjects: array
+                      subject: array
                   }) => {
     let $daycontainer = $(`<div id="${weekday}" class="container day">`)
     let $dayheader = $(`<div class="table-header">`).text(weekday + " " + date);
@@ -181,18 +251,22 @@ let _dairyView = ({
         let $been = $(` <div class="td been">`);
         $row.append($subj).append($task).append($marks).append($been);
         $daycontainer.append($row);
-        $daycontainer.append($row);
-        $daycontainer.append($row);
-        return $daycontainer.append($row);
+        $daycontainer.append($row.clone());
+        $daycontainer.append($row.clone());
+        return $daycontainer.append($row.clone());
     }
     let i = 1;
-    array.forEach(subj => {   //можна добавити марк аррей і тоді в один стовпчик щоденника виставляти декілька оцінок
-        //або зробити окреме поле для перегляду оцінок
-        // subject =>> (id, name, task, mark, attend)
-        let $row = $(`<div class="tr row " subject_id = '${subj.id}'>`);
+    array.forEach(subj => {
+        // subject =>> (id, name, task, mark{value: , id: , teacher, comment}, attend)
+        let $row = $(`<div class="tr row full_view " subject_id = '${subj.id}'>`);
         let $subj = $(`<div class="td subject">`).text(subj.name);
-        let $task = $(`<div class="td task">`).text(subj.task);
-        let $marks = $(`<div class="td marks">`).text(subj.mark);
+        let $task = $(`<div class="td task" data-task="${subj.task}">`).text(subj.task);
+        let $marks;
+        if(subj.mark!==undefined)
+         $marks = $(`<div class="td marks" data-mark-comment="${subj.mark.comment}" data-teacher-id="${subj.mark.teacher}"
+                        data-mark-id="${subj.mark.id}" data-mark-value="${subj.mark.value}"">`).text(subj.mark.value);
+       else
+         $marks = $(`<div class="td marks">`).text('');
         let $been = $(` <div class="td been">`).text(subj.attend);
         $row.append($subj).append($task).append($marks).append($been);
         $daycontainer.append($row);

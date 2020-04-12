@@ -99,7 +99,6 @@ $(document).on('click', '#marks', function () {
 $(document).on('click', '#attend', function () {
     nextMenu('attend');
     createAttendingView();
-    console.log('here');
 });
 $(document).on('click', '#create_attend_by_period', function () {
     //todo get period
