@@ -10,6 +10,7 @@ $(document).on('click', '#administry', function () {
 $(document).on('click', '#subject', function () {
     nextMenu('subject');
     creatingSubjectList();
+
 });
 
 $(document).on('click', '#teacher', function () {
@@ -132,8 +133,10 @@ $(document).on('click', '.s_btn', function () {
 $(document).on('click', '.sd_btn', function () {
     //ми отримали шифр предмету треба вивести інформацію про предмет
     //let subj =  $(this).data('id');
-    //TODO Make view for concrete subject, show info and allow to edit and delete
+    createConcreteSubjectInformation();
+    //TODO check if it is work
 });
+
 // Предмети => Додати групу предметів
 $(document).on('click', '#add_subject', function (){
     if(!createSubject) {
@@ -746,6 +749,61 @@ function createFormForAddingConcreteSubject(subjName){
             $('#add_subject_c_form').append(form);
         }
     });
+
+}
+function createEditSubjectInformation(s){
+    //todo get all subject names and class
+    $('#bacground_adding_parents').remove();
+    let div = $(`<div class="container">`);
+
+    let row=$(`<div class="row_button justify-content-between">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+
+    div.append(row.append(back));
+
+    let subject_name = create_selected_input(['Name1', 'Name2', 'Name3'], 'Назва:', '', s.data('name'));
+    let subject_id = create_input_group('text', 'Підгрупа:', s.data('id'),'');
+    let start_date = create_input_group('date', 'Дата початку викладання:',  s.data('start-date'),'');
+    let end_date = create_input_group('date', 'Дата закінчення викладання:',s.data('end-date'),'');
+    let clas = create_selected_input(['clas1, clsa2'],'class', 'Клас:',s.data('clas'),'');
+    div.append(subject_name).append(subject_id).append(clas).append(start_date).append(end_date);
+    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
+    createWindow(div.append(submit));
+};
+
+$(document).on('click', '#edit_subject', function(){
+    createEditSubjectInformation($('#edit_subject'));
+});
+function createConcreteSubjectInformation(id){
+    //todo get subject information
+    let div = $(`<div class="container">`);
+
+    //{subject_id, subject_name, book, start_date, end_date, class, students_list[], teacher[] {teacher_id, name, start_date, end_date}}
+    let s ={
+        subject_id:'1212',
+        subject_name:'Name1',
+        book:"Book",
+        start_date: new Date(),
+        end_date: new Date(),
+        clas: '5A',
+        student: [{id:1, name: 'St'}, {id:1, name: 'St'}],
+        teacher:[{id:0, name:'Teacher', s_date: new Date(), e_date: new Date()}]
+    }
+    let row=$(`<div class=" row row_button justify-content-between">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}" data-clas="${s.clas}" 
+data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-end-date="${cutData(s.end_date)}" >`).text('Редагувати');
+
+    div.append(row.append(back).append(button));
+
+    let subject_name = createInformationViewRows( 'Назва:', s.subject_name);
+    let subject_id = createInformationViewRows( 'Підгрупа:', s.subject_id,);
+    let book =createInformationViewRows( 'Підручник',s.book);
+    let start_date =createInformationViewRows('Дата початку викладання:',  s.start_date.toLocaleDateString(),'');
+    let end_date = createInformationViewRows('Дата закінчення викладання:', s.end_date.toLocaleDateString());
+    let clas = createInformationViewRows('Клас:',s.clas,'');
+    div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date).append(end_date);
+    createWindow(div);
 }
 /*************Class-page function ****************/
 function addingClassView(){
