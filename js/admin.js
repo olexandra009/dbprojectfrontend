@@ -311,6 +311,8 @@ function removeClass() {
     document.getElementById('admin_button').classList.add('hidden');
     document.getElementById('parents_view').classList.remove('hidden');
     document.getElementById('parents_view').classList.add('hidden');
+    document.getElementById('statistics-div').classList.remove('hidden');
+    document.getElementById('statistics-div').classList.add('hidden');
 
     document.getElementById('content').classList.remove('hidden');
 
@@ -321,6 +323,7 @@ function removeClass() {
     removing('administry');
     removing('class');
     removing('parents');
+    removing('statistics');
 }
 
 //remove active class from item
