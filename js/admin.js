@@ -1104,7 +1104,9 @@ data-id="${a.data("id")}">`).text('Скасувати');
     // add delete and new person add
     persons.forEach(person=>div.append(create_input_group("text","Відповідальна особа:", person, "person")));
     phone.forEach(person=>div.append(create_input_group("tel","Телефон:", person, "phone")));
+    div.append(create_input_group_with_button('tel', 'Телефон', 'add_phone', 'phone'));
     benefits.forEach(person=>div.append(create_input_group("text", "Пільги:", person, "benefit")));
+    div.append(create_input_group_with_button('text', 'Пільги', 'add_benefits', 'benefit'));
 
 
     div_last.append(dismiss).append(delete_);
