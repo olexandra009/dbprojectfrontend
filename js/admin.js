@@ -17,7 +17,7 @@ $(document).on('click',"#statistics",function(){
 $(document).on('click', '#subject', function () {
     nextMenu('subject');
     creatingSubjectList();
-
+    
 });
 
 $(document).on('click', '#teacher', function () {
@@ -116,7 +116,7 @@ $(document).on('click', '#add_teacher', function () {
     }
 });
 
-$(document).on('click', ".th-list", function () {
+$(document).on('click', ".th-list, .thlist", function () {
     let id = ($(this).data("id"));
     createTeacherViewById(id);
 });
@@ -213,8 +213,7 @@ $(document).on('click', '#add_student', function () {
     }
 });
 
-$(document).on('click', '.st-list', function () {
-    //TODO let editable list of student, create opportunity for delete info
+$(document).on('click', '.st-list, .stlist', function () {
     let id = ($(this).data("id"));
     createStudentViewById(id);
 
@@ -838,7 +837,7 @@ function createConcreteSubjectInformation(id){
         start_date: new Date(),
         end_date: new Date(),
         clas: '5A',
-        student: [{id:1, name: 'St'}, {id:1, name: 'St'}],
+        student: [{id:1, name: 'St', class_name:'5-F'}, {id:1, name: 'St', class_name: "5-A"}],
         teacher:[{id:0, name:'Teacher', s_date: new Date(), e_date: new Date()}]
     }
     let row=$(`<div class=" row row_button justify-content-between">`);
@@ -854,7 +853,28 @@ data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-en
     let start_date =createInformationViewRows('Дата початку викладання:',  s.start_date.toLocaleDateString(),'');
     let end_date = createInformationViewRows('Дата закінчення викладання:', s.end_date.toLocaleDateString());
     let clas = createInformationViewRows('Клас:',s.clas,'');
-    div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date).append(end_date);
+    let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Записані учні:"));
+    let div_teachers = $(`<div class="container">`).append($(`<div class="row">`).text("Вчителі:"));
+    s.student.forEach(st=>{
+        let line = $(`<div class="row stlist input-group-text" data-id="${st.id}">`);
+        let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.name);
+        let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
+        let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
+
+        line.append(divname).append(divt_n)
+            .append(divqwl);
+        div_students.append(line)});
+    s.teacher.forEach(te=>{
+        let line = $(`<div class="row thlist input-group-text" data-id="${te.id}">`);
+        let divname = $(`<div class="lt col-md-6 text-left  name">`).text(te.name);
+        let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(te.s_date.toLocaleDateString());
+        let divqwl = $(`<div class="lt col-md-2   text-left  edate">`).text(te.e_date.toLocaleDateString());
+
+        line.append(divname).append(divt_n)
+            .append(divqwl);
+        div_teachers.append(line);
+    });
+    div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date).append(end_date).append(div_teachers).append(div_students);
     createWindow(div);
 }
 
@@ -1098,16 +1118,7 @@ data-persons =${persons} data-classid="${data.class_id}" data-benfits="${data.be
     data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
     data.benefits.forEach(person => div.append(createInformationViewRows("Пільги:", person)));
 
-    let button_subject = $(`<div class="row input-group">`);
-    let bs = $(` <button id="student_subject_view" class="btn btn-block input-group-text" 
-data-id="${data.t_n}">`).text('Предмети');
-    button_subject.append(bs);
-    let button_ex = $(`<div class="row input-group">`);
-    let be = $(` <button id="student_marks" class="btn btn-block input-group-text" 
-data-id="${data.t_n}">`).text('Оцінки');
-    button_ex.append(be);
     //TODO add class
-    div.append(button_subject).append(button_ex);
     let div_last = $(`<div class="row btn-group mar">`);
     let delete_ = $(` <button id="student_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Видалити');
