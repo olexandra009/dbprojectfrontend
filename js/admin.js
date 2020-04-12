@@ -17,6 +17,7 @@ $(document).on('click',"#statistics",function(){
 $(document).on('click', '#subject', function () {
     nextMenu('subject');
     creatingSubjectList();
+
 });
 
 $(document).on('click', '#teacher', function () {
@@ -41,7 +42,8 @@ $(document).on('click', '#class', function () {
 
 $(document).on('click', '#parents', function () {
     nextMenu('parents');
-    //TODO create parents view, add and edit for administrator
+    createParentsView();
+    creatingParentsList();
 });
 
 
@@ -99,6 +101,7 @@ let createTeacher = false;
 let createSubject = false;
 let createCSubject = false;
 let createClass = false;
+let createPerson = false;
 
 
 //region Teacher management
@@ -156,8 +159,10 @@ $(document).on('click', '.s_btn', function () {
 $(document).on('click', '.sd_btn', function () {
     //ми отримали шифр предмету треба вивести інформацію про предмет
     //let subj =  $(this).data('id');
-    //TODO Make view for concrete subject, show info and allow to edit and delete
+    createConcreteSubjectInformation();
+    //TODO check if it is work
 });
+
 // Предмети => Додати групу предметів
 $(document).on('click', '#add_subject', function () {
     if (!createSubject) {
@@ -214,16 +219,54 @@ $(document).on('click', '.st-list', function () {
     createStudentViewById(id);
 
 });
-$(document).on('click', '#edit_student', function () {
-    createEditStudentViewById($('#edit_student'));
-})
-$(document).on('click', '#student_non', function () {
 
+$(document).on('click', '.par-list', function(){
+    //TODO let editable list of student, create opportunity for delete info
     let id = ($(this).data("id"));
-    createStudentViewById(id);
+    createParentDetailViewById(id);
 
 });
 
+$(document).on('click', '#edit_student', function(){
+    createEditStudentViewById($('#edit_student'));
+});
+
+$(document).on('click', '#edit_parent', function(){
+    createEditParentViewById($('#edit_parent'));
+});
+
+$(document).on('click','#student_non', function () {
+    let id = ($(this).data("id"));
+    createStudentViewById(id);
+});
+
+$(document).on('click','#parent_non', function () {
+
+    let id = ($(this).data("id"));
+    createParentDetailViewById(id);
+
+});
+
+
+$(document).on('click', '#add_parent', function (){
+    if(!createPerson) {
+        createFormForAddingParent();
+        createPerson = true;
+    } else {
+        $('#form_add_parent').remove();
+        createPerson= false;
+    }
+});
+$(document).on('click','#parent_delete', function () {
+    //todo delete parent
+});
+
+$(document).on('click','#parent_save_edit', function () {
+    //todo save edited person
+});
+$(document).on('click','#parent_save_edit', function () {
+    //todo save edited student
+});
 //TODO adequate treatment of the filter-button
 //endregion
 
@@ -266,6 +309,9 @@ function removeClass() {
     document.getElementById('student_view').classList.add('hidden');
     document.getElementById('admin_button').classList.remove('hidden');
     document.getElementById('admin_button').classList.add('hidden');
+    document.getElementById('parents_view').classList.remove('hidden');
+    document.getElementById('parents_view').classList.add('hidden');
+
     document.getElementById('content').classList.remove('hidden');
 
     $('#content').empty();
@@ -658,6 +704,59 @@ function createConcreteSubjectList(name) {
 
 
 }
+function createParentsView(){
+    let student_add = $('#parent_add');
+    student_add.empty();
+    let theme = $(`<div class="cotainer parents">`);
+    theme.append($(`<button class="btn my_btn btn-outline-success" id="add_parent">`).text('Додати відповідальну особу'));
+    theme.append($(`<div id="add_parents_form">`));
+    student_add.append(theme);
+    $('#parents_view').removeClass('hidden');
+}
+function creatingParentsList(){
+    //TODO AJAX request for getting students
+    let data = [{
+        id: "N13404024",
+        name: "Іваненко Ольга Степанівна",
+    }, {
+        id: "N13404025",
+        name: "Петров Ігор Артемович",
+    }, {
+        id: "N13404026",
+        name: "Яременко Анна Петрівна",
+    }];
+    let container = $(`<div class="container">`);
+    data.forEach(th => {
+        let line = $(`<div class="row par-list" data-id="${th.id}">`);
+        let divname = $(`<div class="lt col-md-6 name">`).text(th.name);
+
+        line.append(divname);
+        container.append(line);});
+
+    $('#content').append(container);
+}
+function createFormForAddingParent(){
+    let form = $('<form class="container" id="form_add_parent"  method="post"   name="form_student" action="">');
+    let input_surname = create_input_group('text', "Прізвище","","last_name");
+    let input_name = create_input_group('text', "Ім'я", "", "first_name");
+    let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
+    let city = create_input_group('text', "Місто", "", "city");
+    let street = create_input_group('text', "Вулиця", "", "street");
+    let building = create_input_group('text', "Будинок", "", "building");
+    let apartment = create_input_group('text', "Квартира", "", "apartment");
+
+    //TODO get phones and privileges values
+    let phone = create_input_group_with_button('text', 'Телефон','add_phone');
+    let workplace = create_input_group('text', "Місце роботи", "", "workplace");
+
+    form.append(input_surname).append(input_name).append(input_second_name)
+       .append(phone).append(city).append(street).append(building).append(apartment).append(workplace);
+
+    let submit = $(`<input type="submit" class="input-group-text">`);
+    form.append(submit);
+    $('#form_student').remove();
+    $('#parent_add').append(form);
+}
 
 function createFormForAddingSubject() {
     let form = $('<form class="container" method="post" id="form_subject" action="createSubject">');
@@ -699,6 +798,61 @@ function createFormForAddingConcreteSubject(subjName) {
             $('#add_subject_c_form').append(form);
         }
     });
+
+}
+function createEditSubjectInformation(s){
+    //todo get all subject names and class
+    $('#bacground_adding_parents').remove();
+    let div = $(`<div class="container">`);
+
+    let row=$(`<div class="row_button justify-content-between">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+
+    div.append(row.append(back));
+
+    let subject_name = create_selected_input(['Name1', 'Name2', 'Name3'], 'Назва:', '', s.data('name'));
+    let subject_id = create_input_group('text', 'Підгрупа:', s.data('id'),'');
+    let start_date = create_input_group('date', 'Дата початку викладання:',  s.data('start-date'),'');
+    let end_date = create_input_group('date', 'Дата закінчення викладання:',s.data('end-date'),'');
+    let clas = create_selected_input(['clas1, clsa2'],'class', 'Клас:',s.data('clas'),'');
+    div.append(subject_name).append(subject_id).append(clas).append(start_date).append(end_date);
+    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
+    createWindow(div.append(submit));
+};
+
+$(document).on('click', '#edit_subject', function(){
+    createEditSubjectInformation($('#edit_subject'));
+});
+function createConcreteSubjectInformation(id){
+    //todo get subject information
+    let div = $(`<div class="container">`);
+
+    //{subject_id, subject_name, book, start_date, end_date, class, students_list[], teacher[] {teacher_id, name, start_date, end_date}}
+    let s ={
+        subject_id:'1212',
+        subject_name:'Name1',
+        book:"Book",
+        start_date: new Date(),
+        end_date: new Date(),
+        clas: '5A',
+        student: [{id:1, name: 'St'}, {id:1, name: 'St'}],
+        teacher:[{id:0, name:'Teacher', s_date: new Date(), e_date: new Date()}]
+    }
+    let row=$(`<div class=" row row_button justify-content-between">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}" data-clas="${s.clas}" 
+data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-end-date="${cutData(s.end_date)}" >`).text('Редагувати');
+
+    div.append(row.append(back).append(button));
+
+    let subject_name = createInformationViewRows( 'Назва:', s.subject_name);
+    let subject_id = createInformationViewRows( 'Підгрупа:', s.subject_id,);
+    let book =createInformationViewRows( 'Підручник',s.book);
+    let start_date =createInformationViewRows('Дата початку викладання:',  s.start_date.toLocaleDateString(),'');
+    let end_date = createInformationViewRows('Дата закінчення викладання:', s.end_date.toLocaleDateString());
+    let clas = createInformationViewRows('Клас:',s.clas,'');
+    div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date).append(end_date);
+    createWindow(div);
 }
 
 /*************Class-page function ****************/
@@ -846,6 +1000,49 @@ function checkAddingStudent() {
     if (document.forms['form_student']['building'].value == '') return false;
     if (document.forms['form_student']['class_name'].value == '') return false;
     //TODO відповідальні особи Not Null
+};
+
+
+function createParentDetailViewById(id) {
+    //TODO Ajax request to get all information about student
+    let data = {
+        id: "N13404024",
+        first_name: "Ольга",
+        second_name: "Степанівна",
+        last_name: "Іваненко",
+        workplace: "WORK PLACE",
+        address: "м. Київ, проспект Перемоги 45, кв. 11",
+        phone: ["+380974004593", "+380634527612"],
+    };
+
+    let div = $(`<div class="container">`); // обгортка
+    let row=$(`<div class="row row_button">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let button = $(` <button id="edit_parent" class="btn my_btn btn-outline-success" data-id="${data.id}" 
+data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
+data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}" data-phone =${data.phone.toString()}
+data-work-place="${data.workplace}">`).text('Редагувати');
+
+    row.append(back);
+    row.append(button);
+    let tn = createInformationViewRows("Персональний номер", data.id);
+    let first_name = createInformationViewRows("Ім'я", data.first_name);
+    let second_name = createInformationViewRows("По батькові", data.second_name);
+    let last_name = createInformationViewRows("Прізвище", data.last_name);
+    let address = createInformationViewRows("Адреса", data.address);
+    let type = createInformationViewRows("Місце роботи", data.workplace);
+    div.append(row).append(tn).append(first_name).append(second_name)
+        .append(last_name).append(address)
+        .append(type);
+    data.phone.forEach(person=>div.append(createInformationViewRows("Телефон:", person)));
+    let div_last=  $(`<div class="row btn-group mar">`);
+    let delete_ =  $(` <button id="parent_delete" class="my_btn btn-outline-success btn" 
+data-id="${data.t_n}">`).text('Видалити');
+    div_last.append(delete_);
+    div.append(div_last);
+    $("#bacground_adding_parents").remove();
+    createWindow(div);
+
 }
 
 function createStudentViewById(id) {
@@ -969,6 +1166,42 @@ data-id="${a.data("id")}">`).text('Скасувати');
     div.append(div_last);
     createWindow(div);
 }
+
+function createEditParentViewById(a){
+
+    let div = $(`<div class="container">`);
+    $("#bacground_adding_parents").remove();
+    let row=$(`<div class="row row_button">`);
+    let back = $(` <button id="parent_non" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let tn = create_input_group("text", "Персональний номер", a.data("id"), "id");
+    let first_name = create_input_group("text", "Ім'я", a.data("first_name"), "first_name");
+    let second_name = create_input_group("text", "По батькові", a.data("second_name"),"second_name" );
+    let last_name = create_input_group("text", "Прізвище", a.data("last_name"), "last_name");
+    let workplace = create_input_group("text", "Місце роботи", a.data("workplace"), "workplace");
+    let city = create_input_group("text", "Місто", a.data("address"), "address");
+    let street = create_input_group("text", "Вулиця", a.data("address"), "address");
+    let building = create_input_group("text", "Будинок", a.data("address"), "address");
+    let  flat = create_input_group("text", "Квартира", a.data("address"), "address");
+    let div_last=  $(`<div class="row btn-group mar">`);
+    let dismiss =  $(` <button id="parent_save_edit" class=" my_btn btn-outline-success btn" 
+data-id="${a.data("id")}">`).text('Зберегти');
+    let delete_ =  $(` <button id="parent_non" class="my_btn btn-outline-success btn" 
+data-id="${a.data("id")}">`).text('Скасувати');
+    row.append(back);
+    div.append(row).append(tn).append(first_name).append(second_name)
+        .append(last_name).append(city).append(street).append(building)
+        .append(flat);
+    let phone = (a.data("phone")).split(',');
+
+    //TODO Change person to selected items and get names
+    // add delete and new person add
+    phone.forEach(person=>div.append(create_input_group("tel","Телефон:", person, "phone")));
+
+    div_last.append(dismiss).append(delete_);
+    div.append(div_last);
+    createWindow(div);
+};
+
 
 
 function createPersonForm() {

@@ -164,24 +164,24 @@ td.marks, td.been {
 }
 
 
-.st-list, .th-list{
+.st-list, .par-list, .th-list{
     border-radius: 0.7rem;
     border: 0.7px solid black;
     margin-bottom: 0.5%;
 }
-.st-list:hover, .th-list:hover{
+.st-list:hover, .th-list:hover,.par-list:hover{
     background-color: #aaaaaa;
 }
-.st-list:focus, .th-list:focus {
+.st-list:focus,.par-list:focus, .th-list:focus {
     box-shadow: 0 0 0 0.2rem rgba(186, 200, 189, 0.5);
 }
-.st-list:active, .th-list:active {
+.st-list:active,.par-list:active, .th-list:active {
     box-shadow: 0 0 0 0.2rem rgba(186, 200, 189, 0.5) !important;
     background-color: #353535 !important;
     border-color: #353535 !important;
     color: white;
 }
-#teacher_view, #student_view {
+#teacher_view,#parents_view, #student_view {
     margin-bottom: 1.5%;
 }
 
