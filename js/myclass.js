@@ -233,6 +233,12 @@ $(document).on('click', '#show_end_marks', function () {
     endmarkflag = !endmarkflag;
 });
 
+$(document).on('click', '#choose', function(){
+    let subj = $('#class_subject').val();
+    console.log(subj);
+    createGroupsforStudent(subj)
+});
+
 /************************Function***************************/
 function nextMenu(item_to_activate) {
     removeClass();
@@ -323,7 +329,21 @@ function createMarksView(data, subj_id){
     $('#content').empty();
     $('#content').append(div).append(marks_view);
 }
+function createGroupsforStudent(subj){
+    //get data of students {student_id, names, group_id}
+    //get data of groups in this class of this subject
 
+    let form = $(`<form>`);
+    student_names.forEach(st=> {
+         let input = create_selected_input(['group1','group2', 'group3'], st.name, '', st.group, st.id,'','','');
+         form.append(input);
+    });
+    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
+    form.append(submit);
+    $('#content').empty();
+    $('#content').append(form);
+
+}
 function createMarksByPeriod(){
     //TODO get the theme
     // make AJAX request
