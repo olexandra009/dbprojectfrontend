@@ -17,7 +17,7 @@ $(document).on('click',"#statistics",function(){
 $(document).on('click', '#subject', function () {
     nextMenu('subject');
     creatingSubjectList();
-    
+
 });
 
 $(document).on('click', '#teacher', function () {
@@ -118,7 +118,9 @@ $(document).on('click', '#add_teacher', function () {
 
 $(document).on('click', ".th-list, .thlist", function () {
     let id = ($(this).data("id"));
-    createTeacherViewById(id);
+    let from_class = ($(this).data("class-view"));
+    let from_subj =  ($(this).data("subj-view"));
+    createTeacherViewById(id, from_class, from_subj);
 });
 //edit_teacher
 $(document).on('click', "#edit_teacher", function () {
@@ -215,7 +217,10 @@ $(document).on('click', '#add_student', function () {
 
 $(document).on('click', '.st-list, .stlist', function () {
     let id = ($(this).data("id"));
-    createStudentViewById(id);
+    let from_class = ($(this).data("class-view"));
+    if(from_class==undefined||from_class=='')
+        from_class =  ($(this).data("subj-view"));
+        createStudentViewById(id, from_class);
 
 });
 
@@ -288,8 +293,14 @@ $(document).on('click', '#create_persons', function () {
     createWindow(div);
 });
 //клік на Скасувати Форма додати учня => додати відповідальну особу
-$(document).on('click', '#cn_add_parents', function () {
+$(document).on('click', '#cn_add_parents, #cn_add_teacher, #cn_add_student, #cn_add_class', function () {
     $("#bacground_adding_parents").remove();
+    let classflag = ($(this).data("class-view"));
+    let subjectflag = ($(this).data("subj-view"));
+    if(classflag!=undefined&&classflag!='')
+        createDetailClassView(classflag);
+    else if(subjectflag!=undefined&&subjectflag!='')
+        createConcreteSubjectInformation(subjectflag);
 });
 
 /************************Function***************************/
@@ -547,7 +558,7 @@ function checkAddingTeacher() {
 }
 
 //show information about teacher
-function createTeacherViewById(id) {
+function createTeacherViewById(id, from_class, from_subj) {
     $.ajax({
         url: "/getTeachers/" + id,
         type: "GET",
@@ -556,7 +567,7 @@ function createTeacherViewById(id) {
 
             let div = $(`<div class="container">`); // обгортка
             let row = $(`<div class="row row_button">`);
-            let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+            let back = $(` <button id="cn_add_teacher" data-class-view="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
             let button = $(` <button id="edit_teacher" class="btn my_btn btn-outline-success" data-id="${data.tabel_number}" 
 data-name="${data.teacher_name}" data-surname="${data.surname}" 
 data-sec_name="${data.patronymic}" data-city="${data.city}" data-street="${data.street}" data-building="${data.building}" data-apartment="${data.apartment}" data-qualification="${data.qualification_name}" 
@@ -879,15 +890,80 @@ data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-en
 }
 
 /*************Class-page function ****************/
+$(document).on('click', '.class-list', function(){
+    let id = $(this).data('id');
+    createDetailClassView(id);
+});
+$(document).on('click', '#edit_class', function () {
+    $('#bacground_adding_parents').remove();
+    let div = $(`<div class="container">`);
+
+    let row=$(`<div class="row_button justify-content-between">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+
+    div.append(row.append(back));
+
+    let subject_id = create_input_group('text', 'Літера:', $(this).data('class-char'),'');
+    let start_date = create_input_group('number', 'Номер:',  $(this).data('class-num'),'');
+    let end_date = create_input_group('number', 'Рік:', $(this).data('year'),'');
+    div.append(start_date).append(subject_id).append(end_date);
+    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
+    createWindow(div.append(submit));
+});
+function createDetailClassView(id){
+    //todo ajax
+    let data = {
+        id: id,
+        class_num: "1",
+        class_char: "A",
+        year: "2019",
+        leader_id: "13112121",
+        leader_name: "Teacher Teacher Teacher",
+        students: [{id:1, name: 'St'}, {id:1, name: 'St'}],
+    };
+    let div = $(`<div class="container">`);
+    let row=$(`<div class=" row row_button justify-content-between">`);
+    let back = $(` <button id="cn_add_class" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let button = $(` <button id="edit_class" class="btn my_btn btn-outline-success" data-id="${data.id}" data-class-num="${data.class_num}" 
+data-class-char="${data.class_char}" data-year="${data.year}">`).text('Редагувати');
+    div.append(row.append(back).append(button));
+    let class_name = createInformationViewRows( 'Клас:', data.class_num+'-'+data.class_char);
+    let class_year = createInformationViewRows( 'Рік:', data.year);
+    let leader = createInformationViewRows('Класний керівник:', data.leader_name);
+    leader.addClass('thlist');
+    leader.attr('data-class-view', data.leader_id);
+    let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
+    data.students.forEach(st=>{
+        let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
+        let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.name);
+        let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
+        let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
+
+        line.append(divname).append(divt_n)
+            .append(divqwl);
+        div_students.append(line)});
+    div.append(class_name).append(class_year).append(leader).append(div_students);
+    createWindow(div);
+}
+
 function addingClassView() {
     // show class
-    let class_list = $(`<div id="class_list">`);
+    let class_list = $(`<div id="class_list" class="p-3">`);
     let class_button = $(`<div id="class_btn">`);
     let theme = $(`<div class="cotainer class">`);
     theme.append($(`<button class="btn my_btn btn-outline-success" id="add_class">`).text('Додати клас'));
     theme.append($(`<div id="add_class_form">`));
     class_button.append(theme);
+    let classes=[{class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
+        {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
+        {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}]
 
+  /*  classes.forEach(item => {
+        let div = $(`<div data-id="${item.class_id}" class="class-list">`)
+        let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
+        class_list.append(div.append(p));
+    });
+*/
     $.ajax({
         url: "/getClasses",
         type: "GET",
@@ -900,7 +976,9 @@ function addingClassView() {
             //each item in classes {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}
             //TODO pretty table for classes
             classes.forEach(item => {
-                class_list.append("<p>" + item.class_number + " " + item.class_char + " " + item.start_year + "</p>");
+                 let div = $(`<div data-id="${item.class_id}" class="class-list">`)
+        let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
+        class_list.append(div.append(p));
             });
         }
     });
@@ -1068,7 +1146,7 @@ data-id="${data.t_n}">`).text('Видалити');
 
 }
 
-function createStudentViewById(id) {
+function createStudentViewById(id, from_class, from_subj) {
     //TODO Ajax request to get all information about student
     let data = {
         id: "N13404024",
@@ -1092,7 +1170,7 @@ function createStudentViewById(id) {
 
     let div = $(`<div class="container">`); // обгортка
     let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let back = $(` <button id="cn_add_student" data-class-view ="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}" 
 data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
 data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}"
@@ -1144,7 +1222,7 @@ function createEditStudentViewById(a) {
     let div = $(`<div class="container">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="student_non" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let back = $(` <button id="student_non"  class="btn my_btn btn-outline-success" >`).text("Назад");
     let tn = create_input_group("text", "Особова справа", a.data("id"), "id");
     let first_name = create_input_group("text", "Ім'я", a.data("first_name"), "first_name");
     let second_name = create_input_group("text", "По батькові", a.data("second_name"), "second_name");
