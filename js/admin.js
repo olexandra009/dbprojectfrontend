@@ -187,6 +187,13 @@ $(document).on('click', '.st-list', function(){
     createStudentViewById(id);
 
 });
+$(document).on('click', '.par-list', function(){
+    //TODO let editable list of student, create opportunity for delete info
+    let id = ($(this).data("id"));
+    createParentDetailViewById(id);
+
+});
+
 $(document).on('click', '#edit_student', function(){
     createEditStudentViewById($('#edit_student'));
 });
@@ -862,6 +869,51 @@ function checkAddingStudent(){
     if(document.forms['form_student']['class_name'].value == '') return false;
     //TODO відповідальні особи Not Null
 }
+
+function createParentDetailViewById(id) {
+    //TODO Ajax request to get all information about student
+    let data = {
+        id: "N13404024",
+        first_name: "Ольга",
+        second_name: "Степанівна",
+        last_name: "Іваненко",
+        workplace: "WORK PLACE",
+        address: "м. Київ, проспект Перемоги 45, кв. 11",
+        phone: ["+380974004593", "+380634527612"],
+    };
+    
+    let div = $(`<div class="container">`); // обгортка
+    let row=$(`<div class="row row_button">`);
+    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let button = $(` <button id="edit_parent" class="btn my_btn btn-outline-success" data-id="${data.id}" 
+data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
+data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}", data-phone =${data.phone.toString()},
+data-work-place="${data.workplace}">`).text('Редагувати');
+
+    row.append(back);
+    row.append(button);
+    let tn = createInformationViewRows("Персональний номер", data.id);
+    let first_name = createInformationViewRows("Ім'я", data.first_name);
+    let second_name = createInformationViewRows("По батькові", data.second_name);
+    let last_name = createInformationViewRows("Прізвище", data.last_name);
+    let address = createInformationViewRows("Адреса", data.address);
+    let type = createInformationViewRows("Місце роботи", data.workplace);
+    div.append(row).append(tn).append(first_name).append(second_name)
+        .append(last_name).append(address)
+        .append(type);
+    data.phone.forEach(person=>div.append(createInformationViewRows("Телефон:", person)));
+    let button_subject = $(`<div class="row input-group">`);
+    //TODO add class
+    let div_last=  $(`<div class="row btn-group mar">`);
+    let delete_ =  $(` <button id="student_delete" class="my_btn btn-outline-success btn" 
+data-id="${data.t_n}">`).text('Видалити');
+    div_last.append(delete_);
+    div.append(div_last);
+    $("#bacground_adding_parents").remove();
+    createWindow(div);
+
+}
+
 function createStudentViewById(id) {
     //TODO Ajax request to get all information about student
     let data = {
