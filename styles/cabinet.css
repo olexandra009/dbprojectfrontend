@@ -369,3 +369,12 @@ input.form-control[type="checkbox"] {
     margin-top: auto;
     margin-bottom: auto;
 }
+
+td.name, td.teacher {width: 30%;}
+
+td.type{
+    width:20%;
+}
+table {
+    width: 100%;
+}

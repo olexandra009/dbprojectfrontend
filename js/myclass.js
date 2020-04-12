@@ -606,9 +606,6 @@ function showViewAttend(a){
     createWindow(div);
 }
 
-function createSubjectMarksView(id) {
-
-}
 
 function create_selected_input(data, label, id, value, name, class_, readonly, required) {
     let group =$(`<div class="input-group mb-1">`);

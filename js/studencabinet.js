@@ -20,6 +20,25 @@ $(document).on('click', '.stcab', function () {
     getStudentInfo();
 });
 /*---------Month-calendar navigation--------*/
+$(document).on('click', '#back_special_marks', function(){
+    $('#monthcalendar').removeClass('hidden');
+    $('#weekscal').removeClass('hidden');
+
+    $('#dayscal').removeClass('hidden');
+    $('#back_special_marks').remove();
+    $('#content').remove();
+});
+$(document).on('click', '#get_special_marks', function(){
+
+    $('#monthcalendar').addClass('hidden');
+
+    $('#weekscal').addClass('hidden');
+
+    $('#dayscal').addClass('hidden');
+let button = $(`<div class="btn-outline-success btn my_btn btn-lg btn-block" id="back_special_marks">`).text("Назад");
+$('#myhometask').append(button);
+createSpecialMarksView();
+});
 $(document).on('click', '.btn-month', function (e) {
     let identy = e.target.id;
     let month = identy.substring(1);
@@ -28,7 +47,13 @@ $(document).on('click', '.btn-month', function (e) {
     let year = date.getFullYear();
     if (num_month >= 9 && date.getMonth() < 5)
         year = year - 1;
-    createWeek(getWeeksInMonth(num_month - 1, date.getFullYear()), num_month, year);
+    console.log("MONTH : "+num_month);
+    console.log("YEAR : "+year);
+    $('#weekscal').attr('data-month-week',num_month);
+    $('#weekscal').attr('data-year-week',year);
+
+    console.log()
+    createWeek(getWeeksInMonth(num_month - 1, year), num_month, year);
 });
 $(document).on('click', '#backtomonth', function () {
     $('#weekscal').empty();
@@ -37,7 +62,23 @@ $(document).on('click', '#backtomonth', function () {
     document.getElementById('fstsem').classList.remove('hidden');
     document.getElementById('sndsem').classList.remove('hidden');
 
-})
+});
+$(document).on('click', '#backtoweek', function () {
+    $('#dayscal').empty();
+    $('#calendar_header').empty();
+    $('#calendar_header').text('Оберіть тиждень:');
+    createWeekView();
+
+});
+function createWeekView(){
+    let num_month =  document.getElementById('weekscal').dataset.monthWeek;
+    let year = document.getElementById('weekscal').dataset.yearWeek;
+    console.log($('#weekscal'));
+    console.log(num_month+" "+year);
+    console.log(getWeeksInMonth(num_month - 1, year));
+    createWeek(getWeeksInMonth(num_month - 1, year), num_month, year);
+}
+
 $(document).on('click', '.btn-week', function (e) {
 
     let year = $(this).data('year');
@@ -48,10 +89,14 @@ $(document).on('click', '.btn-week', function (e) {
     let endDate = new Date(date);
     endDate.setDate(endDate.getDate() + 6);
     createDayView(date, endDate);
-})
+});
 /*-----------------*/
 $(document).on('click','.marks', function(){
     showMarkView($(this))
+});
+$(document).on('click','td.teacher',function () {
+   let id = $(this).data('id');
+    createTeacherView(id);
 });
 $(document).on('click','.task', function(){
    let task= $(this).data('task');
@@ -70,7 +115,43 @@ $(document).on('click', '.show_teacher', function () {
    //todo get teacher info by teacher id
     createTeacherView(id);
 });
+
+let special_data_marks = [{subject: 'English', marks:[
+             {id:1,name:"To be or not to be", type: "poem",value: '10', comment:"", teacher_id:1,teacher_name:"name" },
+        {id:2,name:"To be ", type: "poem",value: '11', comment:"",teacher_id:1, teacher_name:"name" },
+    ]},
+    {subject: 'Math', marks:[   {id:11,name:"To be or not to be", type: "poem",value: '10', comment:"", teacher_id:1,teacher_name:"name" },
+            {id:21, name:"To be ", type: "poem",value: '11', comment:"",teacher_id:1, teacher_name:"name" },
+        ]}];
+
 /*-----------------Functions--------------------*/
+function createSpecialMarksView(){
+    let div = $(`<div id='content'>`);
+    $('#myhometask').append(div);
+    createSpecialMarksTable();
+
+}
+
+
+function createSpecialMarksTable(){
+    //TODO get special marks
+    let table = $(`<table id="special_mark">`);
+    special_data_marks.forEach(sub=>{
+       let frtr = $(`<tr>`).text(sub.subject);
+       table.append(frtr);
+       sub.marks.forEach(mark => {
+           let tr =  $(`<tr>`);
+           let td = $(`<td class="name">`).text(mark.name);
+           let td2 = $(`<td class="type">`).text(mark.type);
+           let td3 = $(`<td class="value">`).text(mark.value);
+           let td4 = $(`<td class="comment">`).text(mark.comment);
+           let td5 = $(`<td class="teacher" data-id="${mark.teacher_id}">`).text(mark.teacher_name);
+           tr.append(td).append(td2).append(td3).append(td4).append(td5);
+           table.append(tr);
+       });
+    });
+    $('#content').append(table);
+}
 function createTeacherView(id){
     data= {name: 'Іванова Ольга Вікторівна', phone: ['+38093939213', '+34949492112'], qualification: 'Wow'};
    let div = $(`<div>`);
@@ -141,7 +222,9 @@ function getWeeksInMonth(month, year) {
 }
 
 //create week view
-function createWeek(weekarray, month, year) {
+function createWeek(weekarray, mmonth, myear) {
+    month = parseInt(mmonth);
+    year = parseInt(myear);
     //hidden monthes
     document.getElementById('fstsem').classList.remove('hidden');
     document.getElementById('fstsem').classList.add('hidden');
@@ -156,7 +239,7 @@ function createWeek(weekarray, month, year) {
         week['mend'] = (week['end'] < week['start']) ? month + 1 : month;
         $('#weekscal').append(_weekView(week));
     });
-    $('#weekscal').append($(`<button id="backtomonth" class = 'btn my_btn btn-outline-success my-2 btn-lg btn-block'>`).text('Назад'))
+    $('#weekscal').append($(`<button id="backtomonth"  class = 'btn my_btn btn-outline-success my-2 btn-lg btn-block'>`).text('Назад'))
 }
 
 /*------Create daily view-------*/
@@ -164,10 +247,11 @@ function createDayView(startperiod, endperiod) {
     $('#calendar_header').empty();
     $('#weekscal').empty();
     $('#dayscal').empty();
+    let button = $(`<button class="btn my_btn btn-outline-success"  id="backtoweek">`).text('Назад');
+    $('#dayscal').append(button);
     //todo get ajax from server
     // dairy marks, if it is last lesson of theme we need theme mark too, home task,
 
-    // subject =>> (id, name, task, mark{value: , id: }, attend)
     let testingObject = [{weekday: 'Понеділок', date: '16.04.2019', subject: [{id:1,name:"Math", task:"2331+2321", mark: {value:10, id:11, teacher_id: 1, comment:'Hahaga'}, attend:''},
                                                                          {id:2,name:"English", attend:'H'},
                                                                          {id:3,name:"Sport", attend:''}]},
@@ -178,7 +262,6 @@ function createDayView(startperiod, endperiod) {
         subject: []
     }]
     testingObject.forEach(obj => $('#dayscal').append(_dairyView(obj)));
-
 }
 
 /*------------------------------------------*/
@@ -186,6 +269,7 @@ function createDayView(startperiod, endperiod) {
 
 /*remove class identification for left menu*/
 function removeClass() {
+
     let cabitem = document.getElementById('stcab');
     let cabdiv = document.getElementById('mycabinet');
 
@@ -203,13 +287,13 @@ function removeClass() {
 
 /*------------------------------------------*/
 /*---------------HTML building----------------*/
-let _weekView = ({
+function _weekView({
                      start: start,
                      end: end,
                      mstart: mstart,
                      mend: mend,
                      year: year
-                 }) => {
+                 })  {
     if (start == end) return;
     if (start == 1) {
         let date = new Date(year, mstart - 1, start);
@@ -230,7 +314,7 @@ let _weekView = ({
     if (mend == 13) mend = 1;
     if (mstart < 10) mstart = "0" + mstart;
     if (mend < 10) mend = "0" + mend;
-    return $(`<button class = 'btn my_btn btn-week btn-outline-success my-2 btn-lg btn-block' data-year="${year}" data-day="${start}" data-month="${mstart}">`).text(start + '.' + mstart + '-' + end + '.' + mend);
+    return $(`<button class = 'btn my_btn btn-week btn-outline-success my-2 btn-lg btn-block'  data-year="${year}" data-day="${start}" data-month="${mstart}">`).text(start + '.' + mstart + '-' + end + '.' + mend);
 };
 
 let _dairyView = ({
