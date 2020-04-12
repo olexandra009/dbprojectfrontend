@@ -97,7 +97,7 @@ $(document).on('click', '#subj_marks', function () {
 });
 
 $(document).on('click', '#back_to_cabinet', function () {
-    window.location.href='./teachercabinet.html';
+    window.location.href='./mycabinet';
 });
 
 

@@ -23,7 +23,7 @@
                         <a class="navbar-brand">Online Journal</a>
                         <div class="divinline">
                             <div class="user">
-                                <div>Петренко Анна Федорівна</div>
+                                <div id="userName">Петренко Анна Федорівна</div>
                                 <div> Роль: вчитель </div>
                             </div>
                             <button class="btn mine btn-outline-success my-2 my-sm-0" onclick="logout()">Вийти</button>
@@ -64,5 +64,14 @@
             </div>
             <script src="js/subject.js"></script>
             <script src="js/logout.js"></script>
+            <script>
+                $.ajax({
+                    url: "/getTeacher",
+                    type: "GET",
+                    success: function(teacher){
+                        $("#userName").html(teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic);
+                    }
+                });
+            </script>
         </body>
     </html>
