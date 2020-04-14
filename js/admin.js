@@ -322,9 +322,9 @@ $(document).on('click', '#cn_add_parents, #cn_add_teacher, #cn_add_student, #cn_
     $("#bacground_adding_parents").remove();
     let classflag = ($(this).data("class-view"));
     let subjectflag = ($(this).data("subj-view"));
-    if(classflag!=undefined&&classflag!='')
+    if(classflag!=undefined&&classflag!='undefined'&&classflag!='')
         createDetailClassView(classflag);
-    else if(subjectflag!=undefined&&subjectflag!='')
+    else if(subjectflag!=undefined&&subjectflag!='undefined'&&subjectflag!='')
         createConcreteSubjectInformation(subjectflag);
 });
 
