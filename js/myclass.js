@@ -17,27 +17,27 @@ let student_names = [{
 }];
 
 let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
-    {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', visible:'true', teacher_id:'identyofteacher'}, {id:'2', value:'9', visible:'true'}]},
-    {date: new Date(2019, 3, 24), marks:[]},
-    {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7', visible:'true'}]},
-    {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12', visible:'true'}]}, ];
+                        {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', visible:'true', teacher_id:'identyofteacher'}, {id:'2', value:'9', visible:'true'}]},
+                        {date: new Date(2019, 3, 24), marks:[]},
+                        {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7', visible:'true'}]},
+                        {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12', visible:'true'}]}, ];
 let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', value:5, comment:"once more chance"}, {id:'2',value: 10, visible:'true' }]},
-    {name: "Test12", type: "test", marks: [{id:'1', value:'12', visible:'true'}, {id:'3', value:'6', visible: "true"}]}];
+                          {name: "Test12", type: "test", marks: [{id:'1', value:'12', visible:'true'}, {id:'3', value:'6', visible: "true"}]}];
 
 let them_marks = [{id: '1', theme: 'theme1', value: '10', visible:'false'},
-    {id: '2', theme: 'theme1', value: '8', visible:'true'},
-    {id: '3', theme: 'theme1', value: '9', visible:'true'},];
+                  {id: '2', theme: 'theme1', value: '8', visible:'true'},
+                  {id: '3', theme: 'theme1', value: '9', visible:'true'},];
 
 let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', comment:'here'},
-        {id:2, value: '8', visible:'true', comment:'here'},
-        {id:3, value: '8', visible:'true', comment:'here'}]},
-    {type: 'dpa', marks:[{id:1, value: '11', visible:'true', comment:'here'},
-            {id:2, value: '10', visible:'true', comment:'here'},
-            {id:3, value: '8', visible:'true', comment:'here'}]} ];
+                                          {id:2, value: '8', visible:'true', comment:'here'},
+                                          {id:3, value: '8', visible:'true', comment:'here'}]},
+                {type: 'dpa', marks:[{id:1, value: '11', visible:'true', comment:'here'},
+                                     {id:2, value: '10', visible:'true', comment:'here'},
+                                     {id:3, value: '8', visible:'true', comment:'here'}]} ];
 
 let data_names = [{id: '1', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},
-    {id: '2', last_name: "Surname", first_name: "Name1", second_name: "Pobatkovi"},
-    {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},];
+                  {id: '2', last_name: "Surname", first_name: "Name1", second_name: "Pobatkovi"},
+                  {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},];
 
 let class_subject = [{id: '5AG1', name: 'English', class_name:'5-A'},
                      {id: '5AG2', name: 'English', class_name: '5-A'},
@@ -179,7 +179,7 @@ $(document).on('click', '#edit_st', function(){
 
     if( $('input[label="Пільги"]').length == 0)   $('#type_st').parent().after(benefits);
     else   $('input[label="Пільги"]').last().parent().after(benefits);
-        });
+});
 let changinggroupflag = false;
 
 $(document).on('click', '#changing_group', function(){
@@ -191,18 +191,32 @@ $(document).on('click', '#changing_group', function(){
     changinggroupflag=!changinggroupflag;
     let div= $(`<div id="changing_group_form">`);
     //todo get AJAX NAME OF SUBJECT ONLY
-    let class_s =[];
-    class_subject.forEach(st=>{class_s.push(st.name)});
-    console.log(class_s);
-    let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
-    let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
-    div.append(select).append(btn);
-    $('#changing_group_div').append(div);
+
+    $.ajax({
+        url: "/getSubjectsInClass",
+        type: "GET",
+        success: function(subjects){
+            let class_s =[];
+            subjects.forEach(st=>{class_s.push(st.subject_name)});
+            let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
+            let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
+            div.append(select).append(btn);
+            $('#changing_group_div').append(div);
+        }
+    });
+
+    //    let class_s =[];
+    //    class_subject.forEach(st=>{class_s.push(st.name)});
+    //    console.log(class_s);
+    //    let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
+    //    let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
+    //    div.append(select).append(btn);
+    //    $('#changing_group_div').append(div);
 });
 
 $(document).on('click', '#parents', function(){
-   //todo get id of person, name, and first phone.
-   // create rows of persons.
+    //todo get id of person, name, and first phone.
+    // create rows of persons.
 });
 
 $(document).on('click', '#show_marks_theme', function () {
@@ -251,7 +265,6 @@ $(document).on('click', '#show_end_marks', function () {
 
 $(document).on('click', '#choose', function(){
     let subj = $('#class_subject').val();
-    console.log(subj);
     createGroupsforStudent(subj)
 });
 
@@ -274,33 +287,78 @@ function removing(item) {
 }
 function createMyStudentList(){
     //AJAX
-    let data = student_names;
-    $('#content').empty();
-    let div = $(`<div id="changing_group_div" >`);
-    let form_for_changing_group = $(`<button class="btn btn-outline-success my_btn" id="changing_group">`).text("Змінити групу");
-    div.append(form_for_changing_group);
-    let container = $(`<div class="container">`);
+    $.ajax({
+        url: "/getStudentsInClass",
+        type: "GET",
+        success: function(students){
+            let data = students.map(function(s){
+                return {id: s.personal_file_num, name: s.surname + ' ' + s.student_name + ' ' + s.patronymic, bday: s.birth_date.substr(0, 10), type: s.studying_type};
+            })
+            $('#content').empty();
+            let div = $(`<div id="changing_group_div" >`);
+            let form_for_changing_group = $(`<button class="btn btn-outline-success my_btn" id="changing_group">`).text("Змінити групу");
+            div.append(form_for_changing_group);
+            let container = $(`<div class="container">`);
 
-    data.forEach(student => container.append(student_list_view(student)));
-    $("#content").append(div).append(container);
+            data.forEach(student => container.append(student_list_view(student)));
+            $("#content").append(div).append(container);
+        }
+    });
+    //    {
+    //    id: "N13404024",
+    //    name: "Іваненко Ольга Степанівна",
+    //    bday: "09.09.2005",
+    //    type: "очна"
+    //}
+
+    //    let data = student_names;
+    //    $('#content').empty();
+    //    let div = $(`<div id="changing_group_div" >`);
+    //    let form_for_changing_group = $(`<button class="btn btn-outline-success my_btn" id="changing_group">`).text("Змінити групу");
+    //    div.append(form_for_changing_group);
+    //    let container = $(`<div class="container">`);
+    //
+    //    data.forEach(student => container.append(student_list_view(student)));
+    //    $("#content").append(div).append(container);
 }
 function  createDetailStudentView(id){
     //todo AJAX request for detail information by student id
-    let data = {
-        id: id,
-        last_name: "Іваненко",
-        first_name: "Ольга",
-        second_name: "Степанівна",
-        bday: "09.09.2005",
-        type: "очна",
-        sex: 'Жіноча',
-        phone:   ["+38094930333", "+380964071944"],
-        address: "м. Київ, проспект Перемоги 43б квартира 14",
-    };
-    $("#content").empty();
-    let container = $(`<div class="container">`);
-    container.append(student_detail_view(data));
-    $("#content").append(container);
+    $.ajax({
+        url: "/getStudent/" + id,
+        type: "GET",
+        success: function(student){
+            let data = {
+                id: id,
+                last_name: student.surname,
+                first_name: student.student_name,
+                second_name: student.patronymic,
+                bday: student.birth_date.substr(0,10),
+                type: student.studying_type,
+                sex: student.sex,
+                phone:   ["+38094930333", "+380964071944"],
+                address: student.city + ' ' + student.street + ' ' + student.building + ' ' + student.apartment
+            };
+            $("#content").empty();
+            let container = $(`<div class="container">`);
+            container.append(student_detail_view(data));
+            $("#content").append(container);
+        }
+    });
+    //    let data = {
+    //        id: id,
+    //        last_name: "Іваненко",
+    //        first_name: "Ольга",
+    //        second_name: "Степанівна",
+    //        bday: "09.09.2005",
+    //        type: "очна",
+    //        sex: 'Жіноча',
+    //        phone:   ["+38094930333", "+380964071944"],
+    //        address: "м. Київ, проспект Перемоги 43б квартира 14",
+    //    };
+    //    $("#content").empty();
+    //    let container = $(`<div class="container">`);
+    //    container.append(student_detail_view(data));
+    //    $("#content").append(container);
 
 }
 
@@ -330,7 +388,7 @@ function createMarksView(data, subj_id){
 
     let table_end = $(`<table id='marks_end'>`);
     div_first_table.append(div_first_table_caption);
-   div_first_table.append(table);
+    div_first_table.append(table);
 
     div_second_table.append(div_second_table_caption);
 
@@ -349,17 +407,46 @@ function createGroupsforStudent(subj){
     //get data of students {student_id, names, group_id}
     //get data of groups in this class of this subject
 
-    let form = $(`<form>`);
-    student_names.forEach(st=> {
-         let input = create_selected_input(['group1','group2', 'group3'], st.name, '', st.group, st.id,'','','');
-         form.append(input);
-    });
-    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
-    form.append(submit);
-    $('#content').empty();
-    $('#content').append(form);
+    $.ajax({
+        url: "/getSubjectsForGroups/" + subj,
+        type: "GET",
+        success: function(subjects_in_groups){
 
+            $.ajax({
+                url: "/getStudGroupPairs/" + subj,
+                type: "GET",
+                success: function(studGroupPairs){
+                    console.log(subjects_in_groups);
+                    let form = $(`<form method="post" action="appointStudentsToGroups">`);
+                    studGroupPairs.forEach(stg => {
+                        let input = selected_input_stud_groups(subjects_in_groups, stg.student.surname + ' ' +  stg.student.student_name + ' ' +  stg.student.patronymic,  stg.group ? stg.group.group_number : '', stg.student.personal_file_num);
+                        form.append(input);
+                    });
+                    //hidden input for subject name
+                    let subject_input = $('<input type="text" hidden name="subject" value="' + subj + '">');
+                    form.append(subject_input);
+                    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
+                    form.append(submit);
+                    $('#content').empty();
+                    $('#content').append(form);
+                }
+            });
+        }
+    });
 }
+
+function selected_input_stud_groups(data, label, value, name) {
+    let group =$(`<div class="input-group mb-1">`);
+    let prep = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let select = $(`<select class="custom-select" name='${name}'>`);
+    select.append($(`<option value="${value}" disabled selected>`).text(value));
+    data.forEach(option=> {let opt = $(`<option value="${option.subject_id}">`).text(option.group_number);
+                           select.append(opt)});
+    select.val(value);
+    return group.append(prep.append(span)).append(select);
+}
+
 function createMarksByPeriod(){
     //TODO get the theme
     // make AJAX request

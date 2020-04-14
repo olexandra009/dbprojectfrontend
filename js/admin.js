@@ -733,7 +733,7 @@ function createConcreteSubjectList(name) {
                 //TODO figure out what to do with group number (5AG1, 5AG2)
                 // the group number(5AG1,...) is primary key of subject in group
                 subject_list.append(subject_list_view(name, {
-                    id: class_number + class_letter + "G?",
+                    id: class_number + class_letter + "G" + sb.group_number,
                     class_name: class_name
                 }))
             });
