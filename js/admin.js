@@ -242,7 +242,7 @@ $(document).on('click', '#add_student', function () {
 
 $(document).on('click', '.st-list, .stlist', function () {
     let id = ($(this).data("id"));
-    let from_class = ($(this).data("class"));
+    let from_class = ($(this).data("class-view"));
     if(from_class==undefined||from_class=='')
         from_class =  ($(this).data("subj-view"));
     createStudentViewById(id, from_class);

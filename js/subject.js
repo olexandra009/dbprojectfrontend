@@ -305,6 +305,10 @@ $(document).on('click', '#show_end_marks', function () {
     endmarkflag = !endmarkflag;
 });
 
+$(document).on('click', '#mark_edition', function(){
+    //todo save or edit marks.
+    let mark_id = $(this).data('mark-id');
+});
 
 /************************Function***************************/
 /*-----Left-menu navigating-----*/
@@ -589,7 +593,7 @@ function showMarkPartEditView(a) {
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
@@ -674,7 +678,7 @@ function createEndMarksView() {
                 let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
                 row.append(td);
             }else{
-                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
+                let td = $(`<td data-column="${column}" data-mark-id="${mark.id}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
 data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
                 row.append(td);
             }
@@ -702,7 +706,7 @@ function  createThemeMarksView(theme){
             let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
             tr.append(td);
         }else {
-            let td = $(`<td data-column="${column}" data-theme=${theme} data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}" data-theme=${theme} data-mark-id =${mark.id} data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             tr.append(td);
 
@@ -737,7 +741,7 @@ function createMarksByPeriod(){
             continue;
         let mark_cell = dairy_data_marks[i];
         let date_format = cellDate(mark_cell.date);
-        let date_cell = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`).text(date_format);
+        let date_cell = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`).text(date_format);
         caption.append(date_cell);
         for(let j = 0; j<data_names.length; j++ ){
             let id = data_names[j].id;
@@ -748,7 +752,7 @@ function createMarksByPeriod(){
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}"  data-mark-id=${mark_cell.id} data-date=${cutData(mark_cell.date)} data-type="dairy" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
         }
@@ -777,7 +781,7 @@ data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type}
+            let td = $(`<td data-column="${column}" data-mark-id="${mark_cell.id}" data-type="special" data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
