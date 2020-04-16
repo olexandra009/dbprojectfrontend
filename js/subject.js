@@ -307,7 +307,10 @@ $(document).on('click', '#show_end_marks', function () {
 
 $(document).on('click', '#mark_edition', function(){
     //todo save or edit marks.
-    let mark_id = $(this).data('mark-id');
+    let mark_id = $(this).data('mark-id'); //if undefined saved mark
+    let mark_comment = document.getElementsByName('comment')[0].value;
+    let mark_value = document.getElementsByName('value')[0].value;
+    let mark_visible = document.getElementsByName('comment')[0].checked;
 });
 
 /************************Function***************************/
@@ -587,13 +590,13 @@ function showMarkPartEditView(a) {
     let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
     let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
     let visible = (a.data('mark-visible')==true);
-    let div = $(`<div>`);
+    let div = $(`<div id="markview">`);
     //maybe make in form
     let input_value = create_input_group('number', 'Значення:', value, 'value', '1', '12', '1', '', true);
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
@@ -604,13 +607,13 @@ function showMarkEditView(a) {
     let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
     let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
     let visible = (a.data('mark-visible')==true);
-    let div = $(`<div>`);
+    let div = $(`<div id="mark_edition_div">`);
     //maybe make in form
     let input_value = create_input_group('number', 'Значення:', value, 'value', '1', '12', '1');
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
@@ -668,7 +671,7 @@ function createEndMarksView() {
     let column = 2000;
     for(let i = 0; i < end_marks.length; i++){
         let mark = end_marks[i];
-        let date_cell = $(`<td data-column="${column}" data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
+        let date_cell = $(`<td data-column="${column}"  data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
         caption.append(date_cell);
         data_names.forEach(st=>{
             let marks= mark.marks.find(el=> el.id==st.id);
@@ -752,7 +755,7 @@ function createMarksByPeriod(){
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}"  data-mark-id=${mark_cell.id} data-date=${cutData(mark_cell.date)} data-type="dairy" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}" data-mark-id=${mark.id} data-date=${cutData(mark_cell.date)} data-type="dairy" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
         }
@@ -781,7 +784,7 @@ data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-mark-id="${mark_cell.id}" data-type="special" data-mark-work-type = ${mark_cell.type}
+            let td = $(`<td data-column="${column}" data-mark-id="${mark.id}" data-type="special" data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);

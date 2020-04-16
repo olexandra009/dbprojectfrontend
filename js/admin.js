@@ -1031,7 +1031,7 @@ function createMarksByPeriod() {
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-teacher-id="${mark.teacher_id}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}" data-mark-id="${mark.id}" data-teacher-id="${mark.teacher_id}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
         }
@@ -1060,7 +1060,7 @@ data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type}
+            let td = $(`<td data-column="${column}" data-type="special"  data-mark-id="${mark.id}" data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" data-teacher-id="${mark.teacher_id}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
@@ -1088,8 +1088,9 @@ function createThemeMarksView(theme) {
         if (mark == undefined) {
             let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
             tr.append(td);
-        } else {
-            let td = $(`<td data-column="${column}" data-theme=${theme} data-teacher-id="${mark.teacher_id}" data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
+        }else {
+            let td = $(`<td data-column="${column}" data-theme=${theme}  data-mark-id="${mark.id}" data-teacher-id="${mark.teacher_id}" data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
+
 data-mark-visible="${mark.visible}">`).text(mark.value);
             tr.append(td);
 
@@ -1111,7 +1112,7 @@ function createEndMarksView() {
     let column = 2000;
     for (let i = 0; i < end_marks.length; i++) {
         let mark = end_marks[i];
-        let date_cell = $(`<td data-column="${column}" data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
+        let date_cell = $(`<td data-column="${column}"  data-mark-id="${mark.id}" data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
         caption.append(date_cell);
         data_names.forEach(st => {
             let marks = mark.marks.find(el => el.id == st.id);
@@ -1371,7 +1372,6 @@ function createFormForAddingStudent() {
     //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
 //    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
-    let selectedType = create_selected_input(['очна', 'заочна'], 'Тип навчання', "type_edu", "Тип викладання", "studying_type");
     $.ajax({
         url: "/getClasses",
         type: "GET",
@@ -1389,8 +1389,7 @@ function createFormForAddingStudent() {
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
                 //.append(benefits)
-                .append(parents).append(who)
-                .append(selectedType).append(selectedClass);
+                .append(parents).append(who).append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
             $('#form_student').remove();
