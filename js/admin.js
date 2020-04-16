@@ -1375,6 +1375,7 @@ function createFormForAddingStudent() {
             $('#student_add').append(form);
         }
     });
+    
 }
 
 function checkAddingStudent() {
