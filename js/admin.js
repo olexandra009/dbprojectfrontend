@@ -8,7 +8,7 @@ $(document).on('click', '#administry', function () {
 
 });
 
-$(document).on('click',"#statistics",function(){
+$(document).on('click', "#statistics", function () {
     nextMenu('statistics');
     document.getElementById('statistics-div').classList.remove('hidden');
     document.getElementById('content').classList.add('hidden');
@@ -47,13 +47,23 @@ $(document).on('click', '#parents', function () {
 });
 
 
-
 //endregion
 
 
 //region Statistics management
 $(document).on('click', '#missed-less', function () {
     //TODO send request to display missed-days.html
+});
+
+$(document).on('click', '#excel-stud', function () {
+    $.ajax({
+        url: "/excellentStudents",
+        type: "GET",
+        success: function (res) {
+            console.log(res);
+
+        }
+    });
 });
 
 //endregion
@@ -120,7 +130,7 @@ $(document).on('click', '#add_teacher', function () {
 $(document).on('click', ".th-list, .thlist", function () {
     let id = ($(this).data("id"));
     let from_class = ($(this).data("class-view"));
-    let from_subj =  ($(this).data("subj-view"));
+    let from_subj = ($(this).data("subj-view"));
     createTeacherViewById(id, from_class, from_subj);
 });
 //edit_teacher
@@ -200,10 +210,10 @@ $(document).on('click', '#add_class', function () {
     createClass = true;
     createFormForAddingClass();
 });
-$(document).on('click', '#class_delete', function(){
+$(document).on('click', '#class_delete', function () {
     //TODO delete class
 });
-$(document).on('click', '.class-list', function(){
+$(document).on('click', '.class-list', function () {
     let id = $(this).data('id');
     createDetailClassView(id);
 });
@@ -211,14 +221,14 @@ $(document).on('click', '#edit_class', function () {
     $('#bacground_adding_parents').remove();
     let div = $(`<div class="container">`);
 
-    let row=$(`<div class="row_button justify-content-between">`);
+    let row = $(`<div class="row_button justify-content-between">`);
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
 
     div.append(row.append(back));
 
-    let subject_id = create_input_group('text', 'Літера:', $(this).data('class-char'),'');
-    let start_date = create_input_group('number', 'Номер:',  $(this).data('class-num'),'');
-    let end_date = create_input_group('number', 'Рік:', $(this).data('year'),'');
+    let subject_id = create_input_group('text', 'Літера:', $(this).data('class-char'), '');
+    let start_date = create_input_group('number', 'Номер:', $(this).data('class-num'), '');
+    let end_date = create_input_group('number', 'Рік:', $(this).data('year'), '');
     div.append(start_date).append(subject_id).append(end_date);
     let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
     createWindow(div.append(submit));
@@ -243,33 +253,33 @@ $(document).on('click', '#add_student', function () {
 $(document).on('click', '.st-list, .stlist', function () {
     let id = ($(this).data("id"));
     let from_class = ($(this).data("class-view"));
-    if(from_class==undefined||from_class=='')
-        from_class =  ($(this).data("subj-view"));
-        createStudentViewById(id, from_class);
+    if (from_class == undefined || from_class == '')
+        from_class = ($(this).data("subj-view"));
+    createStudentViewById(id, from_class);
 
 });
 
-$(document).on('click', '.par-list', function(){
+$(document).on('click', '.par-list', function () {
     //TODO let editable list of student, create opportunity for delete info
     let id = ($(this).data("id"));
     createParentDetailViewById(id);
 
 });
 
-$(document).on('click', '#edit_student', function(){
+$(document).on('click', '#edit_student', function () {
     createEditStudentViewById($('#edit_student'));
 });
 
-$(document).on('click', '#edit_parent', function(){
+$(document).on('click', '#edit_parent', function () {
     createEditParentViewById($('#edit_parent'));
 });
 
-$(document).on('click','#student_non', function () {
+$(document).on('click', '#student_non', function () {
     let id = ($(this).data("id"));
     createStudentViewById(id);
 });
 
-$(document).on('click','#parent_non', function () {
+$(document).on('click', '#parent_non', function () {
 
     let id = ($(this).data("id"));
     createParentDetailViewById(id);
@@ -277,23 +287,23 @@ $(document).on('click','#parent_non', function () {
 });
 
 
-$(document).on('click', '#add_parent', function (){
-    if(!createPerson) {
+$(document).on('click', '#add_parent', function () {
+    if (!createPerson) {
         createFormForAddingParent();
         createPerson = true;
     } else {
         $('#form_add_parent').remove();
-        createPerson= false;
+        createPerson = false;
     }
 });
-$(document).on('click','#parent_delete', function () {
+$(document).on('click', '#parent_delete', function () {
     //todo delete parent
 });
 
-$(document).on('click','#parent_save_edit', function () {
+$(document).on('click', '#parent_save_edit', function () {
     //todo save edited person
 });
-$(document).on('click','#parent_save_edit', function () {
+$(document).on('click', '#parent_save_edit', function () {
     //todo save edited student
 });
 //TODO adequate treatment of the filter-button
@@ -322,9 +332,9 @@ $(document).on('click', '#cn_add_parents, #cn_add_teacher, #cn_add_student, #cn_
     $("#bacground_adding_parents").remove();
     let classflag = ($(this).data("class-view"));
     let subjectflag = ($(this).data("subj-view"));
-    if(classflag!=undefined&&classflag!='undefined'&&classflag!='')
+    if (classflag != undefined && classflag != 'undefined' && classflag != '')
         createDetailClassView(classflag);
-    else if(subjectflag!=undefined&&subjectflag!='undefined'&&subjectflag!='')
+    else if (subjectflag != undefined && subjectflag != 'undefined' && subjectflag != '')
         createConcreteSubjectInformation(subjectflag);
 });
 
@@ -743,7 +753,8 @@ function createConcreteSubjectList(name) {
 
 
 }
-function createParentsView(){
+
+function createParentsView() {
     let student_add = $('#parent_add');
     student_add.empty();
     let theme = $(`<div class="cotainer parents">`);
@@ -752,7 +763,8 @@ function createParentsView(){
     student_add.append(theme);
     $('#parents_view').removeClass('hidden');
 }
-function creatingParentsList(){
+
+function creatingParentsList() {
     //TODO AJAX request for getting students
     let data = [{
         id: "N13404024",
@@ -770,13 +782,15 @@ function creatingParentsList(){
         let divname = $(`<div class="lt col-md-6 name">`).text(th.name);
 
         line.append(divname);
-        container.append(line);});
+        container.append(line);
+    });
 
     $('#content').append(container);
 }
-function createFormForAddingParent(){
+
+function createFormForAddingParent() {
     let form = $('<form class="container" id="form_add_parent"  method="post"   name="form_student" action="">');
-    let input_surname = create_input_group('text', "Прізвище","","last_name");
+    let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
     let city = create_input_group('text', "Місто", "", "city");
@@ -785,11 +799,11 @@ function createFormForAddingParent(){
     let apartment = create_input_group('text', "Квартира", "", "apartment");
 
     //TODO get phones and privileges values
-    let phone = create_input_group_with_button('text', 'Телефон','add_phone');
+    let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
     let workplace = create_input_group('text', "Місце роботи", "", "workplace");
 
     form.append(input_surname).append(input_name).append(input_second_name)
-       .append(phone).append(city).append(street).append(building).append(apartment).append(workplace);
+        .append(phone).append(city).append(street).append(building).append(apartment).append(workplace);
 
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
@@ -839,60 +853,62 @@ function createFormForAddingConcreteSubject(subjName) {
     });
 
 }
-function createEditSubjectInformation(s){
+
+function createEditSubjectInformation(s) {
     //todo get all subject names and class
     $('#bacground_adding_parents').remove();
     let div = $(`<div class="container">`);
 
-    let row=$(`<div class="row_button justify-content-between">`);
+    let row = $(`<div class="row_button justify-content-between">`);
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
 
     div.append(row.append(back));
 
     let subject_name = create_selected_input(['Name1', 'Name2', 'Name3'], 'Назва:', '', s.data('name'));
-    let subject_id = create_input_group('text', 'Підгрупа:', s.data('id'),'');
-    let start_date = create_input_group('date', 'Дата початку викладання:',  s.data('start-date'),'');
-    let end_date = create_input_group('date', 'Дата закінчення викладання:',s.data('end-date'),'');
-    let clas = create_selected_input(['clas1, clsa2'],'class', 'Клас:',s.data('clas'),'');
+    let subject_id = create_input_group('text', 'Підгрупа:', s.data('id'), '');
+    let start_date = create_input_group('date', 'Дата початку викладання:', s.data('start-date'), '');
+    let end_date = create_input_group('date', 'Дата закінчення викладання:', s.data('end-date'), '');
+    let clas = create_selected_input(['clas1, clsa2'], 'class', 'Клас:', s.data('clas'), '');
     div.append(subject_name).append(subject_id).append(clas).append(start_date).append(end_date);
     let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
     createWindow(div.append(submit));
 };
 
-$(document).on('click', '#edit_subject', function(){
+$(document).on('click', '#edit_subject', function () {
     createEditSubjectInformation($('#edit_subject'));
 });
-function createConcreteSubjectInformation(id){
+
+function createConcreteSubjectInformation(id) {
     //todo get subject information
     let div = $(`<div class="container">`);
 
     //{subject_id, subject_name, book, start_date, end_date, class, students_list[], teacher[] {teacher_id, name, start_date, end_date}}
-    let s ={
-        subject_id:'1212',
-        subject_name:'Name1',
-        book:"Book",
+    let s = {
+        subject_id: '1212',
+        subject_name: 'Name1',
+        book: "Book",
         start_date: new Date(),
         end_date: new Date(),
         clas: '5A',
-        student: [{id:1, name: 'St', class_name:'5-F'}, {id:1, name: 'St', class_name: "5-A"}],
-        teacher:[{id:0, name:'Teacher', s_date: new Date(), e_date: new Date()}]
+        student: [{id: 1, name: 'St', class_name: '5-F'}, {id: 1, name: 'St', class_name: "5-A"}],
+        teacher: [{id: 0, name: 'Teacher', s_date: new Date(), e_date: new Date()}]
     }
-    let row=$(`<div class=" row row_button justify-content-between">`);
+    let row = $(`<div class=" row row_button justify-content-between">`);
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}" data-clas="${s.clas}" 
 data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-end-date="${cutData(s.end_date)}" >`).text('Редагувати');
 
     div.append(row.append(back).append(button));
 
-    let subject_name = createInformationViewRows( 'Назва:', s.subject_name);
-    let subject_id = createInformationViewRows( 'Підгрупа:', s.subject_id,);
-    let book =createInformationViewRows( 'Підручник',s.book);
-    let start_date =createInformationViewRows('Дата початку викладання:',  s.start_date.toLocaleDateString(),'');
+    let subject_name = createInformationViewRows('Назва:', s.subject_name);
+    let subject_id = createInformationViewRows('Підгрупа:', s.subject_id,);
+    let book = createInformationViewRows('Підручник', s.book);
+    let start_date = createInformationViewRows('Дата початку викладання:', s.start_date.toLocaleDateString(), '');
     let end_date = createInformationViewRows('Дата закінчення викладання:', s.end_date.toLocaleDateString());
-    let clas = createInformationViewRows('Клас:',s.clas,'');
+    let clas = createInformationViewRows('Клас:', s.clas, '');
     let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Записані учні:"));
     let div_teachers = $(`<div class="container">`).append($(`<div class="row">`).text("Вчителі:"));
-    s.student.forEach(st=>{
+    s.student.forEach(st => {
         let line = $(`<div class="row stlist input-group-text" data-id="${st.id}">`);
         let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.name);
         let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
@@ -900,8 +916,9 @@ data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-en
 
         line.append(divname).append(divt_n)
             .append(divqwl);
-        div_students.append(line)});
-    s.teacher.forEach(te=>{
+        div_students.append(line)
+    });
+    s.teacher.forEach(te => {
         let line = $(`<div class="row thlist input-group-text" data-id="${te.id}">`);
         let divname = $(`<div class="lt col-md-6 text-left  name">`).text(te.name);
         let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(te.s_date.toLocaleDateString());
@@ -920,25 +937,25 @@ $(document).on('click', '#create_marks_by_period', function () {
     //TODO in createMarkView Form give information
     createMarksByPeriod();
 });
-$(document).on('click','.sb_mark_btn', function(){
+$(document).on('click', '.sb_mark_btn', function () {
 
-   let subject_id = $(this).data('id');
-  //TODO get ALL THEME For this  subject in group of class id
+    let subject_id = $(this).data('id');
+    //TODO get ALL THEME For this  subject in group of class id
     createMarksView(['theme1', 'theme2'], subject_id)
 
 });
 
 $(document).on('click', '#show_marks_theme', function () {
-    let theme= $('#theme_id_select').children("option:selected").val();
+    let theme = $('#theme_id_select').children("option:selected").val();
     $('#fst_table').removeClass('col-md-10').removeClass('col-md-8').removeClass('col-md-12').removeClass('col-md-6');
-    if(endmarkflag && thememarkflag){
+    if (endmarkflag && thememarkflag) {
         $('#fst_table').addClass('col-md-8');
         $('#sec_table').removeClass('hidden').addClass('hidden');
-    }else if(endmarkflag && !thememarkflag){
+    } else if (endmarkflag && !thememarkflag) {
         $('#fst_table').addClass('col-md-6');
         createThemeMarksView(theme);
         $('#sec_table').removeClass('hidden');
-    }else if(!endmarkflag && thememarkflag){
+    } else if (!endmarkflag && thememarkflag) {
         $('#fst_table').addClass('col-md-12');
         $('#sec_table').removeClass('hidden').addClass('hidden');
     } else {
@@ -948,21 +965,21 @@ $(document).on('click', '#show_marks_theme', function () {
     }
     thememarkflag = !thememarkflag;
 });
-$(document).on('click', 'td[data-type="dairy"], td[data-type="special"], td[data-type="end"]', function(){
+$(document).on('click', 'td[data-type="dairy"], td[data-type="special"], td[data-type="end"]', function () {
     //todo check if the end mark is editable (if not let to edit comment and visible)
-    if($(this).parent().attr('id') == "table_caption") return;
+    if ($(this).parent().attr('id') == "table_caption") return;
     showMarkView($(this));
 });
 
 $(document).on('click', '#show_end_marks', function () {
     $('#fst_table').removeClass('col-md-6').removeClass('col-md-8').removeClass('col-md-10').removeClass('col-md-12');
-    if(endmarkflag && thememarkflag){
+    if (endmarkflag && thememarkflag) {
         $('#fst_table').addClass('col-md-10');
         $('#thr_table').removeClass('hidden').addClass('hidden');
-    }else if(endmarkflag && !thememarkflag){
+    } else if (endmarkflag && !thememarkflag) {
         $('#fst_table').addClass('col-md-12');
         $('#thr_table').removeClass('hidden').addClass('hidden');
-    }else if(!endmarkflag && !thememarkflag){
+    } else if (!endmarkflag && !thememarkflag) {
         $('#fst_table').addClass('col-md-8');
         createEndMarksView();
     } else {
@@ -971,22 +988,23 @@ $(document).on('click', '#show_end_marks', function () {
     }
     endmarkflag = !endmarkflag;
 });
+
 function showMarkView(a) {
     // todo get techer name by id
     //  a.data('teacher-id')
-    let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
-    let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
+    let value = (a.data('mark-value') == undefined) ? '' : a.data('mark-value');
+    let comment = (a.data('mark-comment') == undefined) ? '' : a.data('mark-comment');
     let div = $(`<div>`);
-    let input_value = create_input_group('number', 'Значення:', value, 'value', '','', true);
-    let input_comment = create_input_group('text', 'Коментар:', comment, 'comment','','', true );
+    let input_value = create_input_group('number', 'Значення:', value, 'value', '', '', true);
+    let input_comment = create_input_group('text', 'Коментар:', comment, 'comment', '', '', true);
     //todo or make a-href and show info about teacher
-    let div_techer =  create_input_group('text', 'Вчитель', 'тут має бути імя вчителя', '', '','', true);
+    let div_techer = create_input_group('text', 'Вчитель', 'тут має бути імя вчителя', '', '', '', true);
     let div_btn = $(`<div class="btn-group">`);
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cn_add_parents">`).text("Назад");
     div_btn.append(cancel);
     div.append(input_value).append(input_comment).append(div_techer).append(div_btn);
     createWindow(div);
-    $('input').attr('readonly','true');
+    $('input').attr('readonly', 'true');
 }
 
 
@@ -1002,28 +1020,27 @@ function createMarksByPeriod() {
     table.append(caption.append(tr));
     $('#marks_view_table').removeClass('hidden');
 
-    data_names.forEach(student=> {
+    data_names.forEach(student => {
         let td = $(`<tr id="table-row-${student.id}" class="table-row-${student.id}">`);
-        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name + " " + student.first_name + " " + student.second_name);
         td.append(first_tr);
         table.append(td);
     });
 
     let column = 0;
     //поточні оцінки
-    for(let i = 0; i<dairy_data_marks.length; i++)
-    {
-        if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
+    for (let i = 0; i < dairy_data_marks.length; i++) {
+        if (dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length === 0)
             continue;
         let mark_cell = dairy_data_marks[i];
         let date_format = cellDate(mark_cell.date);
         let date_cell = $(`<td data-column="${column}"  data-date=${mark_cell.date} data-type="dairy">`).text(date_format);
         caption.append(date_cell);
-        for(let j = 0; j<data_names.length; j++ ){
+        for (let j = 0; j < data_names.length; j++) {
             let id = data_names[j].id;
-            let mark= mark_cell.marks.find(el=> el.id==id);
-            let row = $("#table-row-"+id);
-            if(mark===undefined) {
+            let mark = mark_cell.marks.find(el => el.id == id);
+            let row = $("#table-row-" + id);
+            if (mark === undefined) {
                 let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`);
                 row.append(td);
                 continue;
@@ -1037,7 +1054,7 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
     column++;
     //спеціальні оцінки
     let i;
-    for(i = 0; i<special_data_marks.length; i++) //for every data-marks
+    for (i = 0; i < special_data_marks.length; i++) //for every data-marks
     {
 
         let mark_cell = special_data_marks[i];
@@ -1045,13 +1062,13 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
 data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
         caption.append(date_cell);
-        for(let j = 0; j<data_names.length; j++ ){
+        for (let j = 0; j < data_names.length; j++) {
             let id = data_names[j].id;
 
-            let mark= mark_cell.marks.find(el=> el.id==id);
-            let row = $("#table-row-"+id);
+            let mark = mark_cell.marks.find(el => el.id == id);
+            let row = $("#table-row-" + id);
 
-            if(mark===undefined) {
+            if (mark === undefined) {
 
                 let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type} data-mark-name="${mark_cell.name}">`);
                 row.append(td);
@@ -1069,7 +1086,7 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
 }
 
 
-function createThemeMarksView(theme){
+function createThemeMarksView(theme) {
     let table = $('#marks_theme');
     table.empty();
     let caption = $(`<tr id="table_theme_caption">`);
@@ -1079,13 +1096,13 @@ function createThemeMarksView(theme){
     let date_cell = $(`<td data-column="${column}" data-type="theme">`).text(theme);
     caption.append(date_cell);
 
-    data_names.forEach(st=>{
+    data_names.forEach(st => {
         let tr = $(`<tr id="table-th-row-${st.id}" class="table-row-${st.id}">`);
-        let mark= them_marks.find(el=> el.id==st.id);
-        if(mark==undefined) {
+        let mark = them_marks.find(el => el.id == st.id);
+        if (mark == undefined) {
             let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
             tr.append(td);
-        }else {
+        } else {
             let td = $(`<td data-column="${column}" data-theme=${theme} data-teacher-id="${mark.teacher_id}" data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             tr.append(td);
@@ -1094,31 +1111,32 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
         table.append(tr);
     })
 }
+
 function createEndMarksView() {
 
     let table = $('#marks_end');
     let caption = $(`<tr id="table_end_caption">`);
     table.empty();
     table.append(caption);
-    data_names.forEach(st=>{
+    data_names.forEach(st => {
         let tr = $(`<tr id="table-end-row-${st.id}" class="table-row-${st.id}">`);
         table.append(tr);
     });
     let column = 2000;
-    for(let i = 0; i < end_marks.length; i++){
+    for (let i = 0; i < end_marks.length; i++) {
         let mark = end_marks[i];
         let date_cell = $(`<td data-column="${column}" data-type-mark="${mark.type}" data-type="end">`).text(mark.type);
         caption.append(date_cell);
-        data_names.forEach(st=>{
-            let marks= mark.marks.find(el=> el.id==st.id);
-            let row = $("#table-end-row-"+st.id);
+        data_names.forEach(st => {
+            let marks = mark.marks.find(el => el.id == st.id);
+            let row = $("#table-end-row-" + st.id);
 
-            if(marks===undefined) {
+            if (marks === undefined) {
                 let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
                 row.append(td);
-            }else{
+            } else {
                 let td = $(`<td data-column="${column}"data-teacher-id="${mark.teacher_id}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
-data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
+data-mark-visible="${marks.visible} data-mark-comment=" ${marks.comment} ">`).text(marks.value);
                 row.append(td);
             }
         });
@@ -1129,10 +1147,10 @@ data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).t
     $('#thr_table').removeClass('hidden');
 }
 
-function createMarksView(data, subj_id){
+function createMarksView(data, subj_id) {
     let div = $(`<div id="choose_period">`);
     let dataform = $(`<div class="form">`); //можливо краще форму?
-    let input=$(`<input type="hidden" name="subject_id", value="${subj_id}">`);
+    let input = $(`<input type="hidden" name="subject_id", value="${subj_id}">`);
     dataform.append(input);
     let inputdate1 = create_selected_input(data, 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
     let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
@@ -1143,7 +1161,7 @@ function createMarksView(data, subj_id){
     let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
     btn_div.append(button_).append(button_end);
     marks_view.append(btn_div);
-    let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
+    let div_table_wrapper = $(`<div id="marks_table_wrapper" class="row">`);
     let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
     let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
     let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
@@ -1171,30 +1189,31 @@ function createMarksView(data, subj_id){
     $('#content').append(div).append(marks_view);
 }
 
-$(document).on('click', '.class-marks', function(){
-   let id = $(this).data('class');
-   createSubjectGroupViewOfClassById(id);
+$(document).on('click', '.class-marks', function () {
+    let id = $(this).data('class');
+    createSubjectGroupViewOfClassById(id);
 });
 
 function createSubjectGroupViewOfClassById(id) {
 //TODO get All subject in group of class id
     let subject_list = $(`<div>`);
     let subjectsInGroup = [{id: '5AG1', name: 'English', class_name: '5-A'},
-                                   {id: '5AG2', name: 'English', class_name: '5-A'},
-                                  {id: '5BG1', name: 'English', class_name: '5-B'}];
+        {id: '5AG2', name: 'English', class_name: '5-A'},
+        {id: '5BG1', name: 'English', class_name: '5-B'}];
 
-        subjectsInGroup.forEach(sb => {
-            // the group number(5AG1,...) is primary key of subject in group
-            let $subject = $(`<button data-id="${sb.id}" data-class="${id}" type="button" class="btn my_btn sb_mark_btn btn-outline-success my-2 btn-lg btn-block">`);
-            $subject.text(sb.name + " " + sb.class_name + " " + sb.id);
-            subject_list.append($subject);
-        });
+    subjectsInGroup.forEach(sb => {
+        // the group number(5AG1,...) is primary key of subject in group
+        let $subject = $(`<button data-id="${sb.id}" data-class="${id}" type="button" class="btn my_btn sb_mark_btn btn-outline-success my-2 btn-lg btn-block">`);
+        $subject.text(sb.name + " " + sb.class_name + " " + sb.id);
+        subject_list.append($subject);
+    });
 
     $("#bacground_adding_parents").remove();
     $("#content").empty().append(subject_list);
 
 }
-function createDetailClassView(id){
+
+function createDetailClassView(id) {
     //todo ajax
     let data = {
         id: id,
@@ -1203,21 +1222,21 @@ function createDetailClassView(id){
         year: "2019",
         leader_id: "13112121",
         leader_name: "Teacher Teacher Teacher",
-        students: [{id:1, name: 'St'}, {id:1, name: 'St'}],
+        students: [{id: 1, name: 'St'}, {id: 1, name: 'St'}],
     };
     let div = $(`<div class="container">`);
-    let row=$(`<div class=" row row_button justify-content-between">`);
+    let row = $(`<div class=" row row_button justify-content-between">`);
     let back = $(` <button id="cn_add_class" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_class" class="btn my_btn btn-outline-success" data-id="${data.id}" data-class-num="${data.class_num}" 
 data-class-char="${data.class_char}" data-year="${data.year}">`).text('Редагувати');
     div.append(row.append(back).append(button));
-    let class_name = createInformationViewRows( 'Клас:', data.class_num+'-'+data.class_char);
-    let class_year = createInformationViewRows( 'Рік:', data.year);
+    let class_name = createInformationViewRows('Клас:', data.class_num + '-' + data.class_char);
+    let class_year = createInformationViewRows('Рік:', data.year);
     let leader = createInformationViewRows('Класний керівник:', data.leader_name);
     leader.addClass('thlist');
     leader.attr('data-class-view', data.leader_id);
     let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
-    data.students.forEach(st=>{
+    data.students.forEach(st => {
         let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
         let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.name);
         let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
@@ -1225,7 +1244,8 @@ data-class-char="${data.class_char}" data-year="${data.year}">`).text('Реда�
 
         line.append(divname).append(divt_n)
             .append(divqwl);
-        div_students.append(line)});
+        div_students.append(line)
+    });
     let divrow = $(`<div class="row">`);
     let mark_button = $(`<div class="input-group-text class-marks w-100" data-class="${data.id}">`).text('Оцінки');
     div_students.append(divrow.append(mark_button));
@@ -1245,19 +1265,19 @@ function addingClassView() {
     theme.append($(`<button class="btn my_btn btn-outline-success" id="add_class">`).text('Додати клас'));
     theme.append($(`<div id="add_class_form">`));
     class_button.append(theme);
-    let classes=[{class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
+    let classes = [{class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
         {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
         {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}]
 
-/*
-  classes.forEach(item => {
-        let div = $(`<div data-id="${item.class_id}" class="class-list">`)
-        let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
-        class_list.append(div.append(p));
-    });
-*/
+    /*
+      classes.forEach(item => {
+            let div = $(`<div data-id="${item.class_id}" class="class-list">`)
+            let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
+            class_list.append(div.append(p));
+        });
+    */
 
-   $.ajax({
+    $.ajax({
         url: "/getClasses",
         type: "GET",
         contentType: "application/json",
@@ -1269,9 +1289,9 @@ function addingClassView() {
             //each item in classes {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}
             //TODO pretty table for classes
             classes.forEach(item => {
-                 let div = $(`<div data-id="${item.class_id}" class="class-list">`)
-        let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
-        class_list.append(div.append(p));
+                let div = $(`<div data-id="${item.class_id}" class="class-list">`)
+                let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
+                class_list.append(div.append(p));
             });
         }
     });
@@ -1410,7 +1430,7 @@ function createParentDetailViewById(id) {
     };
 
     let div = $(`<div class="container">`); // обгортка
-    let row=$(`<div class="row row_button">`);
+    let row = $(`<div class="row row_button">`);
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_parent" class="btn my_btn btn-outline-success" data-id="${data.id}" 
 data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
@@ -1428,9 +1448,9 @@ data-work-place="${data.workplace}">`).text('Редагувати');
     div.append(row).append(tn).append(first_name).append(second_name)
         .append(last_name).append(address)
         .append(type);
-    data.phone.forEach(person=>div.append(createInformationViewRows("Телефон:", person)));
-    let div_last=  $(`<div class="row btn-group mar">`);
-    let delete_ =  $(` <button id="parent_delete" class="my_btn btn-outline-success btn" 
+    data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
+    let div_last = $(`<div class="row btn-group mar">`);
+    let delete_ = $(` <button id="parent_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Видалити');
     div_last.append(delete_);
     div.append(div_last);
@@ -1543,35 +1563,35 @@ data-id="${a.data("id")}">`).text('Скасувати');
     //TODO Change person to selected items and get names
     // add delete and new person add
 
-    persons.forEach(person=>div.append(create_input_group("text","Відповідальна особа:", person, "person")));
-    phone.forEach(person=>div.append(create_input_group("tel","Телефон:", person, "phone")));
+    persons.forEach(person => div.append(create_input_group("text", "Відповідальна особа:", person, "person")));
+    phone.forEach(person => div.append(create_input_group("tel", "Телефон:", person, "phone")));
     div.append(create_input_group_with_button('tel', 'Телефон', 'add_phone', 'phone'));
-    benefits.forEach(person=>div.append(create_input_group("text", "Пільги:", person, "benefit")));
+    benefits.forEach(person => div.append(create_input_group("text", "Пільги:", person, "benefit")));
     div.append(create_input_group_with_button('text', 'Пільги', 'add_benefits', 'benefit'));
     div_last.append(dismiss).append(delete_);
     div.append(div_last);
     createWindow(div);
 }
 
-function createEditParentViewById(a){
+function createEditParentViewById(a) {
 
     let div = $(`<div class="container">`);
     $("#bacground_adding_parents").remove();
-    let row=$(`<div class="row row_button">`);
+    let row = $(`<div class="row row_button">`);
     let back = $(` <button id="parent_non" class="btn my_btn btn-outline-success" >`).text("Назад");
     let tn = create_input_group("text", "Персональний номер", a.data("id"), "id");
     let first_name = create_input_group("text", "Ім'я", a.data("first_name"), "first_name");
-    let second_name = create_input_group("text", "По батькові", a.data("second_name"),"second_name" );
+    let second_name = create_input_group("text", "По батькові", a.data("second_name"), "second_name");
     let last_name = create_input_group("text", "Прізвище", a.data("last_name"), "last_name");
     let workplace = create_input_group("text", "Місце роботи", a.data("workplace"), "workplace");
     let city = create_input_group("text", "Місто", a.data("address"), "address");
     let street = create_input_group("text", "Вулиця", a.data("address"), "address");
     let building = create_input_group("text", "Будинок", a.data("address"), "address");
-    let  flat = create_input_group("text", "Квартира", a.data("address"), "address");
-    let div_last=  $(`<div class="row btn-group mar">`);
-    let dismiss =  $(` <button id="parent_save_edit" class=" my_btn btn-outline-success btn" 
+    let flat = create_input_group("text", "Квартира", a.data("address"), "address");
+    let div_last = $(`<div class="row btn-group mar">`);
+    let dismiss = $(` <button id="parent_save_edit" class=" my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Зберегти');
-    let delete_ =  $(` <button id="parent_non" class="my_btn btn-outline-success btn" 
+    let delete_ = $(` <button id="parent_non" class="my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Скасувати');
     row.append(back);
     div.append(row).append(tn).append(first_name).append(second_name)
@@ -1581,13 +1601,12 @@ data-id="${a.data("id")}">`).text('Скасувати');
 
     //TODO Change person to selected items and get names
     // add delete and new person add
-    phone.forEach(person=>div.append(create_input_group("tel","Телефон:", person, "phone")));
+    phone.forEach(person => div.append(create_input_group("tel", "Телефон:", person, "phone")));
 
     div_last.append(dismiss).append(delete_);
     div.append(div_last);
     createWindow(div);
 };
-
 
 
 function createPersonForm() {
@@ -1682,10 +1701,11 @@ function create_input_group_with_button(input_type, label_name, button_id) {
     return group.append(prepend.append(label))
         .append(input).append(append.append(button));
 }
-function cellDate(data){
-    return  ((data.getDate() < 10) ?
-        ("0" + data.getDate()) : data.getDate())+ "." +(((data.getMonth()+1) < 10) ?
-        ("0" + (data.getMonth()+1)) : (data.getMonth()+1) );
+
+function cellDate(data) {
+    return ((data.getDate() < 10) ?
+        ("0" + data.getDate()) : data.getDate()) + "." + (((data.getMonth() + 1) < 10) ?
+        ("0" + (data.getMonth() + 1)) : (data.getMonth() + 1));
 }
 
 function createWindow(innerItem) {
