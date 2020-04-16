@@ -1389,7 +1389,6 @@ function createFormForAddingStudent() {
     //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
 //    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
-    let selectedType = create_selected_input(['очна', 'заочна'], 'Тип навчання', "type_edu", "Тип викладання", "studying_type");
     $.ajax({
         url: "/getClasses",
         type: "GET",
@@ -1407,8 +1406,7 @@ function createFormForAddingStudent() {
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
                 //.append(benefits)
-                .append(parents).append(who)
-                .append(selectedType).append(selectedClass);
+                .append(parents).append(who).append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
             $('#form_student').remove();
