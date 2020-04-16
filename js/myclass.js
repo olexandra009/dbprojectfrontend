@@ -162,23 +162,24 @@ $(document).on('click', '#add_phone', function (){
         .after(create_input_group_with_button('tel', 'Телефони', 'add_phone'));
     $(this).parent().remove();
 });
+/*
 $(document).on('click', '#add_benefits', function (){
     $(this).parent().parent().after(create_input_group_with_button('text', 'Пільги', 'add_benefits'));
     $(this).parent().remove();
 });
-
+*/
 $(document).on('click', '#edit_st', function(){
     $('.st-info-ed').removeAttr('readonly').removeAttr('disabled');
     $('#edit_st').addClass('hidden');
     let button = $(`<button class="btn btn-outline-success my_btn"  id="save_student_change">`).text('Зберегти зміни');
     $('.student_info_list').append(button);
     let tel = create_input_group_with_button('tel', 'Телефони', 'add_phone');
-    if( $('input[type="tel"]') == undefined)       $('#type_st').parent().before(benefits);
+    if( $('input[type="tel"]') == undefined)       $('#type_st').parent().before(tel);
     else  $('input[type="tel"]').last().parent().after(tel);
-    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
+    //let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
 
-    if( $('input[label="Пільги"]').length == 0)   $('#type_st').parent().after(benefits);
-    else   $('input[label="Пільги"]').last().parent().after(benefits);
+   // if( $('input[label="Пільги"]').length == 0)   $('#type_st').parent().after(benefits);
+    // else   $('input[label="Пільги"]').last().parent().after(benefits);
 });
 let changinggroupflag = false;
 
@@ -817,10 +818,10 @@ let student_detail_view =({
                                i++;
                                student_block.append(in_ph);});
     i= 0;
-    if(p!=undefined&&p!=='')
-        p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
-                         i++;
-                         student_block.append(in_ph);});
+  //  if(p!=undefined&&p!=='')
+  //      p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
+  //                       i++;
+   //                      student_block.append(in_ph);});
     let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
     let buttonparents =$(`<button id="parents" class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
     student_block.append(input_type);

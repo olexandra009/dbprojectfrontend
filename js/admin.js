@@ -57,7 +57,7 @@ $(document).on('click', '#missed-less', function () {
 
 $(document).on('click', '#excel-stud', function () {
     console.log('open');
-    window.open('/excellent-students.html','_blank');
+    window.open('/excellent-students.html', '_blank');
 });
 
 //endregion
@@ -444,33 +444,31 @@ function identifyClassroomLeaders() {
                     console.log(res);
 
                     cls_le = true;
-                    /*let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form">`);
-                    let teacher_data = teachers.map(function (teacher) {
-                        return teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
+                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form">`);
+                    let classTeacher = res.map(function (item) {
+                        return {
+                            class_id: item.class_id,
+                            class: item.class_number+' '+item.class_char,
+                            teacher_id: item.tabel_number,
+                            teacher: item.surname + " " + item.teacher_name + " " + item.patronymic
+                        };
+                    });
+                    let teacher_data = teachers.map(function (teacher){
+                        return {
+                            id: teacher.tabel_number,
+                            name: teacher.teacher_name +' '+teacher.patronymic+' '+teacher.surname
+                        }
                     });
 
-                    let classPairs = teacherClasses.map(function (item) {
-                        if (item.teacher) {
-                            return {
-                                class: item.class.class_id.substring(0, item.class.class_id.length - 5) + "-" + item.class.class_id.substring(item.class.class_id.length - 5, item.class.class_id.length - 4) + " " + item.class.class_id.substring(item.class.class_id.length - 4),
-                                teacher: item.teacher.surname + " " + item.teacher.teacher_name + " " + item.teacher.patronymic + " ID: " + item.teacher.tabel_number
-                            }
+                    classTeacher.forEach(({class_id: ci, class: cn, teacher: tc, teacher_id: ti}) => {
+                        if (ti == null) {
+                            let input = create_selected_input_o(teacher_data, cn, "", "Оберіть вчителя", ci);
+                            tch_list.append(input)
                         } else {
-                            return {
-                                class: item.class.class_id.substring(0, item.class.class_id.length - 5) + "-" + item.class.class_id.substring(item.class.class_id.length - 5, item.class.class_id.length - 4) + " " + item.class.class_id.substring(item.class.class_id.length - 4),
-                                teacher: ''
-                            }
+                            let input = create_selected_input_o(teacher_data, cn, "", tc, ci);
+                            tch_list.append(input)
                         }
                     });
-                    classPairs.forEach(({class: cn, teacher: tc}) => {
-                        if (tc === undefined || tc == null || tc === '') {
-                            let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
-                            tch_list.append(input)
-                        } else {
-                            let input = create_selected_input(teacher_data, cn, "", tc);
-                            tch_list.append(input)
-                        }
-                    });*/
                     let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`);
                     tch_list.append(submit);
                     $('#cls_le').after(tch_list);
@@ -500,7 +498,6 @@ function identifyClassroomLeaders() {
     //    tch_list.append(submit);
     //    $('#cls_le').after(tch_list);
 }
-
 
 
 /*************Teacher-page function ****************/
@@ -1221,7 +1218,7 @@ function createDetailClassView(id) {
                 class_char: classInfo.class_char,
                 year: classInfo.start_year,
                 leader_id: classInfo.tabel_number,
-                leader_name: !classInfo.tabel_number? "" : classInfo.teacher_name+' '+classInfo.patronymic+' '+classInfo.surname ,
+                leader_name: !classInfo.tabel_number ? "" : classInfo.teacher_name + ' ' + classInfo.patronymic + ' ' + classInfo.surname,
                 students: res.students,
             };
             let div = $(`<div class="container">`);
@@ -1715,6 +1712,20 @@ function create_selected_input_with_button(data, label, id, btn_id, btn_tx, valu
     prep.append(span);
     append.append(button);
     return group.append(prep).append(select).append(append);
+}
+
+//data[{name:name, id:id}]
+function create_selected_input_o(data, label, id, value, name = "name") {
+    let group = $(`<div class="input-group mb-1">`);
+    let prep = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let select = $(`<select class="custom-select" id="${id}" name="${name}">`);
+    select.append($(`<option value="" disabled selected>`).text(value));
+    data.forEach(option => {
+        let opt = $(`<option value="${option.id}">`).text(option.name);
+        select.append(opt)
+    });
+    return group.append(prep.append(span)).append(select);
 }
 
 function create_selected_input(data, label, id, value, name = "name") {

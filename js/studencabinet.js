@@ -375,7 +375,7 @@ function getStudentInfo(){
             $('#info_sex').html("Стать: " + student.sex);
             $('#info_address').html("Адреса: " + student.city + ", " + student.street + " " + student.building + "/" + student.apartment);
             $('#info_phones').html("Телефони: ");
-            $('#info_privileges').html("Пільги: ");
+           // $('#info_privileges').html("Пільги: ");
             $('#info_studyingType').html("Тип навчання: " + student.studying_type);
         }
     });
