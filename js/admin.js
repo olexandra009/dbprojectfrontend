@@ -1335,6 +1335,8 @@ function addingStudentView() {
 
 function createFormForAddingStudent() {
     let form = $('<form class="container" method="post" onsubmit="return checkAddingStudent()" name="form_student" id="form_student" action="createStudent">');
+    let input_personal = create_input_group('text', "Номер особової справи:", "", "id");
+
     let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
@@ -1364,7 +1366,7 @@ function createFormForAddingStudent() {
 
             let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
-            form.append(input_surname).append(input_name).append(input_second_name)
+            form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment).append(benefits).append(parents).append(who)
                 .append(selectedType).append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
