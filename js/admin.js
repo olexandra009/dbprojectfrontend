@@ -439,34 +439,36 @@ function identifyClassroomLeaders() {
                 success: function (teacherClasses) {
                     console.log(teacherClasses);
                     teacherClasses.sort(function (a, b) {
-                        return a.class.class_number - b.class.class_number || a.class.class_char - b.class.class_char;
+                        return a.class_number - b.class_number || a.class_char - b.class_char;
                     });
 
                     cls_le = true;
                     let tch_list = $(`<div id="cls_le_form">`);
                     let teacher_data = teachers.map(function (teacher) {
-                        return teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
+                        return {id:teacher.tabel_number ,name: teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number};
                     });
 
                     let classPairs = teacherClasses.map(function (item) {
                         if (item.teacher) {
                             return {
-                                class: item.class.class_id.substring(0, item.class.class_id.length - 5) + "-" + item.class.class_id.substring(item.class.class_id.length - 5, item.class.class_id.length - 4) + " " + item.class.class_id.substring(item.class.class_id.length - 4),
+                                class_id: item.class_id,
+                                class: item.class_id.substring(0, item.class_id.length - 5) + "-" + item.class_id.substring(item.class_id.length - 5, item.class_id.length - 4) + " " + item.class_id.substring(item.class_id.length - 4),
                                 teacher: item.teacher.surname + " " + item.teacher.teacher_name + " " + item.teacher.patronymic + " ID: " + item.teacher.tabel_number
                             }
                         } else {
                             return {
-                                class: item.class.class_id.substring(0, item.class.class_id.length - 5) + "-" + item.class.class_id.substring(item.class.class_id.length - 5, item.class.class_id.length - 4) + " " + item.class.class_id.substring(item.class.class_id.length - 4),
+                                class_id: item.class_id,
+                                class: item.class_id.substring(0, item.class_id.length - 5) + "-" + item.class_id.substring(item.class_id.length - 5, item.class_id.length - 4) + " " + item.class_id.substring(item.class_id.length - 4),
                                 teacher: ''
                             }
                         }
                     });
-                    classPairs.forEach(({class: cn, teacher: tc}) => {
+                    classPairs.forEach(({class_id:ci, class: cn, teacher: tc}) => {
                         if (tc === undefined || tc == null || tc === '') {
-                            let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
+                            let input = create_selected_input_o(teacher_data, cn, "", "Оберіть вчителя", ci);
                             tch_list.append(input)
                         } else {
-                            let input = create_selected_input(teacher_data, cn, "", tc);
+                            let input = create_selected_input_o(teacher_data, cn, "", tc, ci);
                             tch_list.append(input)
                         }
                     });
@@ -1690,6 +1692,19 @@ function create_selected_input_with_button(data, label, id, btn_id, btn_tx, valu
     prep.append(span);
     append.append(button);
     return group.append(prep).append(select).append(append);
+}
+//data[{name:name, id:id}]
+function create_selected_input_o(data, label, id, value, name = "name") {
+    let group = $(`<div class="input-group mb-1">`);
+    let prep = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let select = $(`<select class="custom-select" id="${id}" name="${name}">`);
+    select.append($(`<option value="" disabled selected>`).text(value));
+    data.forEach(option => {
+        let opt = $(`<option value="${option.id}">`).text(option.name);
+        select.append(opt)
+    });
+    return group.append(prep.append(span)).append(select);
 }
 
 function create_selected_input(data, label, id, value, name = "name") {
