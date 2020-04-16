@@ -56,14 +56,8 @@ $(document).on('click', '#missed-less', function () {
 });
 
 $(document).on('click', '#excel-stud', function () {
-    $.ajax({
-        url: "/excellentStudents",
-        type: "GET",
-        success: function (res) {
-            console.log(res);
-
-        }
-    });
+    console.log('open');
+    window.open('/excellent-students.html','_blank');
 });
 
 //endregion
@@ -256,14 +250,12 @@ $(document).on('click', '.st-list, .stlist', function () {
     if (from_class == undefined || from_class == '')
         from_class = ($(this).data("subj-view"));
     createStudentViewById(id, from_class);
-
 });
 
 $(document).on('click', '.par-list', function () {
     //TODO let editable list of student, create opportunity for delete info
     let id = ($(this).data("id"));
     createParentDetailViewById(id);
-
 });
 
 $(document).on('click', '#edit_student', function () {
@@ -311,10 +303,12 @@ $(document).on('click', '#parent_save_edit', function () {
 
 /*****************Form-inner buttons*******************/
 //Клік на плюсик до пільг
+/*
 $(document).on('click', '#add_benefits', function () {
     $(this).parent().parent().after(create_input_group_with_button('text', 'Пільги', 'add_benefits'));
     $(this).parent().remove();
 });
+ */
 //клік на плюсик в формі телефонів
 $(document).on('click', '#add_phone', function () {
     $(this).parent().parent()
@@ -446,14 +440,11 @@ function identifyClassroomLeaders() {
                 url: "/getTeacherClasses",
                 type: "GET",
                 contentType: "application/json",
-                success: function (teacherClasses) {
-                    console.log(teacherClasses);
-                    teacherClasses.sort(function (a, b) {
-                        return a.class.class_number - b.class.class_number || a.class.class_char - b.class.class_char;
-                    });
+                success: function (res) {
+                    console.log(res);
 
                     cls_le = true;
-                    let tch_list = $(`<div id="cls_le_form">`);
+                    /*let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form">`);
                     let teacher_data = teachers.map(function (teacher) {
                         return teacher.surname + " " + teacher.teacher_name + " " + teacher.patronymic + " ID: " + teacher.tabel_number;
                     });
@@ -479,14 +470,15 @@ function identifyClassroomLeaders() {
                             let input = create_selected_input(teacher_data, cn, "", tc);
                             tch_list.append(input)
                         }
-                    });
-                    let submit = $(`<input type="submit" class="input-group-text">`);
+                    });*/
+                    let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`);
                     tch_list.append(submit);
                     $('#cls_le').after(tch_list);
                 }
             });
         }
     });
+
 
     //    cls_le=true;
     //    let tch_list = $(`<div id="cls_le_form">`);
@@ -508,6 +500,8 @@ function identifyClassroomLeaders() {
     //    tch_list.append(submit);
     //    $('#cls_le').after(tch_list);
 }
+
+
 
 /*************Teacher-page function ****************/
 //Create filter-form
@@ -743,7 +737,7 @@ function createConcreteSubjectList(name) {
                 //TODO figure out what to do with group number (5AG1, 5AG2)
                 // the group number(5AG1,...) is primary key of subject in group
                 subject_list.append(subject_list_view(name, {
-                    id: class_number + class_letter + "G?",
+                    id: class_number + class_letter + "G" + sb.group_number,
                     class_name: class_name
                 }))
             });
@@ -1195,7 +1189,7 @@ $(document).on('click', '.class-marks', function () {
 });
 
 function createSubjectGroupViewOfClassById(id) {
-//TODO get All subject in group of class id
+    //TODO get All subject in group of class id
     let subject_list = $(`<div>`);
     let subjectsInGroup = [{id: '5AG1', name: 'English', class_name: '5-A'},
         {id: '5AG2', name: 'English', class_name: '5-A'},
@@ -1214,47 +1208,55 @@ function createSubjectGroupViewOfClassById(id) {
 }
 
 function createDetailClassView(id) {
-    //todo ajax
-    let data = {
-        id: id,
-        class_num: "1",
-        class_char: "A",
-        year: "2019",
-        leader_id: "13112121",
-        leader_name: "Teacher Teacher Teacher",
-        students: [{id: 1, name: 'St'}, {id: 1, name: 'St'}],
-    };
-    let div = $(`<div class="container">`);
-    let row = $(`<div class=" row row_button justify-content-between">`);
-    let back = $(` <button id="cn_add_class" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let button = $(` <button id="edit_class" class="btn my_btn btn-outline-success" data-id="${data.id}" data-class-num="${data.class_num}" 
+    $.ajax({
+        url: "/getClassDetails" + id,
+        type: "GET",
+        contentType: "application/json",
+        success: function (res) {
+            console.log(res);
+            let classInfo = res.classInfo[0];
+            let data = {
+                id: classInfo.class_id,
+                class_num: classInfo.class_number,
+                class_char: classInfo.class_char,
+                year: classInfo.start_year,
+                leader_id: classInfo.tabel_number,
+                leader_name: !classInfo.tabel_number? "" : classInfo.teacher_name+' '+classInfo.patronymic+' '+classInfo.surname ,
+                students: res.students,
+            };
+            let div = $(`<div class="container">`);
+            let row = $(`<div class=" row row_button justify-content-between">`);
+            let back = $(` <button id="cn_add_class" class="btn my_btn btn-outline-success" >`).text("Назад");
+            let button = $(` <button id="edit_class" class="btn my_btn btn-outline-success" data-id="${data.id}" data-class-num="${data.class_num}" 
 data-class-char="${data.class_char}" data-year="${data.year}">`).text('Редагувати');
-    div.append(row.append(back).append(button));
-    let class_name = createInformationViewRows('Клас:', data.class_num + '-' + data.class_char);
-    let class_year = createInformationViewRows('Рік:', data.year);
-    let leader = createInformationViewRows('Класний керівник:', data.leader_name);
-    leader.addClass('thlist');
-    leader.attr('data-class-view', data.leader_id);
-    let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
-    data.students.forEach(st => {
-        let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
-        let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.name);
-        let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
-        let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
+            div.append(row.append(back).append(button));
+            let class_name = createInformationViewRows('Клас:', data.class_num + '-' + data.class_char);
+            let class_year = createInformationViewRows('Рік:', data.year);
+            let leader = createInformationViewRows('Класний керівник:', data.leader_name);
+            leader.addClass('thlist');
+            leader.attr('data-class-view', data.leader_id);
+            let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
+            data.students.forEach(st => {
+                let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
+                let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname);
+                let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
+                let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
 
-        line.append(divname).append(divt_n)
-            .append(divqwl);
-        div_students.append(line)
-    });
-    let divrow = $(`<div class="row">`);
-    let mark_button = $(`<div class="input-group-text class-marks w-100" data-class="${data.id}">`).text('Оцінки');
-    div_students.append(divrow.append(mark_button));
-    div.append(class_name).append(class_year).append(leader).append(div_students);
-    let div_last = $(`<div class="row btn-group mar">`);
-    let delete_ = $(` <button id="class_delete" class="my_btn btn-outline-success btn" 
+                line.append(divname).append(divt_n)
+                    .append(divqwl);
+                div_students.append(line)
+            });
+            let divrow = $(`<div class="row">`);
+            let mark_button = $(`<div class="input-group-text class-marks w-100" data-class="${data.id}">`).text('Оцінки');
+            div_students.append(divrow.append(mark_button));
+            div.append(class_name).append(class_year).append(leader).append(div_students);
+            let div_last = $(`<div class="row btn-group mar">`);
+            let delete_ = $(` <button id="class_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.id}">`).text('Видалити');
-    div.append(div_last.append(delete_));
-    createWindow(div);
+            div.append(div_last.append(delete_));
+            createWindow(div);
+        }
+    });
 }
 
 function addingClassView() {
@@ -1270,12 +1272,12 @@ function addingClassView() {
         {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}]
 
     /*
-      classes.forEach(item => {
-            let div = $(`<div data-id="${item.class_id}" class="class-list">`)
-            let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
-            class_list.append(div.append(p));
-        });
-    */
+  classes.forEach(item => {
+        let div = $(`<div data-id="${item.class_id}" class="class-list">`)
+        let p = $(`<p class="text-center">`).text(item.class_number + "-" + item.class_char + " " + item.start_year);
+        class_list.append(div.append(p));
+    });
+*/
 
     $.ajax({
         url: "/getClasses",
@@ -1324,30 +1326,28 @@ function filterStudentCreating() {
 
 function creatingStudentList() {
     //TODO AJAX request for getting students
-    let data = [{
-        id: "N13404024",
-        name: "Іваненко Ольга Степанівна",
-        bday: "09.09.2005",
-        type: "очна",
-        class_name: "5-A"
-    }, {
-        id: "N13404025",
-        name: "Петров Ігор Артемович",
-        bday: "29.03.2005",
-        type: "очна",
-        class_name: "5-A"
-    }, {
-        id: "N13404026",
-        name: "Яременко Анна Петрівна",
-        bday: "31.12.2005",
-        type: "очна",
-        class_name: "5-A"
-    }];
-    let container = $(`<div class="container">`);
-    data.forEach(th => {
-        container.append(student_list(th))
+
+    $.ajax({
+        url: "/getStudentsClasses",
+        type: "GET",
+        success: function (res) {
+            console.log(res);
+            let data = res.map(s => {
+                return {
+                    id: s.personal_file_num,
+                    name: s.surname + ' ' + s.student_name + ' ' + s.patronymic,
+                    bday: s.birth_date.substr(0, 10),
+                    type: s.studying_type,
+                    class_name: s.class_number + '-' + s.class_char
+                };
+            });
+            let container = $(`<div class="container">`);
+            data.forEach(th => {
+                container.append(student_list(th))
+            });
+            $('#content').append(container);
+        }
     });
-    $('#content').append(container);
 }
 
 //Button Add-student
@@ -1363,6 +1363,8 @@ function addingStudentView() {
 
 function createFormForAddingStudent() {
     let form = $('<form class="container" method="post" onsubmit="return checkAddingStudent()" name="form_student" id="form_student" action="createStudent">');
+    let input_personal = create_input_group('text', "Номер особової справи:", "", "id");
+
     let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
@@ -1376,7 +1378,7 @@ function createFormForAddingStudent() {
 
     //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
-    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
+//    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
     let selectedType = create_selected_input(['очна', 'заочна'], 'Тип навчання', "type_edu", "Тип викладання", "studying_type");
     $.ajax({
         url: "/getClasses",
@@ -1392,8 +1394,10 @@ function createFormForAddingStudent() {
 
             let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
-            form.append(input_surname).append(input_name).append(input_second_name)
-                .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment).append(benefits).append(parents).append(who)
+            form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
+                .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
+                //.append(benefits)
+                .append(parents).append(who)
                 .append(selectedType).append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
@@ -1401,6 +1405,7 @@ function createFormForAddingStudent() {
             $('#student_add').append(form);
         }
     });
+
 }
 
 function checkAddingStudent() {
@@ -1461,62 +1466,116 @@ data-id="${data.t_n}">`).text('Видалити');
 
 function createStudentViewById(id, from_class, from_subj) {
     //TODO Ajax request to get all information about student
-    let data = {
-        id: "N13404024",
-        first_name: "Ольга",
-        second_name: "Степанівна",
-        last_name: "Іваненко",
-        sex: "Жіноча",
-        address: "м. Київ, проспект Перемоги 45, кв. 11",
-        bday: new Date(2006, 9, 9),
-        type: "очна",
-        phone: ["+380974004593", "+380634527612"],
-        benefits: ["benefits1", "benefits2"],
-        sport_group: "Спеціальна",
-        persons: [{name: 'Іваненко Степан Якович', id: 'PR21334'}],
-        class_name: "5-A",
-        class_id: "5A2000"
-    };
-    let data_bday = cutData(data.bday);
-    let persons = [];
-    data.persons.forEach(p => persons.push(p.id));
 
-    let div = $(`<div class="container">`); // обгортка
-    let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="cn_add_student" data-class-view ="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}" 
+    $.ajax({
+        url: "/getStudent/" + id,
+        type: "GET",
+        success: function (student) {
+            console.log(student);
+            let data = {
+                id: student.personal_file_num,
+                first_name: student.student_name,
+                second_name: student.surname,
+                last_name: student.patronymic,
+                sex: student.sex,
+                address: student.city + ' ' + student.street + ' ' + student.building + ' ' + student.apartment,
+                bday: student.birth_date.substr(0, 10),
+                type: student.studying_type,
+                class_name: from_class,
+                class_id: ""
+            };
+            let data_bday = data.bday;
+
+            let div = $(`<div class="container">`); // обгортка
+            let row = $(`<div class="row row_button">`);
+            let back = $(` <button id="cn_add_student" data-class-view ="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
+            let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}" 
 data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
 data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}"
-data-bday = "${data_bday}", data-type = "${data.type}" data-phone =${data.phone.toString()} data-group="${data.sport_group}"
-data-persons =${persons} data-classid="${data.class_id}" data-benfits="${data.benefits.toString()}" data-classname="${data.class_name}">`).text('Редагувати');
+data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.class_id}" data-classname="${data.class_name}">`).text('Редагувати');
 
-    row.append(back);
-    row.append(button);
-    let tn = createInformationViewRows("Особова справа", data.id);
-    let first_name = createInformationViewRows("Ім'я", data.first_name);
-    let second_name = createInformationViewRows("По батькові", data.second_name);
-    let last_name = createInformationViewRows("Прізвище", data.last_name);
-    let sex = createInformationViewRows("Стать", data.sex);
-    let bday = createInformationViewRows("Дата народження", data.bday.toLocaleDateString());
-    let address = createInformationViewRows("Адреса", data.address);
-    let type = createInformationViewRows("Тип навчання", data.type);
-    let class_ = createInformationViewRows("Клас", data.class_name);
-    let sport_group = createInformationViewRows("Група фіз підготовки", data.sport_group);
-    div.append(row).append(tn).append(first_name).append(second_name)
-        .append(last_name).append(sex).append(bday).append(address)
-        .append(type).append(class_).append(sport_group);
-    data.persons.forEach(person => div.append(createInformationViewRows("Відповідальна особа:", person.name)));
-    data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
-    data.benefits.forEach(person => div.append(createInformationViewRows("Пільги:", person)));
+            row.append(back);
+            row.append(button);
+            let tn = createInformationViewRows("Особова справа", data.id);
+            let first_name = createInformationViewRows("Ім'я", data.first_name);
+            let second_name = createInformationViewRows("По батькові", data.second_name);
+            let last_name = createInformationViewRows("Прізвище", data.last_name);
+            let sex = createInformationViewRows("Стать", data.sex);
+            let bday = createInformationViewRows("Дата народження", data.bday);
+            let address = createInformationViewRows("Адреса", data.address);
+            let type = createInformationViewRows("Тип навчання", data.type);
+            let class_ = createInformationViewRows("Клас", data.class_name);
+            div.append(row).append(tn).append(first_name).append(second_name)
+                .append(last_name).append(sex).append(bday).append(address)
+                .append(type).append(class_);
 
-    //TODO add class
-    let div_last = $(`<div class="row btn-group mar">`);
-    let delete_ = $(` <button id="student_delete" class="my_btn btn-outline-success btn" 
+            //TODO add class
+            let div_last = $(`<div class="row btn-group mar">`);
+            let delete_ = $(` <button id="student_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Видалити');
-    div_last.append(delete_);
-    div.append(div_last);
-    $("#bacground_adding_parents").remove();
-    createWindow(div);
+            div_last.append(delete_);
+            div.append(div_last);
+            $("#bacground_adding_parents").remove();
+            createWindow(div);
+        }
+    });
+
+    //    let data = {
+    //        id: "N13404024",
+    //        first_name: "Ольга",
+    //        second_name: "Степанівна",
+    //        last_name: "Іваненко",
+    //        sex: "Жіноча",
+    //        address: "м. Київ, проспект Перемоги 45, кв. 11",
+    //        bday: new Date(2006, 9, 9),
+    //        type: "очна",
+    //        phone: ["+380974004593", "+380634527612"],
+    //        benefits: ["benefits1", "benefits2"],
+    //        sport_group: "Спеціальна",
+    //        persons: [{name: 'Іваненко Степан Якович', id: 'PR21334'}],
+    //        class_name: "5-A",
+    //        class_id: "5A2000"
+    //    };
+    //    let data_bday = cutData(data.bday);
+    //    let persons = [];
+    //    data.persons.forEach(p => persons.push(p.id));
+    //
+    //    let div = $(`<div class="container">`); // обгортка
+    //    let row = $(`<div class="row row_button">`);
+    //    let back = $(` <button id="cn_add_student" data-class-view ="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
+    //    let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}"
+    //data-first_name="${data.first_name}" data-last_name="${data.last_name}"
+    //data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}"
+    //data-bday = "${data_bday}", data-type = "${data.type}" data-phone =${data.phone.toString()} data-group="${data.sport_group}"
+    //data-persons =${persons} data-classid="${data.class_id}" data-benfits="${data.benefits.toString()}" data-classname="${data.class_name}">`).text('Редагувати');
+    //
+    //    row.append(back);
+    //    row.append(button);
+    //    let tn = createInformationViewRows("Особова справа", data.id);
+    //    let first_name = createInformationViewRows("Ім'я", data.first_name);
+    //    let second_name = createInformationViewRows("По батькові", data.second_name);
+    //    let last_name = createInformationViewRows("Прізвище", data.last_name);
+    //    let sex = createInformationViewRows("Стать", data.sex);
+    //    let bday = createInformationViewRows("Дата народження", data.bday.toLocaleDateString());
+    //    let address = createInformationViewRows("Адреса", data.address);
+    //    let type = createInformationViewRows("Тип навчання", data.type);
+    //    let class_ = createInformationViewRows("Клас", data.class_name);
+    //    let sport_group = createInformationViewRows("Група фіз підготовки", data.sport_group);
+    //    div.append(row).append(tn).append(first_name).append(second_name)
+    //        .append(last_name).append(sex).append(bday).append(address)
+    //        .append(type).append(class_).append(sport_group);
+    //    data.persons.forEach(person => div.append(createInformationViewRows("Відповідальна особа:", person.name)));
+    //    data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
+    //    data.benefits.forEach(person => div.append(createInformationViewRows("Пільги:", person)));
+    //
+    //    //TODO add class
+    //    let div_last = $(`<div class="row btn-group mar">`);
+    //    let delete_ = $(` <button id="student_delete" class="my_btn btn-outline-success btn"
+    //data-id="${data.t_n}">`).text('Видалити');
+    //    div_last.append(delete_);
+    //    div.append(div_last);
+    //    $("#bacground_adding_parents").remove();
+    //    createWindow(div);
 
 }
 
@@ -1531,7 +1590,6 @@ data-id="${data.t_n}">`).text('Видалити');
 
 
 function createEditStudentViewById(a) {
-
     let div = $(`<div class="container">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
@@ -1545,7 +1603,7 @@ function createEditStudentViewById(a) {
     let address = create_input_group("text", "Адреса", a.data("address"), "address");
     let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
     let class_ = create_input_group("text", "Клас", a.data("classname"), "class_name");//TODO make select
-    let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
+    //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
 
     let div_last = $(`<div class="row btn-group mar">`);
     let dismiss = $(` <button id="student_save_edit" class=" my_btn btn-outline-success btn" 
@@ -1555,19 +1613,10 @@ data-id="${a.data("id")}">`).text('Скасувати');
     row.append(back);
     div.append(row).append(tn).append(first_name).append(second_name)
         .append(last_name).append(sex).append(bday).append(address)
-        .append(type).append(class_).append(sport_group);
-    let persons = (a.data("persons")).split(',');
-    let phone = (a.data("phone")).split(',');
-    let benefits = (a.data("benfits")).split(',');
+        .append(type).append(class_);
 
     //TODO Change person to selected items and get names
     // add delete and new person add
-
-    persons.forEach(person => div.append(create_input_group("text", "Відповідальна особа:", person, "person")));
-    phone.forEach(person => div.append(create_input_group("tel", "Телефон:", person, "phone")));
-    div.append(create_input_group_with_button('tel', 'Телефон', 'add_phone', 'phone'));
-    benefits.forEach(person => div.append(create_input_group("text", "Пільги:", person, "benefit")));
-    div.append(create_input_group_with_button('text', 'Пільги', 'add_benefits', 'benefit'));
     div_last.append(dismiss).append(delete_);
     div.append(div_last);
     createWindow(div);
@@ -1720,7 +1769,7 @@ let student_list = ({
                         name: name,
                         class_name: cls
                     }) => {
-    let line = $(`<div class="row st-list" data-id="${t_n}">`);
+    let line = $(`<div class="row st-list" data-id="${t_n}" data-class="${cls}">`);
     let divname = $(`<div class="lt col-md-6 name">`).text(name);
     let divt_n = $(`<div class="lt  col-md-2 id">`).text(t_n);
     let divqwl = $(`<div class="lt col-md-2 bday">`).text(cls);

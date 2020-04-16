@@ -305,6 +305,10 @@ $(document).on('click', '#show_end_marks', function () {
     endmarkflag = !endmarkflag;
 });
 
+$(document).on('click', '#mark_edition', function(){
+    //todo save or edit marks.
+    let mark_id = $(this).data('mark-id');
+});
 
 /************************Function***************************/
 /*-----Left-menu navigating-----*/
@@ -520,7 +524,7 @@ function checkLessonEditing(){
                 createViewLessonsFromThemeById(res.topic_id);
             }
         });
-//        createViewLessonsFromThemeById(document.forms['form_them_edit']['topic_id'].value);
+        //        createViewLessonsFromThemeById(document.forms['form_them_edit']['topic_id'].value);
     }, 100);
 }
 function createViewLessonsFromThemeById(id){
@@ -589,7 +593,7 @@ function showMarkPartEditView(a) {
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
@@ -674,7 +678,7 @@ function createEndMarksView() {
                 let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
                 row.append(td);
             }else{
-                let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
+                let td = $(`<td data-column="${column}" data-mark-id="${mark.id}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
 data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
                 row.append(td);
             }
@@ -702,7 +706,7 @@ function  createThemeMarksView(theme){
             let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
             tr.append(td);
         }else {
-            let td = $(`<td data-column="${column}" data-theme=${theme} data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}" data-theme=${theme} data-mark-id =${mark.id} data-type="theme" data-comment="${mark.comment}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             tr.append(td);
 
@@ -737,7 +741,7 @@ function createMarksByPeriod(){
             continue;
         let mark_cell = dairy_data_marks[i];
         let date_format = cellDate(mark_cell.date);
-        let date_cell = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`).text(date_format);
+        let date_cell = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`).text(date_format);
         caption.append(date_cell);
         for(let j = 0; j<data_names.length; j++ ){
             let id = data_names[j].id;
@@ -748,7 +752,7 @@ function createMarksByPeriod(){
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}"  data-mark-id=${mark_cell.id} data-date=${cutData(mark_cell.date)} data-type="dairy" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
         }
@@ -777,7 +781,7 @@ data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-type="special" data-mark-work-type = ${mark_cell.type}
+            let td = $(`<td data-column="${column}" data-mark-id="${mark_cell.id}" data-type="special" data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
@@ -808,45 +812,96 @@ function createPeriodForm() {
 function createMarksView(){
     let div = $(`<div id="choose_period">`);
     let dataform = $(`<div class="form">`); //можливо краще форму?
-    let inputdate1 = create_selected_input(['theme1', 'theme2', 'theme3'], 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
 
-    let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
-    div.append(dataform.append(inputdate1).append(submit));
-    let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
-    let btn_div = $(`<div class="btn-group">`);
-    let button = $(`<button class="btn btn-outline-dark" id="add_new_column_mark">`).text("Додати стовпчик");
-    let button_ = $(`<button class="btn btn-outline-dark" id="show_marks_theme">`).text("Тематична оцінка");
-    let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
-    btn_div.append(button).append(button_).append(button_end);
-    marks_view.append(btn_div);
-    let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
-    let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
-    let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
-    let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
-    let div_second_table_caption = $(`<div class="table_header" >`).text('Тематична оцінка');
-    let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
-    let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
-    let table = $(`<table id='marks'>`);
-    let table_theme = $(`<table id='marks_theme' >`);
+    $.ajax({
+        url: "/getTopics",
+        type: "GET",
+        data: {id: urlParams.get('id')},
+        success: function(topics){
+            console.log(topics);
 
-    let table_end = $(`<table id='marks_end'>`);
+            let inputdate1 = create_selected_input(topics.map(t => {return t.topic_name;}), 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
+
+            let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
+            div.append(dataform.append(inputdate1).append(submit));
+            let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
+            let btn_div = $(`<div class="btn-group">`);
+            let button = $(`<button class="btn btn-outline-dark" id="add_new_column_mark">`).text("Додати стовпчик");
+            let button_ = $(`<button class="btn btn-outline-dark" id="show_marks_theme">`).text("Тематична оцінка");
+            let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
+            btn_div.append(button).append(button_).append(button_end);
+            marks_view.append(btn_div);
+            let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
+            let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
+            let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
+            let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
+            let div_second_table_caption = $(`<div class="table_header" >`).text('Тематична оцінка');
+            let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
+            let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
+            let table = $(`<table id='marks'>`);
+            let table_theme = $(`<table id='marks_theme' >`);
+
+            let table_end = $(`<table id='marks_end'>`);
 
 
-    div_first_table.append(div_first_table_caption);
+            div_first_table.append(div_first_table_caption);
 
-    div_first_table.append(table);
+            div_first_table.append(table);
 
-    div_second_table.append(div_second_table_caption);
+            div_second_table.append(div_second_table_caption);
 
-    div_second_table.append(table_theme);
+            div_second_table.append(table_theme);
 
-    div_third_table.append(div_third_table_caption);
+            div_third_table.append(div_third_table_caption);
 
-    div_third_table.append(table_end);
+            div_third_table.append(table_end);
 
-    div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
-    marks_view.append(div_table_wrapper);
-    $('#content').append(div).append(marks_view);
+            div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
+            marks_view.append(div_table_wrapper);
+            $('#content').append(div).append(marks_view);
+        }
+    });
+
+
+    //    let inputdate1 = create_selected_input(['theme1', 'theme2', 'theme3'], 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
+    //
+    //    let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
+    //    div.append(dataform.append(inputdate1).append(submit));
+    //    let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
+    //    let btn_div = $(`<div class="btn-group">`);
+    //    let button = $(`<button class="btn btn-outline-dark" id="add_new_column_mark">`).text("Додати стовпчик");
+    //    let button_ = $(`<button class="btn btn-outline-dark" id="show_marks_theme">`).text("Тематична оцінка");
+    //    let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
+    //    btn_div.append(button).append(button_).append(button_end);
+    //    marks_view.append(btn_div);
+    //    let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
+    //    let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
+    //    let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
+    //    let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
+    //    let div_second_table_caption = $(`<div class="table_header" >`).text('Тематична оцінка');
+    //    let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
+    //    let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
+    //    let table = $(`<table id='marks'>`);
+    //    let table_theme = $(`<table id='marks_theme' >`);
+    //
+    //    let table_end = $(`<table id='marks_end'>`);
+    //
+    //
+    //    div_first_table.append(div_first_table_caption);
+    //
+    //    div_first_table.append(table);
+    //
+    //    div_second_table.append(div_second_table_caption);
+    //
+    //    div_second_table.append(table_theme);
+    //
+    //    div_third_table.append(div_third_table_caption);
+    //
+    //    div_third_table.append(table_end);
+    //
+    //    div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
+    //    marks_view.append(div_table_wrapper);
+    //    $('#content').append(div).append(marks_view);
 }
 //TODO add more arguments for specificating
 

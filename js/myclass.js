@@ -196,10 +196,8 @@ $(document).on('click', '#changing_group', function(){
         url: "/getSubjectsInClass",
         type: "GET",
         success: function(subjects){
-            console.log(subjects);
             let class_s =[];
             subjects.forEach(st=>{class_s.push(st.subject_name)});
-            console.log(class_s);
             let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
             let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
             div.append(select).append(btn);
@@ -408,22 +406,25 @@ function createMarksView(data, subj_id){
 function createGroupsforStudent(subj){
     //get data of students {student_id, names, group_id}
     //get data of groups in this class of this subject
+
     $.ajax({
-        url: "/getStudentsInClass",
+        url: "/getSubjectsForGroups/" + subj,
         type: "GET",
-        success: function(students){
-            console.log(students);
-            console.log(subj);
+        success: function(subjects_in_groups){
+
             $.ajax({
-                url: "/getSubjectsForGroups/" + subj,
+                url: "/getStudGroupPairs/" + subj,
                 type: "GET",
-                success: function(subjects_in_groups){
+                success: function(studGroupPairs){
                     console.log(subjects_in_groups);
                     let form = $(`<form method="post" action="appointStudentsToGroups">`);
-                    students.forEach(st=> {
-                        let input = create_selected_input(subjects_in_groups.map(s => s.group_number), st.surname + ' ' + st.student_name + ' ' + st.patronymic, '', 1, st.personal_file_num,'','','');
+                    studGroupPairs.forEach(stg => {
+                        let input = selected_input_stud_groups(subjects_in_groups, stg.student.surname + ' ' +  stg.student.student_name + ' ' +  stg.student.patronymic,  stg.group ? stg.group.group_number : '', stg.student.personal_file_num);
                         form.append(input);
                     });
+                    //hidden input for subject name
+                    let subject_input = $('<input type="text" hidden name="subject" value="' + subj + '">');
+                    form.append(subject_input);
                     let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
                     form.append(submit);
                     $('#content').empty();
@@ -432,17 +433,20 @@ function createGroupsforStudent(subj){
             });
         }
     });
-    //    let form = $(`<form>`);
-    //    student_names.forEach(st=> {
-    //        let input = create_selected_input(['group1','group2', 'group3'], st.name, '', st.group, st.id,'','','');
-    //        form.append(input);
-    //    });
-    //    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
-    //    form.append(submit);
-    //    $('#content').empty();
-    //    $('#content').append(form);
-
 }
+
+function selected_input_stud_groups(data, label, value, name) {
+    let group =$(`<div class="input-group mb-1">`);
+    let prep = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let select = $(`<select class="custom-select" name='${name}'>`);
+    select.append($(`<option value="${value}" disabled selected>`).text(value));
+    data.forEach(option=> {let opt = $(`<option value="${option.subject_id}">`).text(option.group_number);
+                           select.append(opt)});
+    select.val(value);
+    return group.append(prep.append(span)).append(select);
+}
+
 function createMarksByPeriod(){
     //TODO get the theme
     // make AJAX request
