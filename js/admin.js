@@ -299,10 +299,12 @@ $(document).on('click','#parent_save_edit', function () {
 
 /*****************Form-inner buttons*******************/
 //Клік на плюсик до пільг
+/*
 $(document).on('click', '#add_benefits', function () {
     $(this).parent().parent().after(create_input_group_with_button('text', 'Пільги', 'add_benefits'));
     $(this).parent().remove();
 });
+ */
 //клік на плюсик в формі телефонів
 $(document).on('click', '#add_phone', function () {
     $(this).parent().parent()
@@ -1350,7 +1352,7 @@ function createFormForAddingStudent() {
 
     //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
-    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
+//    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
     let selectedType = create_selected_input(['очна', 'заочна'], 'Тип навчання', "type_edu", "Тип викладання", "studying_type");
     $.ajax({
         url: "/getClasses",
@@ -1367,7 +1369,9 @@ function createFormForAddingStudent() {
             let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
-                .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment).append(benefits).append(parents).append(who)
+                .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
+                //.append(benefits)
+                .append(parents).append(who)
                 .append(selectedType).append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
@@ -1375,7 +1379,7 @@ function createFormForAddingStudent() {
             $('#student_add').append(form);
         }
     });
-    
+
 }
 
 function checkAddingStudent() {
@@ -1573,7 +1577,7 @@ function createEditStudentViewById(a) {
     let address = create_input_group("text", "Адреса", a.data("address"), "address");
     let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
     let class_ = create_input_group("text", "Клас", a.data("classname"), "class_name");//TODO make select
-    let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
+    //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
 
     let div_last = $(`<div class="row btn-group mar">`);
     let dismiss = $(` <button id="student_save_edit" class=" my_btn btn-outline-success btn" 
