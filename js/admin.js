@@ -592,14 +592,18 @@ function createTeacherViewById(id, from_class, from_subj) {
         contentType: "application/json",
         success: function (data) {
 
+
+          let last_qualification_date = new Date(data.last_qualification_date);
+          let work_start_date = new Date(data.work_start_date);
+          let end = (data.end==""||data.end==undefined)?"":new Date(data.end);
             let div = $(`<div class="container">`); // обгортка
             let row = $(`<div class="row row_button">`);
             let back = $(` <button id="cn_add_teacher" data-class-view="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
             let button = $(` <button id="edit_teacher" class="btn my_btn btn-outline-success" data-id="${data.tabel_number}" 
 data-name="${data.teacher_name}" data-surname="${data.surname}" 
 data-sec_name="${data.patronymic}" data-city="${data.city}" data-street="${data.street}" data-building="${data.building}" data-apartment="${data.apartment}" data-qualification="${data.qualification_name}" 
-data-confirm="${data.last_qualification_date}" data-start="${data.work_start_date}" 
-data-end="${data.end}">`).text('Редагувати');
+data-confirm="${cutData(last_qualification_date)}" data-start="${cutData(work_start_date)}" 
+data-end="${cutData(end)}">`).text('Редагувати');
 
             row.append(back);
             row.append(button);
@@ -612,9 +616,12 @@ data-end="${data.end}">`).text('Редагувати');
             let building = createInformationViewRows("Будинок", data.building);
             let apartment = createInformationViewRows("Квартира", data.apartment);
             let qualification = createInformationViewRows("Кваліфікація", data.qualification_name);
-            let confirm = createInformationViewRows("Дата підтвердження", data.last_qualification_date);
-            let start = createInformationViewRows("Початок роботи", data.work_start_date);
-            div.append(row).append(tn).append(first_name).append(second_name).append(last_name).append(city).append(street).append(building).append(apartment).append(qualification).append(confirm).append(start);
+            let confirm = createInformationViewRows("Дата підтвердження", last_qualification_date.toLocaleDateString());
+            let start = createInformationViewRows("Початок роботи", work_start_date.toLocaleDateString());
+
+            let end_d = createInformationViewRows("Кінцевий термін роботи:", (end=="")?end:end.toLocaleDateString());
+
+            div.append(row).append(tn).append(first_name).append(second_name).append(last_name).append(city).append(street).append(building).append(apartment).append(qualification).append(confirm).append(start).append(end_d);
             //TODO last date work
             let button_subject = $(`<div class="row input-group">`);
             let bs = $(` <button id="teacher_subject_view" class="btn btn-block input-group-text" 
@@ -645,11 +652,16 @@ function createEditTeacherViewById(a) {
     let div = $(`<div class="container">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="teacher_non" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let back = $(` <button id="teacher_non" data-id="${a.data("id")}" class="btn my_btn btn-outline-success" >`).text("Назад");
     let tn = create_input_group("text", "Табельний номер", a.data("id"), "t_n");
     let first_name = create_input_group("text", "Ім'я", a.data("name"), "first_name");
     let second_name = create_input_group("text", "По батькові", a.data("surname"), "second_name");
     let last_name = create_input_group("text", "Прізвище", a.data("surname"), "last_name");
+    let city = create_input_group("text","Місто",a.data("city"),"city");
+    let street = create_input_group("text","Вулиця",a.data("street"),"street");
+    let building = create_input_group("text","Будинок",a.data("building"),"building");
+    let flat = create_input_group("text","Квартира",a.data("apartment"),"flat");
+
     let qualification = create_input_group("text", "Кваліфікація", a.data("qualification"), "qualification");
     let confirm = create_input_group("date", "Дата підтвердження", a.data("confirm"), "confirm");
     let start = create_input_group("date", "Початок роботи", a.data("start"), "start");
@@ -661,7 +673,7 @@ data-id="${a.data("id")}">`).text('Зберегти');
 data-id="${a.data("id")}">`).text('Скасувати');
     row.append(back);
     div.append(row).append(tn).append(first_name).append(second_name)
-        .append(last_name).append(qualification).append(confirm).append(start);
+        .append(last_name).append(city).append(street).append(building).append(flat).append(qualification).append(confirm).append(start);
     div_last.append(dismiss).append(delete_);
     div.append(div_last);
     createWindow(div);
@@ -1670,9 +1682,14 @@ function verifyPersonForm() {
 
 /*******************Helper function***************************/
 function cutData(data) {
+    console.log(data);
+    try{
     return data.getFullYear() + "-" + ((data.getMonth() < 10) ?
                                        ("0" + data.getMonth()) : data.getMonth()) + "-" + ((data.getDate() < 10) ?
                                                                                            ("0" + data.getDate()) : data.getDate());
+}catch (e) {
+        return "";
+    }
 }
 
 /****************HTML-helper function***********************/
