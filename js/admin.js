@@ -1473,7 +1473,10 @@ function createStudentViewById(id, classid, from_class, from_subj) {
                 second_name: student.surname,
                 last_name: student.patronymic,
                 sex: student.sex,
-                address: student.city + ' ' + student.street + ' ' + student.building + ' ' + student.apartment,
+                city: student.city,
+                street: student.street,
+                building: student.building,
+                apartment: student.apartment,
                 bday: student.birth_date.substr(0, 10),
                 type: student.studying_type,
                 class_name: classid,
@@ -1486,7 +1489,8 @@ function createStudentViewById(id, classid, from_class, from_subj) {
             let back = $(` <button id="cn_add_student" data-class-view ="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
             let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}" 
 data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
-data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}"
+data-second_name="${data.second_name}" data-sex="${data.sex}" data-city = "${data.city}" data-street = "${data.street}"
+data-building = "${data.building}" data-apartment = "${data.apartment}"
 data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.class_id}" data-classname="${classid}">`).text('Редагувати');
 
             row.append(back);
@@ -1497,11 +1501,15 @@ data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.clas
             let last_name = createInformationViewRows("Прізвище", data.last_name);
             let sex = createInformationViewRows("Стать", data.sex);
             let bday = createInformationViewRows("Дата народження", data.bday);
-            let address = createInformationViewRows("Адреса", data.address);
+            let city = createInformationViewRows("Місто", data.city);
+            let street = createInformationViewRows("Вулиця", data.street);
+            let building = createInformationViewRows("Будинок", data.building);
+            let apartment = createInformationViewRows("Квартира", data.apartment);
+
             //    let type = createInformationViewRows("Тип навчання", data.type);
             let class_ = createInformationViewRows("Клас", data.class_name);
             div.append(row).append(tn).append(first_name).append(second_name)
-                .append(last_name).append(sex).append(bday).append(address).append(class_);
+                .append(last_name).append(sex).append(bday).append(city).append(street).append(building).append(apartment).append(class_);
 
             //TODO add class
             let div_last = $(`<div class="row btn-group mar">`);
@@ -1542,7 +1550,11 @@ function createEditStudentViewById(a) {
     let last_name = create_input_group("text", "Прізвище", a.data("last_name"), "last_name");
     let sex = create_input_group("text", "Стать", a.data("sex"), "sex");
     let bday = create_input_group("date", "Дата народження", a.data("bday"), "bday");
-    let address = create_input_group("text", "Адреса", a.data("address"), "address");
+    let city = create_input_group("text", "Місто", a.data("city"), "city");
+    let street = create_input_group("text", "Вулиця", a.data("street"), "street");
+    let building = create_input_group("text", "Будинок", a.data("building"), "building");
+    let apartment = create_input_group("text", "Квартира", a.data("apartment"), "apartment");
+
 
     //let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
     //   let class_ = create_input_group(data, "Клас", a.data("classname"), "class_name");//TODO make select
@@ -1569,7 +1581,7 @@ data-id="${a.data("id")}" data-class="${a.data("classname")}">`).text('Скас�
             div.append(div_last);
             //  row.append(back);
             div.append(row).append(tn).append(first_name).append(second_name)
-                .append(last_name).append(sex).append(bday).append(address).append(class_);
+                .append(last_name).append(sex).append(bday).append(city).append(street).append(building).append(apartment).append(class_);
             createWindow(div);
         }
     });

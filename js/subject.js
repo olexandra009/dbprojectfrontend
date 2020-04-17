@@ -311,6 +311,36 @@ $(document).on('click', '#mark_edition', function(){
     let mark_comment = document.getElementsByName('comment')[0].value;
     let mark_value = document.getElementsByName('value')[0].value;
     let mark_visible = document.getElementsByName('comment')[0].checked;
+    let student = $(this).data('student');
+    console.log(student);
+    if(mark_id!=undefined) {//send edit}
+    }
+    switch ($(this).data('type')) {
+        case "dairy":
+            let date =  $(this).data('date');
+            //send Diary
+            console.log(date);
+            break;
+        case "special":
+            let worktype = $(this).data('mark-work-type');
+            let name = $(this).data('mark-name');
+            //send Special
+            console.log(name);
+            console.log(worktype);
+            break;
+        case "end":
+            let mtype =  $(this).data('mark-type');
+            console.log(mtype);
+            break;
+        case "theme":
+            let theme = $(`#theme_id_select`).value();
+            console.log(theme);
+            break;
+        default:
+            console.err("ERROR");
+            break;
+    }
+
 });
 
 /************************Function***************************/
@@ -596,7 +626,7 @@ function showMarkPartEditView(a) {
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark"  data-student="${a.parent().data('student')}" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
@@ -604,6 +634,9 @@ function showMarkPartEditView(a) {
 }
 
 function showMarkEditView(a) {
+    let type = a.data('type');
+    let mark_type = (a.data('mark-type')==undefined)?'':a.data('mark-type');
+    let mark_name = (a.data('mark-work-type')==undefined)?'':a.data('mark-work-type');
     let value = (a.data('mark-value')==undefined)?'':a.data('mark-value');
     let comment = (a.data('mark-comment')==undefined)?'':a.data('mark-comment');
     let visible = (a.data('mark-visible')==true);
@@ -613,7 +646,8 @@ function showMarkEditView(a) {
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark" data-date="${a.data('date')}" data-mark-work-type="${a.data('mark-work-type')}"
+                    data-mark-name="${a.data('mark-name')}" data-student="${a.parent().data('student')}"  data-mark-type="${mark_type}" data-type="${type}" data-work-type="${mark_name}" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
@@ -665,7 +699,7 @@ function createEndMarksView() {
     table.empty();
     table.append(caption);
     data_names.forEach(st=>{
-        let tr = $(`<tr id="table-end-row-${st.id}" class="table-row-${st.id}">`);
+        let tr = $(`<tr id="table-end-row-${st.id}" data-student="${st.id}"  class="table-row-${st.id}">`);
         table.append(tr);
     });
     let column = 2000;
@@ -682,7 +716,7 @@ function createEndMarksView() {
                 row.append(td);
             }else{
                 let td = $(`<td data-column="${column}" data-mark-id="${mark.id}" data-mark-type="${mark.type}" data-type="end" data-mark-value="${marks.value}"
-data-mark-visible="${marks.visible} data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
+data-mark-visible="${marks.visible}" data-mark-comment=" ${ marks.comment} ">`).text(marks.value);
                 row.append(td);
             }
         });
@@ -703,7 +737,7 @@ function  createThemeMarksView(theme){
     caption.append(date_cell);
 
     data_names.forEach(st=>{
-        let tr = $(`<tr id="table-th-row-${st.id}" class="table-row-${st.id}">`);
+        let tr = $(`<tr id="table-th-row-${st.id}" data-student="${st.id}" class="table-row-${st.id}">`);
         let mark= them_marks.find(el=> el.id==st.id);
         if(mark==undefined) {
             let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
@@ -730,8 +764,8 @@ function createMarksByPeriod(){
     $('#marks_view_table').removeClass('hidden');
 
     data_names.forEach(student=> {
-        let td = $(`<tr id="table-row-${student.id}" class="table-row-${student.id}">`);
-        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        let td = $(`<tr id="table-row-${student.id}" data-student="${student.id}"  class="table-row-${student.id}">`);
+        let first_tr = $(`<td data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
         td.append(first_tr);
         table.append(td);
     });
@@ -751,7 +785,7 @@ function createMarksByPeriod(){
             let mark= mark_cell.marks.find(el=> el.id==id);
             let row = $("#table-row-"+id);
             if(mark===undefined) {
-                let td = $(`<td data-column="${column}" data-date=${mark_cell.date} data-type="dairy">`);
+                let td = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`);
                 row.append(td);
                 continue;
             }
