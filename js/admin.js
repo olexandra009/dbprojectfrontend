@@ -446,7 +446,7 @@ function identifyClassroomLeaders() {
                     console.log(res);
 
                     cls_le = true;
-                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form">`);
+                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form" onsubmit="return checkClassTeachers(this)>`);
                     let classTeacher = res.map(function (item) {
                         return {
                             class_id: item.class_id,
@@ -478,27 +478,10 @@ function identifyClassroomLeaders() {
             });
         }
     });
+}
 
+function checkClassTeachers(form) {
 
-    //    cls_le=true;
-    //    let tch_list = $(`<div id="cls_le_form">`);
-    //    let teacher_data = ["Teacher1", "Teacher2", "Teacher3"]; //ajax data
-    //    let classPairs  = [{'class':'5-A', 'teacher': 'Teacher1'}, //ajax data
-    //                       {'class':'6-A', 'teacher': 'Teacher2'},
-    //                       {'class':'7-A', 'teacher': ''}];
-    //    classPairs.forEach(({class: cn, teacher: tc}) =>
-    //                       {
-    //        if(tc===undefined|| tc == null || tc === '') {
-    //            let input = create_selected_input(teacher_data, cn, "", "Оберіть вчителя");
-    //            tch_list.append(input)
-    //        }else{
-    //            let input = create_selected_input(teacher_data, cn, "", tc);
-    //            tch_list.append(input)
-    //        }
-    //    });
-    //    let submit = $(`<input type="submit" class="input-group-text">`);
-    //    tch_list.append(submit);
-    //    $('#cls_le').after(tch_list);
 }
 
 
