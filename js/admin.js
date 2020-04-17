@@ -246,10 +246,11 @@ $(document).on('click', '#add_student', function () {
 
 $(document).on('click', '.st-list, .stlist', function () {
     let id = ($(this).data("id"));
+    let class_ =($(this).data("class"));
     let from_class = ($(this).data("class-view"));
     if (from_class == undefined || from_class == '')
         from_class = ($(this).data("subj-view"));
-    createStudentViewById(id, from_class);
+    createStudentViewById(id, class_, from_class);
 });
 
 $(document).on('click', '.par-list', function () {
@@ -268,7 +269,8 @@ $(document).on('click', '#edit_parent', function () {
 
 $(document).on('click', '#student_non', function () {
     let id = ($(this).data("id"));
-    createStudentViewById(id);
+    let class_= ($(this).data("class"));
+    createStudentViewById(id, class_);
 });
 
 $(document).on('click', '#parent_non', function () {
@@ -1406,7 +1408,8 @@ function createFormForAddingStudent() {
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
                 //.append(benefits)
-                .append(parents).append(who).append(selectedClass);
+                .append(parents).append(who)
+                .append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
             $('#form_student').remove();
@@ -1472,9 +1475,9 @@ data-id="${data.t_n}">`).text('Видалити');
 
 }
 
-function createStudentViewById(id, from_class, from_subj) {
+function createStudentViewById(id, classid, from_class, from_subj) {
     //TODO Ajax request to get all information about student
-
+   console.log(id);
     $.ajax({
         url: "/getStudent/" + id,
         type: "GET",
@@ -1489,7 +1492,7 @@ function createStudentViewById(id, from_class, from_subj) {
                 address: student.city + ' ' + student.street + ' ' + student.building + ' ' + student.apartment,
                 bday: student.birth_date.substr(0, 10),
                 type: student.studying_type,
-                class_name: from_class,
+                class_name: classid,
                 class_id: ""
             };
             let data_bday = data.bday;
@@ -1500,7 +1503,7 @@ function createStudentViewById(id, from_class, from_subj) {
             let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}" 
 data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
 data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}"
-data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.class_id}" data-classname="${data.class_name}">`).text('Редагувати');
+data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.class_id}" data-classname="${classid}">`).text('Редагувати');
 
             row.append(back);
             row.append(button);
@@ -1511,11 +1514,10 @@ data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.clas
             let sex = createInformationViewRows("Стать", data.sex);
             let bday = createInformationViewRows("Дата народження", data.bday);
             let address = createInformationViewRows("Адреса", data.address);
-            let type = createInformationViewRows("Тип навчання", data.type);
+        //    let type = createInformationViewRows("Тип навчання", data.type);
             let class_ = createInformationViewRows("Клас", data.class_name);
             div.append(row).append(tn).append(first_name).append(second_name)
-                .append(last_name).append(sex).append(bday).append(address)
-                .append(type).append(class_);
+                .append(last_name).append(sex).append(bday).append(address).append(class_);
 
             //TODO add class
             let div_last = $(`<div class="row btn-group mar">`);
@@ -1609,25 +1611,39 @@ function createEditStudentViewById(a) {
     let sex = create_input_group("text", "Стать", a.data("sex"), "sex");
     let bday = create_input_group("date", "Дата народження", a.data("bday"), "bday");
     let address = create_input_group("text", "Адреса", a.data("address"), "address");
-    let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
-    let class_ = create_input_group("text", "Клас", a.data("classname"), "class_name");//TODO make select
+    //let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
+ //   let class_ = create_input_group(data, "Клас", a.data("classname"), "class_name");//TODO make select
     //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
-
-    let div_last = $(`<div class="row btn-group mar">`);
     let dismiss = $(` <button id="student_save_edit" class=" my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Зберегти');
     let delete_ = $(` <button id="student_non" class="my_btn btn-outline-success btn" 
-data-id="${a.data("id")}">`).text('Скасувати');
-    row.append(back);
-    div.append(row).append(tn).append(first_name).append(second_name)
-        .append(last_name).append(sex).append(bday).append(address)
-        .append(type).append(class_);
+data-id="${a.data("id")}" data-class="${a.data("classname")}">`).text('Скасувати');
+    $.ajax({
+        url: "/getClasses",
+        type: "GET",
+        contentType: "application/json",
+        success: function (classes) {
+            classes.sort(function (a, b) {
+                return a.class_number - b.class_number || a.class_char - b.class_char || a.start_year - b.start_year;
+            })
+            classes = classes.map(item => item.class_number + '-' + item.class_char + ' ' + item.start_year);
+
+            let class_ = create_selected_input(classes, 'Клас', "class_type", a.data("classname"), "class_name");
+
+            let div_last = $(`<div class="row btn-group mar">`);
+
+            div_last.append(dismiss).append(delete_);
+            div.append(div_last);
+          //  row.append(back);
+            div.append(row).append(tn).append(first_name).append(second_name)
+                .append(last_name).append(sex).append(bday).append(address).append(class_);
+            createWindow(div);
+        }});
 
     //TODO Change person to selected items and get names
     // add delete and new person add
-    div_last.append(dismiss).append(delete_);
-    div.append(div_last);
-    createWindow(div);
+
+
 }
 
 function createEditParentViewById(a) {
