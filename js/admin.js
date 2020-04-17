@@ -1330,7 +1330,6 @@ function creatingStudentList() {
                     id: s.personal_file_num,
                     name: s.surname + ' ' + s.student_name + ' ' + s.patronymic,
                     bday: s.birth_date.substr(0, 10),
-                    type: s.studying_type,
                     class_name: s.class_number + '-' + s.class_char
                 };
             });
@@ -1594,7 +1593,7 @@ function createEditStudentViewById(a) {
     let address = create_input_group("text", "Адреса", a.data("address"), "address");
     let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
     let class_ = create_input_group("text", "Клас", a.data("classname"), "class_name");//TODO make select
-    //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
+
 
     let div_last = $(`<div class="row btn-group mar">`);
     let dismiss = $(` <button id="student_save_edit" class=" my_btn btn-outline-success btn" 
