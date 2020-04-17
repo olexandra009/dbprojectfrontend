@@ -4,15 +4,14 @@ $(document).ready(function () {
 
 function load() {
     jQuery.ajax({
-        //TODO send request to browser
-        url: '',
+        url: '/excellentStudents',
         method: 'get',
         dataType: 'json',
         success: function (json) {
             json.forEach(student => {
                 let tr = ($("<tr></tr>"));
-                let name = ($("<td></td>")).text(student.name);
-                let stClass = ($("<td></td>")).text(student.class);
+                let name = ($("<td></td>")).text(student.student_name+' '+student.patronymic+' '+student.surname);
+                let stClass = ($("<td></td>")).text(student.class_num+'-'+student.class_char);
                 tr.append(name).append(stClass);
                 $(".table-body").append(tr);
             });
