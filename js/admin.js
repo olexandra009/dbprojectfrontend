@@ -448,7 +448,7 @@ function identifyClassroomLeaders() {
                     console.log(res);
 
                     cls_le = true;
-                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form" onsubmit="return checkClassTeachers(this)>`);
+                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form">`);
                     let classTeacher = res.map(function (item) {
                         return {
                             class_id: item.class_id,
@@ -789,11 +789,12 @@ function createFormForAddingParent() {
     let apartment = create_input_group('text', "Квартира", "", "apartment");
 
     //TODO get phones and privileges values
-    let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
+ //   let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
     let workplace = create_input_group('text', "Місце роботи", "", "workplace");
 
     form.append(input_surname).append(input_name).append(input_second_name)
-        .append(phone).append(city).append(street).append(building).append(apartment).append(workplace);
+        //.append(phone)
+        .append(city).append(street).append(building).append(apartment).append(workplace);
 
     let submit = $(`<input type="submit" class="input-group-text">`);
     form.append(submit);
@@ -1373,7 +1374,7 @@ function createFormForAddingStudent() {
     //let who = create_input_group('text', "Ким є", "", "who");
 
     //TODO get phones and privileges values
-    let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
+   // let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
 //    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
     $.ajax({
         url: "/getClasses",
@@ -1390,7 +1391,9 @@ function createFormForAddingStudent() {
             //  let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
-                .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
+                .append(birthday).append(sex)
+                //.append(phone)
+                .append(city).append(street).append(building).append(apartment)
                 //.append(benefits)
                 //.append(parents)
                 //.append(who)
@@ -1448,7 +1451,7 @@ data-work-place="${data.workplace}">`).text('Редагувати');
     div.append(row).append(tn).append(first_name).append(second_name)
         .append(last_name).append(address)
         .append(type);
-    data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
+  //  data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
     let div_last = $(`<div class="row btn-group mar">`);
     let delete_ = $(` <button id="parent_delete" class="my_btn btn-outline-success btn" 
 data-id="${data.t_n}">`).text('Видалити');
@@ -1561,8 +1564,7 @@ function createEditStudentViewById(a) {
     //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
     let dismiss = $(` <button id="student_save_edit" type="submit" value="Зберегти" class=" my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Зберегти');
-    let delete_ = $(` <button id="student_non" class="my_btn btn-outline-success btn" 
-data-id="${a.data("id")}" data-class="${a.data("classname")}">`).text('Скасувати');
+    let delete_ = $(` <div id="student_non" type="cancel" class="my_btn btn-outline-success btn" data-id="${a.data("id")}" data-class="${a.data("classname")}">`).text('Скасувати');
     $.ajax({
         url: "/getClasses",
         type: "GET",
