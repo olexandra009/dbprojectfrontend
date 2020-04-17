@@ -40,11 +40,13 @@ $(document).on('click', '#class', function () {
 });
 
 
+/*
 $(document).on('click', '#parents', function () {
     nextMenu('parents');
     createParentsView();
     creatingParentsList();
 });
+*/
 
 
 //endregion
@@ -350,8 +352,8 @@ function removeClass() {
     document.getElementById('student_view').classList.add('hidden');
     document.getElementById('admin_button').classList.remove('hidden');
     document.getElementById('admin_button').classList.add('hidden');
-    document.getElementById('parents_view').classList.remove('hidden');
-    document.getElementById('parents_view').classList.add('hidden');
+   // document.getElementById('parents_view').classList.remove('hidden');
+   // document.getElementById('parents_view').classList.add('hidden');
     document.getElementById('statistics-div').classList.remove('hidden');
     document.getElementById('statistics-div').classList.add('hidden');
 
@@ -363,7 +365,7 @@ function removeClass() {
     removing('teacher');
     removing('administry');
     removing('class');
-    removing('parents');
+  //  removing('parents');
     removing('statistics');
 }
 
@@ -1386,12 +1388,13 @@ function createFormForAddingStudent() {
 
             let selectedClass = create_selected_input(classes, 'Клас', "class_type", "Оберіть клас", "class_name");
 
-            let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
+          //  let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
 
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
                 //.append(benefits)
-                .append(parents).append(who)
+                //.append(parents)
+                .append(who)
                 .append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
