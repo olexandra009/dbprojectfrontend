@@ -1524,8 +1524,8 @@ data-id="${data.id}" value="${data.id}" name="${data.id}" onclick="deleteStudent
 }
 
 function deleteStudent(){
-    let id = $(this)[0].attr('data-id');
-    console.log(id);
+    let id = $('#student_delete').data('id');
+    console.log( id);
     //console.log(id);
 }
 
