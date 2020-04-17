@@ -1414,7 +1414,6 @@ function checkAddingStudent() {
     if (document.forms['form_student']['street'].value == '') return false;
     if (document.forms['form_student']['building'].value == '') return false;
     if (document.forms['form_student']['class_name'].value == '') return false;
-    //TODO відповідальні особи Not Null
 };
 
 
@@ -1507,71 +1506,19 @@ data-bday = "${data_bday}", data-type = "${data.type}" data-classid="${data.clas
             //TODO add class
             let div_last = $(`<div class="row btn-group mar">`);
             let delete_ = $(` <button id="student_delete" class="my_btn btn-outline-success btn" 
-data-id="${data.t_n}">`).text('Видалити');
+data-id="${data.id}" value="${data.id}" name="${data.id}" onclick="deleteStudent()">`).text('Видалити');
             div_last.append(delete_);
             div.append(div_last);
             $("#bacground_adding_parents").remove();
             createWindow(div);
         }
     });
+}
 
-    //    let data = {
-    //        id: "N13404024",
-    //        first_name: "Ольга",
-    //        second_name: "Степанівна",
-    //        last_name: "Іваненко",
-    //        sex: "Жіноча",
-    //        address: "м. Київ, проспект Перемоги 45, кв. 11",
-    //        bday: new Date(2006, 9, 9),
-    //        type: "очна",
-    //        phone: ["+380974004593", "+380634527612"],
-    //        benefits: ["benefits1", "benefits2"],
-    //        sport_group: "Спеціальна",
-    //        persons: [{name: 'Іваненко Степан Якович', id: 'PR21334'}],
-    //        class_name: "5-A",
-    //        class_id: "5A2000"
-    //    };
-    //    let data_bday = cutData(data.bday);
-    //    let persons = [];
-    //    data.persons.forEach(p => persons.push(p.id));
-    //
-    //    let div = $(`<div class="container">`); // обгортка
-    //    let row = $(`<div class="row row_button">`);
-    //    let back = $(` <button id="cn_add_student" data-class-view ="${from_class}" data-subj-view="${from_subj}" class="btn my_btn btn-outline-success" >`).text("Назад");
-    //    let button = $(` <button id="edit_student" class="btn my_btn btn-outline-success" data-id="${data.id}"
-    //data-first_name="${data.first_name}" data-last_name="${data.last_name}"
-    //data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}"
-    //data-bday = "${data_bday}", data-type = "${data.type}" data-phone =${data.phone.toString()} data-group="${data.sport_group}"
-    //data-persons =${persons} data-classid="${data.class_id}" data-benfits="${data.benefits.toString()}" data-classname="${data.class_name}">`).text('Редагувати');
-    //
-    //    row.append(back);
-    //    row.append(button);
-    //    let tn = createInformationViewRows("Особова справа", data.id);
-    //    let first_name = createInformationViewRows("Ім'я", data.first_name);
-    //    let second_name = createInformationViewRows("По батькові", data.second_name);
-    //    let last_name = createInformationViewRows("Прізвище", data.last_name);
-    //    let sex = createInformationViewRows("Стать", data.sex);
-    //    let bday = createInformationViewRows("Дата народження", data.bday.toLocaleDateString());
-    //    let address = createInformationViewRows("Адреса", data.address);
-    //    let type = createInformationViewRows("Тип навчання", data.type);
-    //    let class_ = createInformationViewRows("Клас", data.class_name);
-    //    let sport_group = createInformationViewRows("Група фіз підготовки", data.sport_group);
-    //    div.append(row).append(tn).append(first_name).append(second_name)
-    //        .append(last_name).append(sex).append(bday).append(address)
-    //        .append(type).append(class_).append(sport_group);
-    //    data.persons.forEach(person => div.append(createInformationViewRows("Відповідальна особа:", person.name)));
-    //    data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
-    //    data.benefits.forEach(person => div.append(createInformationViewRows("Пільги:", person)));
-    //
-    //    //TODO add class
-    //    let div_last = $(`<div class="row btn-group mar">`);
-    //    let delete_ = $(` <button id="student_delete" class="my_btn btn-outline-success btn"
-    //data-id="${data.t_n}">`).text('Видалити');
-    //    div_last.append(delete_);
-    //    div.append(div_last);
-    //    $("#bacground_adding_parents").remove();
-    //    createWindow(div);
-
+function deleteStudent(){
+    let id = $(this)[0].attr('data-id');
+    console.log(id);
+    //console.log(id);
 }
 
 /**  let back = $(` <button id="teacher_non" class="btn my_btn btn-outline-success" >`).text("Назад");
@@ -1585,7 +1532,7 @@ data-id="${data.t_n}">`).text('Видалити');
 
 
 function createEditStudentViewById(a) {
-    let div = $(`<div class="container">`);
+    let div = $(`<form method="post" action="editStudent" class="container">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
     let back = $(` <button id="student_non"  class="btn my_btn btn-outline-success" >`).text("Назад");
@@ -1600,7 +1547,7 @@ function createEditStudentViewById(a) {
     //let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
     //   let class_ = create_input_group(data, "Клас", a.data("classname"), "class_name");//TODO make select
     //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
-    let dismiss = $(` <button id="student_save_edit" class=" my_btn btn-outline-success btn" 
+    let dismiss = $(` <button id="student_save_edit" type="submit" value="Зберегти" class=" my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Зберегти');
     let delete_ = $(` <button id="student_non" class="my_btn btn-outline-success btn" 
 data-id="${a.data("id")}" data-class="${a.data("classname")}">`).text('Скасувати');
