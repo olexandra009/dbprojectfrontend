@@ -1371,7 +1371,7 @@ function createFormForAddingStudent() {
     let street = create_input_group('text', "Вулиця", "", "street");
     let building = create_input_group('text', "Будинок", "", "building");
     let apartment = create_input_group('text', "Квартира", "", "apartment");
-    let who = create_input_group('text', "Ким є", "", "who");
+    //let who = create_input_group('text', "Ким є", "", "who");
 
     //TODO get phones and privileges values
     let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
@@ -1394,7 +1394,7 @@ function createFormForAddingStudent() {
                 .append(birthday).append(sex).append(phone).append(city).append(street).append(building).append(apartment)
                 //.append(benefits)
                 //.append(parents)
-                .append(who)
+                //.append(who)
                 .append(selectedClass);
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(submit);
