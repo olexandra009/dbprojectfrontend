@@ -1,5 +1,9 @@
 /************************Listeners************************/
 /***********Left-menu navigation*********/
+
+
+
+
 //region Menu
 $(document).on('click', '#administry', function () {
     nextMenu('administry');
@@ -448,7 +452,7 @@ function identifyClassroomLeaders() {
                     console.log(res);
 
                     cls_le = true;
-                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form" onsubmit="return checkClassTeachers(this)>`);
+                    let tch_list = $(`<form method="post" action="appointTeachersToClasses" id="cls_le_form">`);
                     let classTeacher = res.map(function (item) {
                         return {
                             class_id: item.class_id,
@@ -641,7 +645,7 @@ function createEditTeacherViewById(a) {
     let back = $(` <button id="teacher_non" data-id="${a.data("id")}" class="btn my_btn btn-outline-success" >`).text("Назад");
     let tn = create_input_group("text", "Табельний номер", a.data("id"), "t_n");
     let first_name = create_input_group("text", "Ім'я", a.data("name"), "first_name");
-    let second_name = create_input_group("text", "По батькові", a.data("surname"), "second_name");
+    let second_name = create_input_group("text", "По батькові", a.data("second_name"), "second_name");
     let last_name = create_input_group("text", "Прізвище", a.data("surname"), "last_name");
     let city = create_input_group("text", "Місто", a.data("city"), "city");
     let street = create_input_group("text", "Вулиця", a.data("street"), "street");
@@ -1470,8 +1474,8 @@ function createStudentViewById(id, classid, from_class, from_subj) {
             let data = {
                 id: student.personal_file_num,
                 first_name: student.student_name,
-                second_name: student.surname,
-                last_name: student.patronymic,
+                second_name: student.patronymic,
+                last_name: student.surname,
                 sex: student.sex,
                 city: student.city,
                 street: student.street,
@@ -1526,8 +1530,15 @@ data-id="${data.id}" value="${data.id}" name="${data.id}" onclick="deleteStudent
 function deleteStudent(){
     let id = $('#student_delete').data('id');
     console.log( id);
-    //console.log(id);
+    $.ajax({
+        url: "/deleteStudent/" + id,
+        type: "POST",
+        success: function (student) {
+        }
+    })
 }
+
+
 
 /**  let back = $(` <button id="teacher_non" class="btn my_btn btn-outline-success" >`).text("Назад");
  let tn = create_input_group("text", "Табельний номер", a.data("id"), "t_n");
@@ -1540,6 +1551,7 @@ function deleteStudent(){
 
 
 function createEditStudentViewById(a) {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
     let div = $(`<form method="post" action="editStudent" class="container">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
@@ -1556,7 +1568,6 @@ function createEditStudentViewById(a) {
     let apartment = create_input_group("text", "Квартира", a.data("apartment"), "apartment");
 
 
-    //let type = create_input_group("text", "Тип навчання", a.data("type"), "type");
     //   let class_ = create_input_group(data, "Клас", a.data("classname"), "class_name");//TODO make select
     //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
     let dismiss = $(` <button id="student_save_edit" type="submit" value="Зберегти" class=" my_btn btn-outline-success btn" 

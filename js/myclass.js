@@ -292,6 +292,7 @@ function createMyStudentList(){
         url: "/getStudentsInClass",
         type: "GET",
         success: function(students){
+            console.log(students);
             let data = students.map(function(s){
                 return {id: s.personal_file_num, name: s.surname + ' ' + s.student_name + ' ' + s.patronymic, bday: s.birth_date.substr(0, 10), type: s.studying_type};
             })
