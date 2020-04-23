@@ -154,6 +154,7 @@ $(document).on('click', '#teacher_dismiss', function () {
 $(document).on('click', '#teacher_delete', function () {
     // let id = ($(this).data("id"));
     //TODO delete teacher
+    $('#bacground_adding_parents').remove();
 
 });
 //TODO adequate treatment of the filter-button
