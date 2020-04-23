@@ -147,13 +147,22 @@ $(document).on('click', '#teacher_non', function () {
 });
 
 $(document).on('click', '#teacher_dismiss', function () {
-    // let id = ($(this).data("id"));
-    //TODO dismiss teacher
+    let id = ($(this).data("id"));
 
 });
+
 $(document).on('click', '#teacher_delete', function () {
-    // let id = ($(this).data("id"));
-    //TODO delete teacher
+    let id = ($(this).data("id"));
+    console.log(id);
+    $.ajax({
+        url: "/deleteTeacher/"+id,
+        type: "POST",
+        contentType: "application/json",
+        success: function (teachers) {
+
+        }
+        //error:
+    });
 
 });
 //TODO adequate treatment of the filter-button
@@ -623,9 +632,9 @@ data-id="${data.t_n}">`).text('Заміна');
             div.append(button_subject).append(button_ex);
             let div_last = $(`<div class="row btn-group mar">`);
             let dismiss = $(` <button id="teacher_dismiss" class=" my_btn btn-outline-success btn" 
-data-id="${data.t_n}">`).text('Звільнити');
+data-id="${data.tabel_number}">`).text('Звільнити');
             let delete_ = $(` <button id="teacher_delete" class="my_btn btn-outline-success btn" 
-data-id="${data.t_n}">`).text('Видалити');
+data-id="${data.tabel_number}">`).text('Видалити');
             div_last.append(dismiss).append(delete_);
             div.append(div_last);
             $("#bacground_adding_parents").remove();
