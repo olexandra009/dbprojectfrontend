@@ -640,7 +640,7 @@ function createEditTeacherViewById(a) {
     let div = $(`<form method="post" action="editTeacher" class="container">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="teacher_non" data-id="${a.data("id")}" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let back = $(` <button id="teacher_non" type="button" data-id="${a.data("id")}" class="btn my_btn btn-outline-success" >`).text("Назад");
     let tn = create_input_group("text", "Табельний номер", a.data("id"), "t_n");
     let first_name = create_input_group("text", "Ім'я", a.data("name"), "first_name");
     let second_name = create_input_group("text", "По батькові", a.data("sec_name"), "second_name");
@@ -657,7 +657,7 @@ function createEditTeacherViewById(a) {
     let div_last = $(`<div class="row btn-group mar">`);
     let dismiss = $(` <button id="teacher_save_edit" class=" my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Зберегти');
-    let delete_ = $(` <button id="teacher_non" class="my_btn btn-outline-success btn" 
+    let delete_ = $(` <button id="teacher_non" type="button" class="my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Скасувати');
     row.append(back);
     div.append(row).append(tn).append(first_name).append(second_name)
