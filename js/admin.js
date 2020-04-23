@@ -148,7 +148,7 @@ $(document).on('click', '#teacher_non', function () {
 
 $(document).on('click', '#teacher_dismiss', function () {
     let id = ($(this).data("id"));
-
+    //TODO implement
 });
 
 $(document).on('click', '#teacher_delete', function () {
@@ -160,6 +160,10 @@ $(document).on('click', '#teacher_delete', function () {
         contentType: "application/json",
         success: function (teachers) {
             $('#bacground_adding_parents').remove();
+            nextMenu('teacher');
+            addingTeacherView();
+            addingTeacherView();
+            creatingTeacherList();
         }
         //error:
     });
@@ -1545,6 +1549,11 @@ function deleteStudent() {
         url: "/deleteStudent/" + id,
         type: "POST",
         success: function (student) {
+            $('#bacground_adding_parents').remove();
+            nextMenu('student');
+            addingStudentView();
+            filterStudentCreating();
+            creatingStudentList();
         }
     })
 }
