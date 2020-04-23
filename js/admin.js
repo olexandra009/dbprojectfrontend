@@ -159,12 +159,13 @@ $(document).on('click', '#teacher_delete', function () {
         type: "POST",
         contentType: "application/json",
         success: function (teachers) {
-
+            $('#bacground_adding_parents').remove();
         }
         //error:
     });
 
 });
+
 //TODO adequate treatment of the filter-button
 //endregion
 
