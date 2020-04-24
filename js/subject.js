@@ -772,7 +772,7 @@ function createMarksByPeriod(){
 
     let column = 0;
     //поточні оцінки
-    for(let i = 0; i<dairy_data_marks.length; i++)
+    for(let i = 0; i < dairy_data_marks.length; i++)
     {
         if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
             continue;

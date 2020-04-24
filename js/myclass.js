@@ -406,6 +406,8 @@ function createMarksView(data, subj_id){
     $('#content').append(div).append(marks_view);
 }
 function createGroupsforStudent(subj){
+    console.log("subj");
+    console.log(subj);
     //get data of students {student_id, names, group_id}
     //get data of groups in this class of this subject
 
@@ -418,7 +420,11 @@ function createGroupsforStudent(subj){
                 url: "/getStudGroupPairs/" + subj,
                 type: "GET",
                 success: function(studGroupPairs){
+                    console.log("subjects_in_groups")
                     console.log(subjects_in_groups);
+                    console.log("studGroupPairs");
+                    console.log(studGroupPairs);
+                    
                     let form = $(`<form method="post" action="appointStudentsToGroups">`);
                     studGroupPairs.forEach(stg => {
                         let input = selected_input_stud_groups(subjects_in_groups, stg.student.surname + ' ' +  stg.student.student_name + ' ' +  stg.student.patronymic,  stg.group ? stg.group.group_number : '', stg.student.personal_file_num);
