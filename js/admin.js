@@ -852,8 +852,10 @@ function createFormForAddingConcreteSubject(subjName) {
                 return a.class_number - b.class_number || a.class_char - b.class_char;
             });
             let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас", "", "Оберіть клас", "class");
+            let group = create_selected_input([1,2,3], "Кількість груп", "", "Оберіть кількість груп", "group");
+
             let submit = $(`<input type="submit" class="input-group-text">`);
-            form.append(inputBook).append(inputClass).append(submit);
+            form.append(inputBook).append(inputClass).append(group).append(submit);
             $('#form_c_subject').remove();
             $('#add_subject_c_form').append(form);
         }
