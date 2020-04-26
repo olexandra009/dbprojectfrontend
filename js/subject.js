@@ -7,17 +7,11 @@ const urlParams = new URLSearchParams(queryString);
 // - information about subject
 // TODO add id to marks and attend cell to make them editable
 
+
 let data_names = [{id: '1', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},
                   {id: '2', last_name: "Surname", first_name: "Name1", second_name: "Pobatkovi"},
                   {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},];
 
-let theme_names = [{id: '112314',name:"Name of the first theme" , number:'1', hours:'10', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
-                   {id: '112214', name:"Name of the second theme" ,number:'2', hours:'11', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
-                   {id: '112514', name:"Name of the third theme" ,number:'3', hours:'6', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5}];
-
-let lesson_names = [{id: '242145', theme: 'Theme of lesson 1', date: new Date(2020, 4, 5),hometask: 'write esse'},
-                    {id: '24234',theme: 'Theme of lesson 2',date: new Date(2020, 4, 6),},
-                    {id: '24234',theme: 'Theme of lesson 3',date: new Date(2020, 4, 7),}];
 
 let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
                         {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', mark_id: '0', visible:'true'}, {id:'2', value:'9',mark_id: '0', visible:'true'}]},
@@ -47,6 +41,21 @@ let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', co
                                      {id:2, value: '10', visible:'true', comment:'here'},
                                      {id:3, value: '8', visible:'true', comment:'here'}]} ];
 
+getNamesOfStudentOfThisSubject();
+
+
+
+
+function getNamesOfStudentOfThisSubject(){
+    $.ajax({
+        url: "/getStudentsBySubject",
+        type: "GET",
+        success: function(students){
+            data_names = students;
+            console.log(students);
+        }
+    });
+};
 
 
 /******Check is it is when we get info subject exchange*****/

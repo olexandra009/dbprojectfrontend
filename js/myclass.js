@@ -791,7 +791,6 @@ let student_detail_view =({
     second_name: secname,
     last_name: surname,
     bday: bday,
-    type: type,
     sex: sex,
     phone: array_t,
     address: address,
@@ -830,10 +829,10 @@ let student_detail_view =({
   //      p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
   //                       i++;
    //                      student_block.append(in_ph);});
-    let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
-    let buttonparents =$(`<button id="parents" class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
-    student_block.append(input_type);
-    student_block.append(buttonparents);
+  //  let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
+  //  let buttonparents =$(`<button id="parents" class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
+ //   student_block.append(input_type);
+   // student_block.append(buttonparents);
     return student_block;
 };
 /*------Subject-creator-----*/
