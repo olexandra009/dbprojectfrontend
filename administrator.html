@@ -57,13 +57,77 @@
                                 <div id="teacher_add">
 
                                 </div>
+                                <form class="container filter" id="teacher_filter" name="teacher_filter" method="GET" onsubmit="return teacherFilter()">
+                                    <div class="row input-group mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">Прізвище: </label>
+                                        </div>
+                                        <input class="form-control" id="surname" type="text">
+                                    </div>
+                                    <div class="row input-group mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">Кваліфікація: </label>
+                                        </div>
+                                        <select class="custom-select" id="qw">
 
+                                        </select>
+                                    </div>
+                                    <div class="row input-group mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">Табельний номер: </label>
+                                        </div>
+                                        <input class="form-control" id="tab_num" name="tab_num" type="text">
+                                    </div>
+                                    <div class="row mb-1">
+                                        <label class="input-group-text">Від Я до А: </label>
+                                        <input name="sort" id="descending" type="checkbox">
+                                    </div>
+<!--
+                                    <div class="row mb-1">
+                                        <label class="input-group-text">Працюють зараз: </label>
+                                        <input name="work" type="checkbox">
+                                    </div>
+-->
+                                    <div class="row input-group mb-1" >
+                                        <div class="input-group-prepend">
+                                            <input class="input-group-text" type="submit" value="Фільтр">
+                                        </div>
+                                        <input class="input-group-text" type="reset" value="Скинути" onclick="creatingTeacherList()">
+                                    </div>
+                                    <!-- <div class="btn my_btn btn-outline-success">Фільтр</div>
+<div class="btn my_btn btn-outline-success">Скинути</div>-->
+                                </form>
                             </div>
                             <div id = "student_view" class="bglight hidden">
                                 <div id="student_add">
 
                                 </div>
-
+                                <form class="container filter" id="student_filter" name="student_filter" method="GET" onsubmit="return studentFilter()">
+                                    <div class="row input-group mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">Прізвище:</label>
+                                        </div>
+                                        <input class="form-control" id="surname" type="text">
+                                    </div>
+                                    <div class="row input-group mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">Номер особистої справи: </label>
+                                        </div>
+                                        <input class="form-control" id="personal_file_num" name="tab_num" type="text">
+                                    </div>
+                                    <div class="row input-group mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">Від Я до А</label>
+                                        </div>
+                                        <input name="sort" id="descending" type="checkbox">
+                                    </div>
+                                    <div class="row input-group mb-1" >
+                                        <div class="input-group-prepend">
+                                            <input class="input-group-text" type="submit" value="Фільтр">
+                                        </div>
+                                        <input class="input-group-text" type="reset" value="Скинути" onclick="creatingStudentList()">
+                                    </div>
+                                </form>
                             </div>
                             <div id = "parents_view" class="bglight hidden">
                                 <div id="parent_add">

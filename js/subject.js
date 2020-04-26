@@ -221,8 +221,13 @@ $(document).on('click', '#create_attend_by_period', function () {
 $(document).on('click', '#create_marks_by_period', function(){
     //todo get theme value
     // send theme value
-    createMarksByPeriod();
+    let topic = $('#theme_id_select').val();
+    if(topic)
+        createMarksByPeriod(last(topic.split(':')));
 });
+function last(array) {
+    return array[array.length - 1];
+}
 $(document).on('click', 'tr#table_caption > td[data-type="dairy"]', function(){
     //todo show asking delete
 });
@@ -752,9 +757,19 @@ data-mark-visible="${mark.visible}">`).text(mark.value);
     })
 }
 
-function createMarksByPeriod(){
+function createMarksByPeriod(topic_id){
     //TODO get the theme
     // make AJAX request
+    
+    console.log(topic_id);
+    
+    $.ajax({
+        url: "/getStudentsByTopic/" + topic_id,
+        type: "GET",
+        success: function(students){
+            console.log(students);
+        }
+    });
 
     let table = $('#marks');
     table.empty();
@@ -857,7 +872,7 @@ function createMarksView(){
         success: function(topics){
             console.log(topics);
 
-            let inputdate1 = create_selected_input(topics.map(t => {return t.topic_name;}), 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
+            let inputdate1 = create_selected_input(topics.map(t => {return t.topic_name + " ID:" + t.topic_id;}), 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
 
             let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
             div.append(dataform.append(inputdate1).append(submit));
@@ -898,47 +913,6 @@ function createMarksView(){
             $('#content').append(div).append(marks_view);
         }
     });
-
-
-    //    let inputdate1 = create_selected_input(['theme1', 'theme2', 'theme3'], 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
-    //
-    //    let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
-    //    div.append(dataform.append(inputdate1).append(submit));
-    //    let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
-    //    let btn_div = $(`<div class="btn-group">`);
-    //    let button = $(`<button class="btn btn-outline-dark" id="add_new_column_mark">`).text("Додати стовпчик");
-    //    let button_ = $(`<button class="btn btn-outline-dark" id="show_marks_theme">`).text("Тематична оцінка");
-    //    let button_end = $(`<button class="btn btn-outline-dark" id="show_end_marks">`).text("Підсумкові оцінки");
-    //    btn_div.append(button).append(button_).append(button_end);
-    //    marks_view.append(btn_div);
-    //    let div_table_wrapper=$(`<div id="marks_table_wrapper" class="row">`);
-    //    let div_first_table = $(`<div class="col-md-12"  id="fst_table">`);
-    //    let div_first_table_caption = $(`<div class="table_header" >`).text('Звичайні оцінки');
-    //    let div_second_table = $(`<div class="col-md-2 hidden" id="sec_table" >`);
-    //    let div_second_table_caption = $(`<div class="table_header" >`).text('Тематична оцінка');
-    //    let div_third_table = $(`<div class="col-md-3 hidden" id="thr_table" >`);
-    //    let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
-    //    let table = $(`<table id='marks'>`);
-    //    let table_theme = $(`<table id='marks_theme' >`);
-    //
-    //    let table_end = $(`<table id='marks_end'>`);
-    //
-    //
-    //    div_first_table.append(div_first_table_caption);
-    //
-    //    div_first_table.append(table);
-    //
-    //    div_second_table.append(div_second_table_caption);
-    //
-    //    div_second_table.append(table_theme);
-    //
-    //    div_third_table.append(div_third_table_caption);
-    //
-    //    div_third_table.append(table_end);
-    //
-    //    div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
-    //    marks_view.append(div_table_wrapper);
-    //    $('#content').append(div).append(marks_view);
 }
 //TODO add more arguments for specificating
 
