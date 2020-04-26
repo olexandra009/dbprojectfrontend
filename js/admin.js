@@ -64,6 +64,7 @@ $(document).on('click', '#excel-stud', function () {
     window.open('/excellent-students.html', '_blank');
 });
 
+
 //endregion
 
 
@@ -175,7 +176,8 @@ $(document).on('click', '#teacher_delete', function () {
 
 //region Subject management
 // Предмети => клік на назву
-$(document).on('click', '.s_btn', function () {
+$(document).on('click', '.s_btn', function (e) {
+    if(e.target.type === "button")return;
     //ми отримали назву предметів які треба вивести
     let subj = $(this).data('name');
     createConcreteSubjectList(subj);
@@ -208,6 +210,33 @@ $(document).on('click', '#add_c_subject', function () {
         $('#form_c_subject').remove();
         createCSubject = false;
     }
+});
+
+$(document).on('click', '.subj_btn_name_delete', function () {
+    //todo delete
+});
+$(document).on('click', '.subj_btn_name_edit', function () {
+     let name = $(this).data('name');
+     let form = $(`<form>`)
+     let  input  = create_input_group('text', 'Назва', name, 'name');
+     let button_save = $(`<button type="submit" class="btn my_btn btn-outline-success editsubject">`).text('Зберегти');
+     let button_back = $(`<button type="button" class="btn my_btn btn-outline-success cancelsubject">`).text('Скасувати');
+     let buttnos = $(`<div class="btn-group">`);
+     buttnos.append(button_save).append(button_back);
+    form.append(input).append(buttnos);
+    createWindow(form);
+});
+$(document).on('click', '.cancelsubject', function () {
+    $('#bacground_adding_parents').remove();
+});
+$(document).on('click', '.editsubject', function () {
+    $('#bacground_adding_parents').remove();
+});
+
+$(document).on('click', '#delete_concrete_subject', function () {
+$(this).data('id');
+//todo delete
+
 });
 //endregion
 
@@ -854,8 +883,10 @@ function createFormForAddingConcreteSubject(subjName) {
                 return a.class_number - b.class_number || a.class_char - b.class_char;
             });
             let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас", "", "Оберіть клас", "class");
+            let group = create_selected_input([1,2,3], "Кількість груп", "", "Оберіть кількість груп", "group");
+
             let submit = $(`<input type="submit" class="input-group-text">`);
-            form.append(inputBook).append(inputClass).append(submit);
+            form.append(inputBook).append(inputClass).append(group).append(submit);
             $('#form_c_subject').remove();
             $('#add_subject_c_form').append(form);
         }
@@ -906,8 +937,10 @@ function createConcreteSubjectInformation(id) {
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
     let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}" data-clas="${s.clas}" 
 data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-end-date="${cutData(s.end_date)}" >`).text('Редагувати');
-
-    div.append(row.append(back).append(button));
+    let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}">`).text('Видалити');
+    let buttons = $(`<div class="btn-group">`);
+    buttons.append(button).append(del);
+    div.append(row.append(back).append(buttons));
 
     let subject_name = createInformationViewRows('Назва:', s.subject_name);
     let subject_id = createInformationViewRows('Підгрупа:', s.subject_id,);
@@ -1840,8 +1873,13 @@ let form_teacher_filter = ({qw_list: qwalification_list}) => {
 let subject_name_list_view = ({
                                   name: nm
                               }) => {
-    let $subject = $(`<button data-name="${nm}" type="button" class="btn my_btn s_btn btn-outline-success my-2 btn-lg btn-block">`);
+    let $subject = $(`<div data-name="${nm}" type="button" class="justify-content-between my_btn s_btn  my-2 btn-lg btn-block">`);
     $subject.text(nm);
+    let button_block = $(`<div class="btn-group">`);
+    let button_del =  $(`<button type="button" class="subj_btn_name_delete btn my_btn s_btn btn-outline-success" data-name="${nm}">`).text('Видалити');
+    let button_ed =  $(`<button type="button" class="subj_btn_name_edit btn my_btn s_btn btn-outline-success" data-name="${nm}">`).text('Редагувати');
+    button_block.append(button_del).append(button_ed);
+    $subject.append( button_block);
     return $subject;
 };
 
