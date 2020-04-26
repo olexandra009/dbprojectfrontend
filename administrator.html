@@ -57,12 +57,12 @@
                                 <div id="teacher_add">
 
                                 </div>
-                                <form class="container filter" method="GET" onsubmit="return filter()">
+                                <form class="container filter" id="teacher_filter" name="teacher_filter" method="GET" onsubmit="return teacherFilter()">
                                     <div class="row input-group mb-1">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text">Прізвище: </label>
                                         </div>
-                                        <input class="form-control" type="text">
+                                        <input class="form-control" id="surname" type="text">
                                     </div>
                                     <div class="row input-group mb-1">
                                         <div class="input-group-prepend">
@@ -76,21 +76,23 @@
                                         <div class="input-group-prepend">
                                             <label class="input-group-text">Табельний номер: </label>
                                         </div>
-                                        <input class="form-control" name="tab_num" type="text">
+                                        <input class="form-control" id="tab_num" name="tab_num" type="text">
                                     </div>
                                     <div class="row mb-1">
                                         <label class="input-group-text">Від Я до А: </label>
-                                        <input name="sort" type="checkbox">
+                                        <input name="sort" id="descending" type="checkbox">
                                     </div>
+<!--
                                     <div class="row mb-1">
                                         <label class="input-group-text">Працюють зараз: </label>
                                         <input name="work" type="checkbox">
                                     </div>
+-->
                                     <div class="row input-group mb-1" >
                                         <div class="input-group-prepend">
                                             <input class="input-group-text" type="submit" value="Фільтр">
                                         </div>
-                                        <input class="input-group-text" type="reset" value="Скинути">
+                                        <input class="input-group-text" type="reset" value="Скинути" onclick="creatingTeacherList()">
                                     </div>
                                     <!-- <div class="btn my_btn btn-outline-success">Фільтр</div>
 <div class="btn my_btn btn-outline-success">Скинути</div>-->
