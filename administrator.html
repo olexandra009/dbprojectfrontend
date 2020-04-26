@@ -102,30 +102,30 @@
                                 <div id="student_add">
 
                                 </div>
-                                <form class="container filter">
+                                <form class="container filter" id="student_filter" name="student_filter" method="GET" onsubmit="return studentFilter()">
                                     <div class="row input-group mb-1">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text">Прізвище:</label>
                                         </div>
-                                        <input class="form-control" type="text">
+                                        <input class="form-control" id="surname" type="text">
                                     </div>
                                     <div class="row input-group mb-1">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text">Номер особистої справи: </label>
                                         </div>
-                                        <input class="form-control" name="tab_num" type="text">
+                                        <input class="form-control" id="personal_file_num" name="tab_num" type="text">
                                     </div>
                                     <div class="row input-group mb-1">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text">Від Я до А</label>
                                         </div>
-                                        <input name="sort" type="checkbox">
+                                        <input name="sort" id="descending" type="checkbox">
                                     </div>
                                     <div class="row input-group mb-1" >
                                         <div class="input-group-prepend">
                                             <input class="input-group-text" type="submit" value="Фільтр">
                                         </div>
-                                        <input class="input-group-text" type="reset" value="Скинути">
+                                        <input class="input-group-text" type="reset" value="Скинути" onclick="creatingStudentList()">
                                     </div>
                                 </form>
                             </div>

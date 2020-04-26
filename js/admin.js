@@ -1420,13 +1420,35 @@ function filterStudentCreating() {
     // array.forEach(a=>$('#sc').append(a));
     // document.getElementById('content').classList.add('hidden');
     document.getElementById("student_view").classList.remove('hidden');
-
+}
+function studentFilter(){
+    let filter = {surname: document.forms['student_filter']['surname'].value,
+                  personal_file_num: document.forms['student_filter']['personal_file_num'].value,
+                  descending: document.forms['student_filter']['descending'].checked}
+    $.ajax({
+        url: "/studentFilter",
+        type: "GET",
+        data: filter,
+        success: function(students){
+            let data = students.map(s => {
+                return {
+                    id: s.personal_file_num,
+                    name: s.surname + ' ' + s.student_name + ' ' + s.patronymic,
+                    bday: s.birth_date.substr(0, 10),
+                    class_name: s.class_number + '-' + s.class_char + ' ' + s.start_year
+                };
+            });
+            let container = $(`<div class="container">`);
+            data.forEach(th => {
+                container.append(student_list(th))
+            });
+            $('#content').html("").append(container);
+        }
+    });
+    return false;
 }
 
-
 function creatingStudentList() {
-    //TODO AJAX request for getting students
-
     $.ajax({
         url: "/getStudentsClasses",
         type: "GET",
@@ -1444,7 +1466,7 @@ function creatingStudentList() {
             data.forEach(th => {
                 container.append(student_list(th))
             });
-            $('#content').append(container);
+            $('#content').html("").append(container);
         }
     });
 }
