@@ -522,6 +522,8 @@ function creatingTeacherList() {
         type: "GET",
         contentType: "application/json",
         success: function (teachers) {
+            console.log("creatingTeacherList");
+            console.log(teachers);
             let data = teachers.map(function (teacher) {
                 return {
                     t_n: teacher.tabel_number,
