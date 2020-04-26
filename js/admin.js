@@ -156,7 +156,7 @@ $(document).on('click', '#teacher_delete', function () {
     let id = ($(this).data("id"));
     console.log(id);
     $.ajax({
-        url: "/deleteTeacher/"+id,
+        url: "/deleteTeacher/" + id,
         type: "POST",
         contentType: "application/json",
         success: function (teachers) {
@@ -177,7 +177,7 @@ $(document).on('click', '#teacher_delete', function () {
 //region Subject management
 // Предмети => клік на назву
 $(document).on('click', '.s_btn', function (e) {
-    if(e.target.type === "button")return;
+    if (e.target.type === "button") return;
     //ми отримали назву предметів які треба вивести
     let subj = $(this).data('name');
     createConcreteSubjectList(subj);
@@ -216,13 +216,13 @@ $(document).on('click', '.subj_btn_name_delete', function () {
     //todo delete
 });
 $(document).on('click', '.subj_btn_name_edit', function () {
-     let name = $(this).data('name');
-     let form = $(`<form>`)
-     let  input  = create_input_group('text', 'Назва', name, 'name');
-     let button_save = $(`<button type="submit" class="btn my_btn btn-outline-success editsubject">`).text('Зберегти');
-     let button_back = $(`<button type="button" class="btn my_btn btn-outline-success cancelsubject">`).text('Скасувати');
-     let buttnos = $(`<div class="btn-group">`);
-     buttnos.append(button_save).append(button_back);
+    let name = $(this).data('name');
+    let form = $(`<form>`)
+    let input = create_input_group('text', 'Назва', name, 'name');
+    let button_save = $(`<button type="submit" class="btn my_btn btn-outline-success editsubject">`).text('Зберегти');
+    let button_back = $(`<button type="button" class="btn my_btn btn-outline-success cancelsubject">`).text('Скасувати');
+    let buttnos = $(`<div class="btn-group">`);
+    buttnos.append(button_save).append(button_back);
     form.append(input).append(buttnos);
     createWindow(form);
 });
@@ -234,7 +234,7 @@ $(document).on('click', '.editsubject', function () {
 });
 
 $(document).on('click', '#delete_concrete_subject', function () {
-$(this).data('id');
+    $(this).data('id');
 //todo delete
 
 });
@@ -462,24 +462,8 @@ function checkAppointTeacherToSubj() {
     if (document.forms['tch_subj_form']['teacher'].value == '') return false;
 }
 
-function appointSubstituteTeacher() {
-    //TODO Ajax request for list of subject and list of teacher
-    //TODO Close another buttons on click
-    tch_ex = true;
-    let form = $('<form class="container" method="post" id="tch_ex_form">');
-    let subj = create_selected_input(['очна', 'заочна'], 'Предмет:', "type_edu", "Оберіть предмет");
-    let tch = create_selected_input(['2', '4'], 'Вчитель:', "class_type", "Оберіть вчителя");
-    let submit = $(`<input type="submit" class="input-group-text">`);
-    form.append(subj).append(tch).append(submit);
-    $(`#tch_ex`).after(form);
-}
-
 
 function identifyClassroomLeaders() {
-    // TODO send changed data to the server
-    // TODO maybe change tch_list to form or change submit to button and one more
-    //  listners
-
     $.ajax({
         url: "/getTeachers",
         type: "GET",
@@ -876,7 +860,7 @@ function createFormForAddingConcreteSubject(subjName) {
             });
             let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас", "", "Оберіть клас", "class");
 
-            let group = create_selected_input([1,2,3], "Кількість груп", "", "Оберіть кількість груп", "group");
+            let group = create_selected_input([1, 2, 3], "Кількість груп", "", "Оберіть кількість груп", "group");
             let submit = $(`<input type="submit" class="input-group-text">`);
             form.append(inputBook).append(inputClass).append(group).append(submit);
 
@@ -1280,7 +1264,7 @@ data-class-char="${data.class_char}" data-year="${data.year}">`).text('Реда�
             let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
             data.students.forEach(st => {
                 let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
-                let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname+' '+st.student_name);
+                let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname + ' ' + st.student_name);
                 let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
                 let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
 
@@ -1366,8 +1350,6 @@ function filterStudentCreating() {
 
 
 function creatingStudentList() {
-    //TODO AJAX request for getting students
-
     $.ajax({
         url: "/getStudentsClasses",
         type: "GET",
@@ -1402,8 +1384,8 @@ function addingStudentView() {
 
 
 function createFormForAddingStudent() {
-    let form = $('<form class="container" method="post" onsubmit="return checkAddingStudent()" name="form_student" id="form_student" action="createStudent">');
-
+    let form = $('<form class="container" name="form_student" id="form_student" onsubmit="createStudentRequest(event)">');
+    //let form = $('<form class="container" name="form_student" id="form_student" onsubmit="return false;">');
     let input_personal = create_input_group('text', "Номер особової справи:", "", "id");
     let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
@@ -1414,11 +1396,6 @@ function createFormForAddingStudent() {
     let street = create_input_group('text', "Вулиця", "", "street");
     let building = create_input_group('text', "Будинок", "", "building");
     let apartment = create_input_group('text', "Квартира", "", "apartment");
-    //let who = create_input_group('text', "Ким є", "", "who");
-
-    //TODO get phones and privileges values
-    // let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
-//    let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
     $.ajax({
         url: "/getClasses",
         type: "GET",
@@ -1426,93 +1403,95 @@ function createFormForAddingStudent() {
         success: function (classes) {
             classes.sort(function (a, b) {
                 return a.class_number - b.class_number || a.class_char - b.class_char || a.start_year - b.start_year;
-            })
+            });
             classes = classes.map(item => item.class_number + '-' + item.class_char + ' ' + item.start_year);
-
             let selectedClass = create_selected_input(classes, 'Клас', "class_type", "Оберіть клас", "class_name");
-
-            //  let parents = create_selected_input_with_button(['Оберіть..'], "Відповідальні особи", "persons", "create_persons", "Додати нову", "Оберіть відповідальну особу");
-
             form.append(input_personal).append(input_surname).append(input_name).append(input_second_name)
                 .append(birthday).append(sex)
-                //.append(phone)
                 .append(city).append(street).append(building).append(apartment)
-                //.append(benefits)
-                //.append(parents)
-                //.append(who)
                 .append(selectedClass);
-            let submit = $(`<input type="submit" class="input-group-text">`);
+            let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`);
             form.append(submit);
             $('#form_student').remove();
             $('#student_add').append(form);
         }
     });
-
 }
 
+function createStudentRequest(e) {
+    e.preventDefault();
+    let info = document.forms['form_student'];
+    let message = checkAddingStudent();
+    if (message !== null) {
+        window.alert(message);
+        return false;
+    }
+    let id = info['id'].value;
+    $.ajax({
+        url: "/getStudent/" + id,
+        type: "GET",
+        success: function (student) {
+            if (student.length !== 0) {
+                window.alert("Учень з номером особової справи " + id + " вже існує");
+            } else {
+                let data = {
+                    id: id,
+                    last_name: info['last_name'].value,
+                    first_name: info['first_name'].value,
+                    patronymic: info['patronymic'].value,
+                    birthday: info['birthday'].value,
+                    sex: info['sex'].value,
+                    city: info['city'].value,
+                    street: info['street'].value,
+                    building: info['building'].value,
+                    apartment: info['apartment'].value,
+                    class_name: info['class_name'].value
+                }
+                console.log(data);
+                $.ajax({
+                    url: '/createStudent',
+                    method: 'post',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (res) {
+                        console.log(res);
+                    },
+                    complete: function () {
+                        nextMenu('student');
+                        addingStudentView();
+                        filterStudentCreating();
+                        creatingStudentList();
+                    }
+                });
+            }
+        }
+    });
+    return false;
+}
+
+
 function checkAddingStudent() {
-    if (document.forms['form_student']['last_name'].value == '') return false;
-    if (document.forms['form_student']['first_name'].value == '') return false;
-    if (document.forms['form_student']['patronymic'].value == '') return false;
-    if (document.forms['form_student']['birthday'].value == '') return false;
-    if (document.forms['form_student']['sex'].value == '') return false;
-    if (document.forms['form_student']['city'].value == '') return false;
-    if (document.forms['form_student']['street'].value == '') return false;
-    if (document.forms['form_student']['building'].value == '') return false;
-    if (document.forms['form_student']['class_name'].value == '') return false;
+    if (document.forms['form_student']['id'].value === '') return 'Поле Номер особової справи не може бути порожнім';
+    if (document.forms['form_student']['last_name'].value === '') return 'Поле Прізвище не може бути порожнім';
+    if (document.forms['form_student']['first_name'].value === '') return 'Поле Ім\'я не може бути порожнім';
+    if (document.forms['form_student']['patronymic'].value === '') return 'Поле По-батькові не може бути порожнім';
+    if (document.forms['form_student']['birthday'].value === '') return 'Поле Дата народження не може бути порожнім';
+    if (document.forms['form_student']['sex'].value === '') return 'Поле Стать не може бути порожнім';
+    if (document.forms['form_student']['city'].value === '') return 'Поле Місто не може бути порожнім';
+    if (document.forms['form_student']['street'].value === '') return 'Поле Вулиця не може бути порожнім';
+    if (document.forms['form_student']['building'].value === '') return 'Поле Будинок не може бути порожнім';
+    if (document.forms['form_student']['class_name'].value === '') return 'Поле Клас не може бути порожнім';
+    return null;
 };
 
 
-function createParentDetailViewById(id) {
-    //TODO Ajax request to get all information about student
-    let data = {
-        id: "N13404024",
-        first_name: "Ольга",
-        second_name: "Степанівна",
-        last_name: "Іваненко",
-        workplace: "WORK PLACE",
-        address: "м. Київ, проспект Перемоги 45, кв. 11",
-        phone: ["+380974004593", "+380634527612"],
-    };
-
-    let div = $(`<div class="container">`); // обгортка
-    let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let button = $(` <button id="edit_parent" class="btn my_btn btn-outline-success" data-id="${data.id}" 
-data-first_name="${data.first_name}" data-last_name="${data.last_name}" 
-data-second_name="${data.second_name}" data-sex="${data.sex}" data-address = "${data.address}" data-phone =${data.phone.toString()}
-data-work-place="${data.workplace}">`).text('Редагувати');
-
-    row.append(back);
-    row.append(button);
-    let tn = createInformationViewRows("Персональний номер", data.id);
-    let first_name = createInformationViewRows("Ім'я", data.first_name);
-    let second_name = createInformationViewRows("По батькові", data.second_name);
-    let last_name = createInformationViewRows("Прізвище", data.last_name);
-    let address = createInformationViewRows("Адреса", data.address);
-    let type = createInformationViewRows("Місце роботи", data.workplace);
-    div.append(row).append(tn).append(first_name).append(second_name)
-        .append(last_name).append(address)
-        .append(type);
-    //  data.phone.forEach(person => div.append(createInformationViewRows("Телефон:", person)));
-    let div_last = $(`<div class="row btn-group mar">`);
-    let delete_ = $(` <button id="parent_delete" class="my_btn btn-outline-success btn" 
-data-id="${data.t_n}">`).text('Видалити');
-    div_last.append(delete_);
-    div.append(div_last);
-    $("#bacground_adding_parents").remove();
-    createWindow(div);
-
-}
-
 function createStudentViewById(id, classid, from_class, from_subj) {
-    //TODO Ajax request to get all information about student
     console.log(id);
     $.ajax({
         url: "/getStudent/" + id,
         type: "GET",
         success: function (student) {
-            console.log(student);
             let data = {
                 id: student.personal_file_num,
                 first_name: student.student_name,
@@ -1585,22 +1564,12 @@ function deleteStudent() {
 }
 
 
-/**  let back = $(` <button id="teacher_non" class="btn my_btn btn-outline-success" >`).text("Назад");
- let tn = create_input_group("text", "Табельний номер", a.data("id"), "t_n");
- let first_name = create_input_group("text", "Ім'я", a.data("name"), "first_name");
- let second_name = create_input_group("text", "По батькові", a.data("surname"), "second_name");
- let last_name = create_input_group("text", "Прізвище", a.data("surname"), "last_name");
- let qualification = create_input_group("text", "Кваліфікація", a.data("qualification"), "qualification");
- let confirm = create_input_group("date", "Дата підтвердження", a.data("confirm"), "confirm");
- let start = create_input_group("date", "Початок роботи", a.data("start"), "start");*/
-
-
 function createEditStudentViewById(a) {
-    let div = $(`<form method="post" action="editStudent" class="container">`);
+    let div = $(`<form class="container" id="form_student_edit" onsubmit="editStudentRequest(event)">`);
     $("#bacground_adding_parents").remove();
     let row = $(`<div class="row row_button">`);
     let back = $(` <button id="student_non"  class="btn my_btn btn-outline-success" >`).text("Назад");
-    let tn = create_input_group("text", "Особова справа", a.data("id"), "id");
+    //let tn = create_input_group("text", "Номер особової справи", a.data("id"), "id");
     let first_name = create_input_group("text", "Ім'я", a.data("first_name"), "first_name");
     let second_name = create_input_group("text", "По батькові", a.data("second_name"), "second_name");
     let last_name = create_input_group("text", "Прізвище", a.data("last_name"), "last_name");
@@ -1612,7 +1581,6 @@ function createEditStudentViewById(a) {
     let apartment = create_input_group("text", "Квартира", a.data("apartment"), "apartment");
 
 
-    //let sport_group = create_input_group("text", "Група фіз підготовки", a.data("group"), "Group");//TODO make select
     let dismiss = $(` <button id="student_save_edit" type="submit" value="Зберегти" class=" my_btn btn-outline-success btn" 
 data-id="${a.data("id")}">`).text('Зберегти');
     let delete_ = $(` <div id="student_non" type="cancel" class="my_btn btn-outline-success btn" data-id="${a.data("id")}" data-class="${a.data("classname")}">`).text('Скасувати');
@@ -1641,86 +1609,69 @@ data-id="${a.data("id")}">`).text('Зберегти');
             div_last.append(dismiss).append(delete_);
             div.append(div_last);
             //  row.append(back);
-            div.append(row).append(tn).append(first_name).append(second_name)
+            div.append(row).append(first_name).append(second_name)
                 .append(last_name).append(sex).append(bday).append(city).append(street).append(building).append(apartment).append(class_);
             createWindow(div);
         }
     });
-
-    //TODO Change person to selected items and get names
-    // add delete and new person add
-
-
 }
 
-/*function createEditParentViewById(a) {
-
-    let div = $(`<div class="container">`);
-    $("#bacground_adding_parents").remove();
-    let row = $(`<div class="row row_button">`);
-    let back = $(` <button id="parent_non" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let tn = create_input_group("text", "Персональний номер", a.data("id"), "id");
-    let first_name = create_input_group("text", "Ім'я", a.data("first_name"), "first_name");
-    let second_name = create_input_group("text", "По батькові", a.data("second_name"), "second_name");
-    let last_name = create_input_group("text", "Прізвище", a.data("last_name"), "last_name");
-    let workplace = create_input_group("text", "Місце роботи", a.data("workplace"), "workplace");
-    let city = create_input_group("text", "Місто", a.data("address"), "address");
-    let street = create_input_group("text", "Вулиця", a.data("address"), "address");
-    let building = create_input_group("text", "Будинок", a.data("address"), "address");
-    let flat = create_input_group("text", "Квартира", a.data("address"), "address");
-    let div_last = $(`<div class="row btn-group mar">`);
-    let dismiss = $(` <button id="parent_save_edit" class=" my_btn btn-outline-success btn" 
-data-id="${a.data("id")}">`).text('Зберегти');
-    let delete_ = $(` <button id="parent_non" class="my_btn btn-outline-success btn" 
-data-id="${a.data("id")}">`).text('Скасувати');
-    row.append(back);
-    div.append(row).append(tn).append(first_name).append(second_name)
-        .append(last_name).append(city).append(street).append(building)
-        .append(flat);
-    let phone = (a.data("phone")).split(',');
-
-    //TODO Change person to selected items and get names
-    // add delete and new person add
-    phone.forEach(person => div.append(create_input_group("tel", "Телефон:", person, "phone")));
-
-    div_last.append(dismiss).append(delete_);
-    div.append(div_last);
-    createWindow(div);
-};*/
-
-
-/*function createPersonForm() {
-    let div = $(` <div>`);
-    let input_surname = create_input_group('text', "Прізвище", "", "last_name_p");
-    let input_name = create_input_group('text', "Ім'я", "", "first_name_p");
-    let input_second_name = create_input_group('text', "По батькові", "", "second_name_p");
-    let city = create_input_group('text', "Місто", "", "city_p");
-    let street = create_input_group('text', "Вулиця", "", "street_p");
-    let building = create_input_group('text', "Будинок", "", "building_p");
-    let apartment = create_input_group('text', "Квартира", "", "apartment_p");
-    let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
-    let workplace = create_input_group('text', "Місце роботи", "", "workplace_p");
-    div.append(input_surname).append(input_name).append(input_second_name).append(city).append(street).append(building).append(apartment)
-        .append(phone).append(workplace);
-    let buttons = $(`<div>`);
-    let submit = $(`<input type="submit" class="input-group-text" style="display:inline-block" onclick="verifyPersonForm()">`).text("Додати");
-    let cancel = $(`<button class="input-group-text" id="cn_add_parents" style="display:inline-block">`).text("Скасувати");
-    buttons.append(submit).append(cancel);
-    div.append(buttons);
-    return div;
-}
-
-//TODO add responsible person form functionality
-function verifyPersonForm() {
-    console.log($('input[name="last_name_p"]').value);
-    if ($('input[name="last_name_p"]').value == '') {
-        console.log("FALSE");
+function editStudentRequest(e) {
+    e.preventDefault();
+    let info = document.forms['form_student_edit'];
+    let message = checkEditingStudent();
+    if (message !== null) {
+        window.alert(message);
         return false;
-    } else {
-        console.log("TRUE");
     }
-    //    if($('input[name="last_name_p"]').value == '') return false;
-}*/
+    let id = $('#student_save_edit').data('id');
+    let data = {
+        id: id,
+        last_name: info['last_name'].value,
+        first_name: info['first_name'].value,
+        second_name: info['second_name'].value,
+        bday: info['bday'].value,
+        sex: info['sex'].value,
+        city: info['city'].value,
+        street: info['street'].value,
+        building: info['building'].value,
+        apartment: info['apartment'].value,
+        class_name: info['class_name'].value
+    }
+    console.log(data);
+    $.ajax({
+        url: '/editStudent',
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function (res) {
+            console.log(res);
+        },
+        complete: function () {
+            console.log("Removing");
+            $('#bacground_adding_parents').remove();
+            nextMenu('student');
+            addingStudentView();
+            filterStudentCreating();
+            creatingStudentList();
+            createStudentViewById(id, info['class_name'].value);
+        }
+    });
+    return false;
+}
+
+function checkEditingStudent() {
+    if (document.forms['form_student_edit']['last_name'].value === '') return 'Поле Прізвище не може бути порожнім';
+    if (document.forms['form_student_edit']['first_name'].value === '') return 'Поле Ім\'я не може бути порожнім';
+    if (document.forms['form_student_edit']['second_name'].value === '') return 'Поле По-батькові не може бути порожнім';
+    if (document.forms['form_student_edit']['bday'].value === '') return 'Поле Дата народження не може бути порожнім';
+    if (document.forms['form_student_edit']['sex'].value === '') return 'Поле Стать не може бути порожнім';
+    if (document.forms['form_student_edit']['city'].value === '') return 'Поле Місто не може бути порожнім';
+    if (document.forms['form_student_edit']['street'].value === '') return 'Поле Вулиця не може бути порожнім';
+    if (document.forms['form_student_edit']['building'].value === '') return 'Поле Будинок не може бути порожнім';
+    return null;
+};
 
 /*******************Helper function***************************/
 function cutData(data) {
@@ -1867,10 +1818,10 @@ let subject_name_list_view = ({
     let $subject = $(`<div data-name="${nm}" type="button" class="justify-content-between my_btn s_btn  my-2 btn-lg btn-block">`);
     $subject.text(nm);
     let button_block = $(`<div class="btn-group">`);
-    let button_del =  $(`<button type="button" class="subj_btn_name_delete btn my_btn s_btn btn-outline-success" data-name="${nm}">`).text('Видалити');
-    let button_ed =  $(`<button type="button" class="subj_btn_name_edit btn my_btn s_btn btn-outline-success" data-name="${nm}">`).text('Редагувати');
+    let button_del = $(`<button type="button" class="subj_btn_name_delete btn my_btn s_btn btn-outline-success" data-name="${nm}">`).text('Видалити');
+    let button_ed = $(`<button type="button" class="subj_btn_name_edit btn my_btn s_btn btn-outline-success" data-name="${nm}">`).text('Редагувати');
     button_block.append(button_del).append(button_ed);
-    $subject.append( button_block);
+    $subject.append(button_block);
     return $subject;
 };
 
