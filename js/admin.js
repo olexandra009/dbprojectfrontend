@@ -19,7 +19,6 @@ $(document).on('click', "#statistics", function () {
 $(document).on('click', '#subject', function () {
     nextMenu('subject');
     creatingSubjectList();
-
 });
 
 $(document).on('click', '#teacher', function () {
@@ -217,12 +216,14 @@ $(document).on('click', '.subj_btn_name_delete', function () {
     $.ajax({
         url: "/deleteSubject/" + $(this).data('name'),
         type: "POST",
-        success: function(res){
-            switch(res){
-                case '1': location.reload();
+        success: function (res) {
+            switch (res) {
+                case '1':
+                    location.reload();
                     break;
 
-                case '0': alert('Неможливо видалити групу предметів: усе ще існують предмети з цієї групи');
+                case '0':
+                    alert('Неможливо видалити групу предметів: усе ще існують предмети з цієї групи');
                     break;
             }
         }
@@ -231,7 +232,7 @@ $(document).on('click', '.subj_btn_name_delete', function () {
 $(document).on('click', '.subj_btn_name_edit', function () {
     let name = $(this).data('name');
     let form = $(`<form method='post' id='edit_subj_form' name='edit_subj_form' action='editSubject'>`)
-    let input  = create_input_group('text', 'Назва', name, 'name');
+    let input = create_input_group('text', 'Назва', name, 'name');
     let button_save = $(`<button type="submit" class="btn my_btn btn-outline-success editsubject">`).text('Зберегти');
     let button_back = $(`<button type="button" class="btn my_btn btn-outline-success cancelsubject">`).text('Скасувати');
     let buttnos = $(`<div class="btn-group">`);
@@ -240,7 +241,8 @@ $(document).on('click', '.subj_btn_name_edit', function () {
     //TODO fix "Form submission canceled because the form is not connected"
     createWindow(form);
 });
-function checkEditSubject(){
+
+function checkEditSubject() {
     if (document.forms['edit_subj_form']['name'].value == '') return false;
 }
 
@@ -542,7 +544,7 @@ function filterTeacherCreating() {
     $.ajax({
         url: "/getTeacherQualifications",
         type: "GET",
-        success: function(qualifications){
+        success: function (qualifications) {
             console.log(qualifications);
             let qualification = $('#qw');
             let array = form_teacher_filter({qw_list: [''].concat(qualifications.map(o => o.qualification_name))});
@@ -553,16 +555,18 @@ function filterTeacherCreating() {
     });
 }
 
-function teacherFilter(){
-    let filter = {surname: document.forms['teacher_filter']['surname'].value,
-                  qualification: document.forms['teacher_filter']['qw'].value,
-                  tabel_number: document.forms['teacher_filter']['tab_num'].value,
-                  descending: document.forms['teacher_filter']['descending'].checked}
+function teacherFilter() {
+    let filter = {
+        surname: document.forms['teacher_filter']['surname'].value,
+        qualification: document.forms['teacher_filter']['qw'].value,
+        tabel_number: document.forms['teacher_filter']['tab_num'].value,
+        descending: document.forms['teacher_filter']['descending'].checked
+    }
     $.ajax({
         url: "/teacherFilter",
         type: "GET",
         data: filter,
-        success: function(teachers){
+        success: function (teachers) {
             console.log(teachers);
             let data = teachers.map(function (teacher) {
                 return {
@@ -818,66 +822,6 @@ function createConcreteSubjectList(name) {
             $("#content").empty().append(subject_button).append(subject_list);
         }
     });
-
-
-}
-
-function createParentsView() {
-    let student_add = $('#parent_add');
-    student_add.empty();
-    let theme = $(`<div class="cotainer parents">`);
-    theme.append($(`<button class="btn my_btn btn-outline-success" id="add_parent">`).text('Додати відповідальну особу'));
-    theme.append($(`<div id="add_parents_form">`));
-    student_add.append(theme);
-    $('#parents_view').removeClass('hidden');
-}
-
-function creatingParentsList() {
-    //TODO AJAX request for getting students
-    let data = [{
-        id: "N13404024",
-        name: "Іваненко Ольга Степанівна",
-    }, {
-        id: "N13404025",
-        name: "Петров Ігор Артемович",
-    }, {
-        id: "N13404026",
-        name: "Яременко Анна Петрівна",
-    }];
-    let container = $(`<div class="container">`);
-    data.forEach(th => {
-        let line = $(`<div class="row par-list" data-id="${th.id}">`);
-        let divname = $(`<div class="lt col-md-6 name">`).text(th.name);
-
-        line.append(divname);
-        container.append(line);
-    });
-
-    $('#content').append(container);
-}
-
-function createFormForAddingParent() {
-    let form = $('<form class="container" id="form_add_parent"  method="post"   name="form_student" action="">');
-    let input_surname = create_input_group('text', "Прізвище", "", "last_name");
-    let input_name = create_input_group('text', "Ім'я", "", "first_name");
-    let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
-    let city = create_input_group('text', "Місто", "", "city");
-    let street = create_input_group('text', "Вулиця", "", "street");
-    let building = create_input_group('text', "Будинок", "", "building");
-    let apartment = create_input_group('text', "Квартира", "", "apartment");
-
-    //TODO get phones and privileges values
-    //   let phone = create_input_group_with_button('text', 'Телефон', 'add_phone');
-    let workplace = create_input_group('text', "Місце роботи", "", "workplace");
-
-    form.append(input_surname).append(input_name).append(input_second_name)
-    //.append(phone)
-        .append(city).append(street).append(building).append(apartment).append(workplace);
-
-    let submit = $(`<input type="submit" class="input-group-text">`);
-    form.append(submit);
-    $('#form_student').remove();
-    $('#parent_add').append(form);
 }
 
 function createFormForAddingSubject() {
@@ -890,7 +834,7 @@ function createFormForAddingSubject() {
 }
 
 function createFormForAddingConcreteSubject(subjName) {
-    let form = $('<form class="container" method="post" id="form_c_subject" action="createSubjectInGroup">');
+    let form = $('<form class="container" id="form_c_subject" onsubmit="addSubjectInGroupRequest(event)" ">');
     //hidden input just to send the subjName
     let hiddenSubjNameInput = $('<input type="text" name="subjName" style="display: none" value="' + subjName + '">');
     form.append(hiddenSubjNameInput);
@@ -908,21 +852,52 @@ function createFormForAddingConcreteSubject(subjName) {
             if (month < 5)
                 year--;
             classes = classes.filter(a => a.start_year == year);
-
             classes.sort(function (a, b) {
                 return a.class_number - b.class_number || a.class_char - b.class_char;
             });
             let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас", "", "Оберіть клас", "class");
-
             let group = create_selected_input([1, 2, 3], "Кількість груп", "", "Оберіть кількість груп", "group");
-            let submit = $(`<input type="submit" class="input-group-text">`);
+            let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`);
             form.append(inputBook).append(inputClass).append(group).append(submit);
-
             $('#form_c_subject').remove();
             $('#add_subject_c_form').append(form);
         }
     });
+}
 
+
+function addSubjectInGroupRequest(e) {
+    e.preventDefault();
+    let elem = document.forms['form_c_subject']
+    if (elem['class'].value === '') {
+        window.alert('Оберіть клас');
+        return false;
+    }
+    if (elem['group'].value === ''){
+        window.alert('Оберіть кількість груп');
+        return false;
+    }
+    let data={
+        book: elem['book'].value,
+        subjName: elem['subjName'].value,
+        class_name: elem['class'].value,
+        groups: elem['group'].value
+    }
+    console.log(data);
+    $.ajax({
+        url: '/createSubjectInGroup',
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function (res) {
+            console.log(res);
+        },
+        complete: function () {
+            createConcreteSubjectList(elem['subjName'].value);
+        }
+    });
+    return false;
 }
 
 function createEditSubjectInformation(s) {
@@ -950,7 +925,7 @@ $(document).on('click', '#edit_subject', function () {
 });
 
 function createConcreteSubjectInformation(id) {
-    //todo get subject information
+    //ASAP
     let div = $(`<div class="container">`);
 
     //{subject_id, subject_name, book, start_date, end_date, class, students_list[], teacher[] {teacher_id, name, start_date, end_date}}
@@ -1272,8 +1247,8 @@ function createSubjectGroupViewOfClassById(id) {
     //TODO get All subject in group of class id
     let subject_list = $(`<div>`);
     let subjectsInGroup = [{id: '5AG1', name: 'English', class_name: '5-A'},
-                           {id: '5AG2', name: 'English', class_name: '5-A'},
-                           {id: '5BG1', name: 'English', class_name: '5-B'}];
+        {id: '5AG2', name: 'English', class_name: '5-A'},
+        {id: '5BG1', name: 'English', class_name: '5-B'}];
 
     subjectsInGroup.forEach(sb => {
         // the group number(5AG1,...) is primary key of subject in group
@@ -1347,8 +1322,8 @@ function addingClassView() {
     theme.append($(`<div id="add_class_form">`));
     class_button.append(theme);
     let classes = [{class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
-                   {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
-                   {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}]
+        {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019},
+        {class_id: "1a2019", class_number: 1, class_char: "a", start_year: 2019}]
 
     /*
   classes.forEach(item => {
@@ -1400,15 +1375,18 @@ function filterStudentCreating() {
     // document.getElementById('content').classList.add('hidden');
     document.getElementById("student_view").classList.remove('hidden');
 }
-function studentFilter(){
-    let filter = {surname: document.forms['student_filter']['surname'].value,
-                  personal_file_num: document.forms['student_filter']['personal_file_num'].value,
-                  descending: document.forms['student_filter']['descending'].checked}
+
+function studentFilter() {
+    let filter = {
+        surname: document.forms['student_filter']['surname'].value,
+        personal_file_num: document.forms['student_filter']['personal_file_num'].value,
+        descending: document.forms['student_filter']['descending'].checked
+    }
     $.ajax({
         url: "/studentFilter",
         type: "GET",
         data: filter,
-        success: function(students){
+        success: function (students) {
             let data = students.map(s => {
                 return {
                     id: s.personal_file_num,
@@ -1759,8 +1737,8 @@ function cutData(data) {
     try {
         return data.getFullYear() + "-" + ((data.getMonth() < 10) ?
 
-                                           ("0" + data.getMonth()) : data.getMonth()) + "-" + ((data.getDate() < 10) ?
-                                                                                               ("0" + data.getDate()) : data.getDate());
+            ("0" + data.getMonth()) : data.getMonth()) + "-" + ((data.getDate() < 10) ?
+            ("0" + data.getDate()) : data.getDate());
     } catch (e) {
         return "";
     }
@@ -1836,8 +1814,8 @@ function create_input_group_with_button(input_type, label_name, button_id) {
 
 function cellDate(data) {
     return ((data.getDate() < 10) ?
-            ("0" + data.getDate()) : data.getDate()) + "." + (((data.getMonth() + 1) < 10) ?
-                                                              ("0" + (data.getMonth() + 1)) : (data.getMonth() + 1));
+        ("0" + data.getDate()) : data.getDate()) + "." + (((data.getMonth() + 1) < 10) ?
+        ("0" + (data.getMonth() + 1)) : (data.getMonth() + 1));
 }
 
 function createWindow(innerItem) {
@@ -1848,10 +1826,10 @@ function createWindow(innerItem) {
 
 /*************************HTML********************************/
 let student_list = ({
-    id: t_n,
-    name: name,
-    class_name: cls
-}) => {
+                        id: t_n,
+                        name: name,
+                        class_name: cls
+                    }) => {
     let line = $(`<div class="row st-list" data-id="${t_n}" data-class="${cls}">`);
     let divname = $(`<div class="lt col-md-6 name">`).text(name);
     let divt_n = $(`<div class="lt  col-md-2 id">`).text(t_n);
@@ -1863,10 +1841,10 @@ let student_list = ({
 };
 
 let teacher_list = ({
-    t_n: t_n,
-    name: name,
-    qwl: qwl
-}) => {
+                        t_n: t_n,
+                        name: name,
+                        qwl: qwl
+                    }) => {
     let line = $(`<div class="row th-list" data-id="${t_n}">`);
     let divname = $(`<div class="lt col-md-6 name">`).text(name);
     let divt_n = $(`<div class="lt  col-md-2 id">`).text(t_n);
@@ -1893,8 +1871,8 @@ let form_teacher_filter = ({qw_list: qwalification_list}) => {
 };
 
 let subject_name_list_view = ({
-    name: nm
-}) => {
+                                  name: nm
+                              }) => {
     let $subject = $(`<div data-name="${nm}" type="button" class="justify-content-between my_btn s_btn  my-2 btn-lg btn-block">`);
     $subject.text(nm);
     let button_block = $(`<div class="btn-group">`);
