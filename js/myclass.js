@@ -197,6 +197,7 @@ $(document).on('click', '#changing_group', function(){
         url: "/getSubjectsInClass",
         type: "GET",
         success: function(subjects){
+            console.log(subjects);
             let class_s =[];
             subjects.forEach(st=>{class_s.push(st.subject_name)});
             let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);

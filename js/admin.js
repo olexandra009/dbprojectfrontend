@@ -419,7 +419,7 @@ function appointTeacherForTheSubject() {
                     let form = $('<form class="container" method="post" id="tch_subj_form" onsubmit="return checkAppointTeacherToSubj()" action="appointTeacherToSubj">');
                     let subj = create_selected_input(subjects, 'Предмет:', "type_edu", "Оберіть предмет", "subject");
                     let tch = create_selected_input(teachers, 'Вчитель:', "class_type", "Оберіть вчителя", "teacher");
-                    let submit = $(`<input type="submit" class="input-group-text">`);
+                    let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`).text("Зберегти");
                     form.append(subj).append(tch).append(submit);
                     $(`#tch_subj`).after(form);
                 }
@@ -489,7 +489,7 @@ function identifyClassroomLeaders() {
                             tch_list.append(input)
                         }
                     });
-                    let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`);
+                    let submit = $(`<input type="submit" class="input-group-text text="Зберегти" value="Зберегти">`).text("Зберегти");
                     tch_list.append(submit);
                     $('#cls_le').after(tch_list);
                 }
@@ -709,11 +709,6 @@ function creatingSubjectList() {
             })
         }
     });
-
-    //    let data = [{name: 'English'}, {name: 'Математика'}, {name: 'Алгебра'}];
-    //    data.forEach(sb=> {
-    //        subject_list.append(subject_name_list_view(sb))
-    //    });
     $("#content").empty().append(subject_button).append(subject_list);
 }
 
@@ -828,7 +823,6 @@ function createFormForAddingSubject() {
 }
 
 function createFormForAddingConcreteSubject(subjName) {
-    //TODO AJAX request for class
     let form = $('<form class="container" method="post" id="form_c_subject" action="createSubjectInGroup">');
     //hidden input just to send the subjName
     let hiddenSubjNameInput = $('<input type="text" name="subjName" style="display: none" value="' + subjName + '">');
@@ -852,7 +846,7 @@ function createFormForAddingConcreteSubject(subjName) {
                 return a.class_number - b.class_number || a.class_char - b.class_char;
             });
             let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас", "", "Оберіть клас", "class");
-            let submit = $(`<input type="submit" class="input-group-text">`);
+            let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`);
             form.append(inputBook).append(inputClass).append(submit);
             $('#form_c_subject').remove();
             $('#add_subject_c_form').append(form);
@@ -1252,7 +1246,7 @@ data-class-char="${data.class_char}" data-year="${data.year}">`).text('Реда�
             let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
             data.students.forEach(st => {
                 let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
-                let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname);
+                let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname+' '+st.student_name);
                 let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
                 let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
 
@@ -1261,8 +1255,7 @@ data-class-char="${data.class_char}" data-year="${data.year}">`).text('Реда�
                 div_students.append(line)
             });
             let divrow = $(`<div class="row">`);
-            let mark_button = $(`<div class="input-group-text class-marks w-100" data-class="${data.id}">`).text('Оцінки');
-            div_students.append(divrow.append(mark_button));
+            div_students.append(divrow);
             div.append(class_name).append(class_year).append(leader).append(div_students);
             let div_last = $(`<div class="row btn-group mar">`);
             let delete_ = $(` <button id="class_delete" class="my_btn btn-outline-success btn" 
@@ -1376,8 +1369,8 @@ function addingStudentView() {
 
 function createFormForAddingStudent() {
     let form = $('<form class="container" method="post" onsubmit="return checkAddingStudent()" name="form_student" id="form_student" action="createStudent">');
-    let input_personal = create_input_group('text', "Номер особової справи:", "", "id");
 
+    let input_personal = create_input_group('text', "Номер особової справи:", "", "id");
     let input_surname = create_input_group('text', "Прізвище", "", "last_name");
     let input_name = create_input_group('text', "Ім'я", "", "first_name");
     let input_second_name = create_input_group('text', "По батькові", "", "patronymic");
@@ -1497,7 +1490,6 @@ function createStudentViewById(id, classid, from_class, from_subj) {
                 building: student.building,
                 apartment: student.apartment,
                 bday: student.birth_date.substr(0, 10),
-                type: student.studying_type,
                 class_name: classid,
                 class_id: ""
             };
