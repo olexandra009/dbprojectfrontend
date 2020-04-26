@@ -9,6 +9,7 @@
     color: #000;
     border-color: #000;
 }
+
 .my_btn.btn-outline-success .focus, .my_btn.btn-outline-success:focus {
     box-shadow: 0 0 0 0.2rem rgba(186, 200, 189, 0.5);
 }
@@ -377,4 +378,8 @@ td.type{
 }
 table {
     width: 100%;
+}
+
+.justify-content-between.my_btn.s_btn.my-2.btn-lg.btn-block {
+    border: 1px solid black;
 }
