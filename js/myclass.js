@@ -176,10 +176,6 @@ $(document).on('click', '#edit_st', function(){
     let tel = create_input_group_with_button('tel', 'Телефони', 'add_phone');
     if( $('input[type="tel"]') == undefined)       $('#type_st').parent().before(tel);
     else  $('input[type="tel"]').last().parent().after(tel);
-    //let benefits = create_input_group_with_button('text', 'Пільги', 'add_benefits');
-
-   // if( $('input[label="Пільги"]').length == 0)   $('#type_st').parent().after(benefits);
-    // else   $('input[label="Пільги"]').last().parent().after(benefits);
 });
 let changinggroupflag = false;
 
@@ -191,8 +187,6 @@ $(document).on('click', '#changing_group', function(){
     }
     changinggroupflag=!changinggroupflag;
     let div= $(`<div id="changing_group_form">`);
-    //todo get AJAX NAME OF SUBJECT ONLY
-
     $.ajax({
         url: "/getSubjectsInClass",
         type: "GET",
@@ -206,14 +200,6 @@ $(document).on('click', '#changing_group', function(){
             $('#changing_group_div').append(div);
         }
     });
-
-    //    let class_s =[];
-    //    class_subject.forEach(st=>{class_s.push(st.name)});
-    //    console.log(class_s);
-    //    let select = create_selected_input(class_s, 'Предмет', 'class_subject', 'Оберіть предмет', 'class_subject', '', '', true);
-    //    let btn = $(`<button class="btn input-group-text" id="choose">`).text('Обрати');
-    //    div.append(select).append(btn);
-    //    $('#changing_group_div').append(div);
 });
 
 $(document).on('click', '#parents', function(){
@@ -267,6 +253,7 @@ $(document).on('click', '#show_end_marks', function () {
 
 $(document).on('click', '#choose', function(){
     let subj = $('#class_subject').val();
+    console.log(subj);
     createGroupsforStudent(subj)
 });
 
@@ -425,10 +412,10 @@ function createGroupsforStudent(subj){
                     console.log(subjects_in_groups);
                     console.log("studGroupPairs");
                     console.log(studGroupPairs);
-                    
                     let form = $(`<form method="post" action="appointStudentsToGroups">`);
                     studGroupPairs.forEach(stg => {
-                        let input = selected_input_stud_groups(subjects_in_groups, stg.student.surname + ' ' +  stg.student.student_name + ' ' +  stg.student.patronymic,  stg.group ? stg.group.group_number : '', stg.student.personal_file_num);
+                        console.log(stg);
+                        let input = selected_input_stud_groups(subjects_in_groups, stg.surname + ' ' +  stg.student_name + ' ' +  stg.patronymic,  stg.group_num, stg.personal_file_num);
                         form.append(input);
                     });
                     //hidden input for subject name
@@ -800,8 +787,8 @@ let student_detail_view =({
     let student_block = $(`<div class="student_info_list">`);
     let divbuttons =  $(`<div class="justify-content-between m-2">`);
     let button = $(`<div class="btn my_btn btn-outline-success" id="back_to_st-list">`).text('Назад');
-    let edit = $(`<div class="btn my_btn btn-outline-success" id="edit_st">`).text('Редагувати');
-    divbuttons.append(button).append(edit);
+    //let edit = $(`<div class="btn my_btn btn-outline-success" id="edit_st">`).text('Редагувати');
+    divbuttons.append(button);
     let input_key = create_input_group('text', 'Номер особової справи', id, 'id', 'st-info-ed','',true, true);
     student_block.append(divbuttons);
     student_block.append(input_key);
@@ -810,30 +797,10 @@ let student_detail_view =({
     let input_sname = create_input_group('text', "По батькові", secname, 'second_name', 'st-info-ed', '', true, true);
     let input_sex = create_selected_input(['Жіноча', 'Чоловіча'], "Стать", '', sex, 'sex',  'st-info-ed', true, true);
     let input_bday = create_input_group('data', "Дата народження", bday, 'bday', 'st-info-ed', '', true, true);
-    //todo change address information
-    let input_address_sity = create_input_group('text', "Місто", address, 'sity', 'st-info-ed', '', true, true);
-    let input_address_street = create_input_group('text', "Вулиця", address, 'street', 'st-info-ed', '', true, true);
-    let input_address_bulding = create_input_group('text', "Будинок", address, 'building', 'st-info-ed', '', true, true);
-    let input_address_flat = create_input_group('text', "Квартира", address, 'flat', 'st-info-ed', '', true, false);
-
+    let input_address = create_input_group('text', "Адреса", address, 'sity', 'st-info-ed', '', true, true);
 
     student_block.append(input_name).append(input_2name).append(input_sname).append(input_sex).append(input_bday);
-    student_block.append(input_address_sity).append(input_address_street).append(input_address_bulding).append(input_address_flat);
-    let i = 0;
-    //TODO add opportunity to add several new phones and to delete some of them
-    if(array_t!=undefined&&array_t!=='')
-        array_t.forEach(ph => {let in_ph = create_input_group("tel", 'Телефони', ph, 'phone'+i, 'st-info-ed','', true, false);
-                               i++;
-                               student_block.append(in_ph);});
-    i= 0;
-  //  if(p!=undefined&&p!=='')
-  //      p.forEach(ph => {let in_ph = create_input_group("text", 'Пільги', ph, 'benefit'+i, 'st-info-ed','',true,true);
-  //                       i++;
-   //                      student_block.append(in_ph);});
-    let input_type = create_selected_input(['Очна', 'Заочна'], 'Тип', 'type_st', type, 'type', 'st-info-ed', true, true);
-    let buttonparents =$(`<button id="parents" class="btn my_btn btn-outline-success input-group-text">`).text('Відповідальні особи');
-    student_block.append(input_type);
-    student_block.append(buttonparents);
+    student_block.append(input_address);
     return student_block;
 };
 /*------Subject-creator-----*/

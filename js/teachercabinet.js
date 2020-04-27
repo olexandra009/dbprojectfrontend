@@ -51,7 +51,6 @@ function removeClass() {
     removing('t_cab', 'mycabinet');
     removing('my_class', 'content');
     removing('my_subject', 'content');
-    removing('ex_subject', 'content');
 }
 
 function removing(item, div) {

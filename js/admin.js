@@ -457,8 +457,8 @@ function appointTeacherForTheSubject() {
                 success: function (subjectsInGroup) {
                     let subjects = subjectsInGroup.map(function (subj) {
                         return subj.subject_name + " " + subj.class_id.substring(0, subj.class_id.length - 5) + "-" +
-                            subj.class_id.substring(subj.class_id.length - 5, subj.class_id.length - 4) + " " + subj.class_id.substring(subj.class_id.length - 4) +
-                            " ID: " + subj.subject_id;
+                            subj.class_id.substring(subj.class_id.length - 5, subj.class_id.length - 4) + " " + subj.class_id.substring(subj.class_id.length - 4) + ' '+ subj.group_num+' '+
+                            " ID: " +subj.subject_id;
                     });
 
                     teachers = teachers.map(function (teacher) {
@@ -477,6 +477,59 @@ function appointTeacherForTheSubject() {
         }
     });
 }
+
+function createStudentRequest(e) {
+    e.preventDefault();
+    let info = document.forms['form_student'];
+    let message = checkAddingStudent();
+    if (message !== null) {
+        window.alert(message);
+        return false;
+    }
+    let id = info['id'].value;
+    $.ajax({
+        url: "/getStudent/" + id,
+        type: "GET",
+        success: function (student) {
+            if (student.length !== 0) {
+                window.alert("Учень з номером особової справи " + id + " вже існує");
+            } else {
+                let data = {
+                    id: id,
+                    last_name: info['last_name'].value,
+                    first_name: info['first_name'].value,
+                    patronymic: info['patronymic'].value,
+                    birthday: info['birthday'].value,
+                    sex: info['sex'].value,
+                    city: info['city'].value,
+                    street: info['street'].value,
+                    building: info['building'].value,
+                    apartment: info['apartment'].value,
+                    class_name: info['class_name'].value
+                }
+                console.log(data);
+                $.ajax({
+                    url: '/createStudent',
+                    method: 'post',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (res) {
+                        console.log(res);
+                    },
+                    complete: function () {
+                        nextMenu('student');
+                        addingStudentView();
+                        filterStudentCreating();
+                        creatingStudentList();
+                    }
+                });
+            }
+        }
+    });
+    return false;
+}
+
 
 function checkAppointTeacherToSubj() {
     if (document.forms['tch_subj_form']['subject'].value == '') return false;
@@ -532,9 +585,7 @@ function identifyClassroomLeaders() {
     });
 }
 
-function checkClassTeachers(form) {
 
-}
 
 
 /*************Teacher-page function ****************/
