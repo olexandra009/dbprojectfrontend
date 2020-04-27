@@ -963,12 +963,14 @@ function create_input_group(input_type, label, value, name, min, max, step, chec
     return group.append(pregroup.append(span)).append(input);
 }
 /*******************Helper function***************************/
-function cutData(data){
+function cutData(d){
+    let data = new Date(d);
     return data.getFullYear() + "-" + ((data.getMonth()+1 < 10) ?
                                        ("0" + (data.getMonth()+1)) : (data.getMonth()+1)) + "-" + ((data.getDate() < 10) ?
                                                                                                    ("0" + data.getDate()) : data.getDate());
 }
-function cellDate(data){
+function cellDate(d){
+    let data = new Date(d);
     return  ((data.getDate() < 10) ?
              ("0" + data.getDate()) : data.getDate())+ "." +(((data.getMonth()+1) < 10) ?
                                                              ("0" + (data.getMonth()+1)) : (data.getMonth()+1) );
