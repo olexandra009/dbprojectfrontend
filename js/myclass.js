@@ -778,7 +778,6 @@ let student_detail_view =({
     second_name: secname,
     last_name: surname,
     bday: bday,
-    type: type,
     sex: sex,
     phone: array_t,
     address: address,

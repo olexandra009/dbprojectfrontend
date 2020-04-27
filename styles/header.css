@@ -26,11 +26,11 @@
     background-color: #727272;
 }
 td.hovered{
-    background-color: aqua;
+    background-color: #feb99bad;
 }
 tr.hovered{
-    background-color: chartreuse;
+    background-color: #feb99bad;
 }
 td.thovered{
-    background-color: cadetblue;
+    background-color: #f59369ad;
 }

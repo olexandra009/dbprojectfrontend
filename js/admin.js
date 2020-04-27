@@ -1144,7 +1144,7 @@ function createMarksByPeriod() {
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-mark-id="${mark.id}" data-teacher-id="${mark.teacher_id}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
+            let td = $(`<td data-column="${column}" data-mark-id="${mark.mark_id}" data-teacher-id="${mark.teacher_id}" data-date=${mark_cell.date} data-type="dairy" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);
         }
@@ -1173,7 +1173,7 @@ data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
                 row.append(td);
                 continue;
             }
-            let td = $(`<td data-column="${column}" data-type="special"  data-mark-id="${mark.id}" data-mark-work-type = ${mark_cell.type}
+            let td = $(`<td data-column="${column}" data-type="special"  data-mark-id="${mark.mark_id}" data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" data-teacher-id="${mark.teacher_id}" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
             row.append(td);

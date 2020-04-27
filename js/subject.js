@@ -7,25 +7,19 @@ const urlParams = new URLSearchParams(queryString);
 // - information about subject
 // TODO add id to marks and attend cell to make them editable
 
+
 let data_names = [{id: '1', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},
                   {id: '2', last_name: "Surname", first_name: "Name1", second_name: "Pobatkovi"},
                   {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},];
 
-let theme_names = [{id: '112314',name:"Name of the first theme" , number:'1', hours:'10', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
-                   {id: '112214', name:"Name of the second theme" ,number:'2', hours:'11', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5},
-                   {id: '112514', name:"Name of the third theme" ,number:'3', hours:'6', coef_special: 0.3, coef_diary: 0.01, coef_theme: 0.5}];
-
-let lesson_names = [{id: '242145', theme: 'Theme of lesson 1', date: new Date(2020, 4, 5),hometask: 'write esse'},
-                    {id: '24234',theme: 'Theme of lesson 2',date: new Date(2020, 4, 6),},
-                    {id: '24234',theme: 'Theme of lesson 3',date: new Date(2020, 4, 7),}];
 
 let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
-                        {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', visible:'true'}, {id:'2', value:'9', visible:'true'}]},
+                        {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', mark_id: '0', visible:'true'}, {id:'2', value:'9',mark_id: '0', visible:'true'}]},
                         {date: new Date(2019, 3, 24), marks:[]},
-                        {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7', visible:'true'}]},
-                        {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12', visible:'true'}]}, ];
-let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', value:5, comment:"once more chance"}, {id:'2',value: 10, visible:'true' }]},
-                          {name: "Test12", type: "test", marks: [{id:'1', value:'12', visible:'true'}, {id:'3', value:'6', visible: "true"}]}];
+                        {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7',mark_id: '0', visible:'true'}]},
+                        {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12',mark_id: '0', visible:'true'}]}, ];
+let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', mark_id: '0', value:5, comment:"once more chance"}, {id:'2',value: 10,mark_id: '0', visible:'true' }]},
+                          {name: "Test12", type: "test", marks: [{id:'1', value:'12',mark_id: '0', visible:'true'}, {id:'3', value:'6',mark_id: '0', visible: "true"}]}];
 
 let them_marks = [{id: '1', theme: 'theme1', value: '10', visible:'false'},
                   {id: '2', theme: 'theme1', value: '8', visible:'true'},
@@ -47,6 +41,21 @@ let end_marks =[{type: 'semestr1', marks:[{id:1, value: '11', visible:'true', co
                                      {id:2, value: '10', visible:'true', comment:'here'},
                                      {id:3, value: '8', visible:'true', comment:'here'}]} ];
 
+getNamesOfStudentOfThisSubject();
+
+
+
+
+function getNamesOfStudentOfThisSubject(){
+    $.ajax({
+        url: "/getStudentsBySubject",
+        type: "GET",
+        success: function(students){
+            data_names = students;
+            console.log(students);
+        }
+    });
+};
 
 
 /******Check is it is when we get info subject exchange*****/
@@ -223,7 +232,7 @@ $(document).on('click', '#create_marks_by_period', function(){
     // send theme value
     let topic = $('#theme_id_select').val();
     if(topic)
-        createMarksByPeriod(last(topic.split(':')));
+        createMarksByPeriod(topic);
 });
 function last(array) {
     return array[array.length - 1];
@@ -492,10 +501,10 @@ function checkLessonAdding(){
 function createThemeDivAdding(){
     let form = $('<form class="container" method="POST" id="form" action="createTopic">');
     let input_name = create_input_group('text', 'Назва', "", "topic_name");
-    let input_num =  create_input_group('number', 'Порядковий номер', "", "topic_number", 1);
-    let coef_sp = create_input_group('number', 'Коефіцієнт спеціальних оцінок', "", "coef_special", 0, "", 0.01);
-    let coef_d =   create_input_group('number', 'Коефіцієнт поточних оцінок', "", "coef_diary", 0, "", 0.01);
-    let coef_th =   create_input_group('number', 'Коефіцієнт тематичної оцінок', "", "coef_theme", 0, "", 0.01);
+    let input_num =  create_input_group('number', 'Порядковий номер', 1, "topic_number", 1);
+    let coef_sp = create_input_group('number', 'Коефіцієнт спеціальних оцінок', 0.1, "coef_special", 0, "", 0.01);
+    let coef_d =   create_input_group('number', 'Коефіцієнт поточних оцінок', 0.05, "coef_diary", 0, "", 0.01);
+    let coef_th =   create_input_group('number', 'Коефіцієнт тематичної оцінок', 0.5, "coef_theme", 0, "", 0.01);
     //hidden input for subject ID
     let subj_id = $('<input type="number" hidden name="subject_id" value="' + urlParams.get('id') + '">');
     form.append(input_name);
@@ -767,6 +776,7 @@ function createMarksByPeriod(topic_id){
         url: "/getStudentsByTopic/" + topic_id,
         type: "GET",
         success: function(students){
+            console.log('HERE');
             console.log(students);
         }
     });
@@ -863,7 +873,7 @@ function createPeriodForm() {
 
 function createMarksView(){
     let div = $(`<div id="choose_period">`);
-    let dataform = $(`<div class="form">`); //можливо краще форму?
+    let dataform = $(`<div class="form">`);
 
     $.ajax({
         url: "/getTopics",
@@ -872,7 +882,7 @@ function createMarksView(){
         success: function(topics){
             console.log(topics);
 
-            let inputdate1 = create_selected_input(topics.map(t => {return t.topic_name + " ID:" + t.topic_id;}), 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
+            let inputdate1 = create_selected_input_o(topics.map(t => {return {name: t.topic_name, id: t.topic_id}}), 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
 
             let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
             div.append(dataform.append(inputdate1).append(submit));
@@ -892,22 +902,13 @@ function createMarksView(){
             let div_third_table_caption = $(`<div class="table_header" >`).text('Підсумкові оцінки');
             let table = $(`<table id='marks'>`);
             let table_theme = $(`<table id='marks_theme' >`);
-
             let table_end = $(`<table id='marks_end'>`);
-
-
             div_first_table.append(div_first_table_caption);
-
             div_first_table.append(table);
-
             div_second_table.append(div_second_table_caption);
-
             div_second_table.append(table_theme);
-
             div_third_table.append(div_third_table_caption);
-
             div_third_table.append(table_end);
-
             div_table_wrapper.append(div_first_table).append(div_second_table).append(div_third_table);
             marks_view.append(div_table_wrapper);
             $('#content').append(div).append(marks_view);
@@ -915,6 +916,19 @@ function createMarksView(){
     });
 }
 //TODO add more arguments for specificating
+//data[{name:name, id:id}]
+function create_selected_input_o(data, label, id, value, name = "name") {
+    let group = $(`<div class="input-group mb-1">`);
+    let prep = $(`<div class="input-group-prepend">`);
+    let span = $(`<span class="input-group-text">`).text(label);
+    let select = $(`<select class="custom-select" id="${id}" name="${name}">`);
+    select.append($(`<option value="" disabled selected>`).text(value));
+    data.forEach(option => {
+        let opt = $(`<option value="${option.id}">`).text(option.name);
+        select.append(opt)
+    });
+    return group.append(prep.append(span)).append(select);
+}
 
 function create_selected_input(data, label, id, value) {
     let group =$(`<div class="input-group mb-1">`);
@@ -985,7 +999,7 @@ let themes = ({id: id,
     let div = $(`<div data-id = ${id} class="theme_list">`);
     let header = $(` <div class="header">`);
     let button_edit = $(`<button data-id="${id}" data-name="${name}" data-hours="${hours}"  data-number="${number}" 
-data-coef_special="${cs}" data-coefdiary="${cd}" data-coef_theme="${ct}" class="btn btn-outline-success my_btn edit_theme">`).text('Редагувати');
+    data-coef_special="${cs}" data-coefdiary="${cd}" data-coef_theme="${ct}" class="btn btn-outline-success my_btn edit_theme">`).text('Редагувати');
     let button_delete = $(`<button data-id="${id}" class="btn btn-outline-dark delete_theme">`).text('Видалити');
     let span = $(`<span>`).text(name);
     let btn_div = $(`<div class="btn-group">`).append(button_edit).append(button_delete);
