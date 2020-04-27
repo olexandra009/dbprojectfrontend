@@ -1,6 +1,7 @@
 //to parse url params (currently only subject ID)
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
+const subjectID=urlParams.get('id');
 /*-------------------------------------------------*/
 //TODO get information from server about
 // - student attend this subject
@@ -48,10 +49,11 @@ getNamesOfStudentOfThisSubject();
 
 function getNamesOfStudentOfThisSubject(){
     $.ajax({
-        url: "/getStudentsBySubject",
+        url: "/getStudentsBySubject/"+subjectID,
         type: "GET",
         success: function(students){
             data_names = students;
+            consolr.log(students);
             console.log(students);
         }
     });
@@ -513,7 +515,7 @@ function createThemeDivAdding(){
     form.append(coef_d);
     form.append(coef_th);
     form.append(subj_id);
-    let submit = $(`<input type="submit" class="input-group-text">`);
+    let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`);
     form.append(submit);
     $('#form').remove();
     $('#add_theme_form').append(form);
@@ -556,7 +558,7 @@ function createEditionLessonView(a) {
     form.append(input_num);
     form.append(coef_sp);
     form.append(lesson_id);
-    let submit = $(`<input type="submit" class="input-group-text">`);
+    let submit = $(`<input type="submit" class="input-group-text" value='Зберегти'>`);
     form.append(submit);
     createWindow(form);
 }
@@ -591,7 +593,7 @@ function createNewAttendColumn(date){
     let t = $(`<td data-column="${start}" data-date="${cutData(date)}" data-type="attend">`).text(cellDate(date));
     table_caption.append(t);
     data_names.forEach(st => {
-        let row = $("#table-row-"+st.id);
+        let row = $("#table-row-"+st.personal_file_num);
         let td = $(`<td data-column="${start}" data-date="${cutData(date)}" data-type="attend">`);
         row.append(td);
     })
@@ -602,7 +604,7 @@ function createNewSpecialMarkColumn(type, name){
     let t = $(`<td data-column="${start}" data-work-type="${type}" data-type="special" data-mark-name="${name}">`).text(type);
     table_caption.append(t);
     data_names.forEach(st => {
-        let row = $("#table-row-"+st.id);
+        let row = $("#table-row-"+st.personal_file_num);
         let td = $(`<td data-column="${start}" data-work-type="${type}" data-type="special" data-mark-name="${name}">`);
         row.append(td);
     })
@@ -613,7 +615,7 @@ function createNewDairyMarkColumn(date){
     let t = $(`<td data-column="${start}" data-date="${cutData(date)}" data-type="dairy">`).text(cellDate(date));
     table_caption.append(t);
     data_names.forEach(st => {
-        let row = $("#table-row-"+st.id);
+        let row = $("#table-row-"+st.personal_file_num);
         let td = $(`<td data-column="${start}" data-date="${cutData(date)}" data-type="dairy">`);
         row.append(td);
     });
@@ -624,7 +626,7 @@ function createNewEndMarkColumn(type){
     let t = $(`<td data-column="${start}" data-type-mark="${type}" data-type="end">`).text(type);
     table_caption.append(t);
     data_names.forEach(st => {
-        let row = $("#table-end-row-"+st.id);
+        let row = $("#table-end-row-"+st.personal_file_num);
         let td = $(`<td data-column="${start}"  data-type-mark="${type}" data-type="end">`);
         row.append(td);
     });
@@ -676,8 +678,8 @@ function createAttendByPeriod(){
     table.append(capt.append(tr));
 
     data_names.forEach(student=> {
-        let td = $(`<tr id="table-row-${student.id}"  class="table-row-${student.id}">`);
-        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        let td = $(`<tr id="table-row-${st.personal_file_num}"  class="table-row-${st.personal_file_num}">`);
+        let first_tr = $(`<td  data-column="-1" class="caption_surname">`).text(student.surname+" "+student.student_name+" "+student.patronymic);
         td.append(first_tr);
         table.append(td);
     });
@@ -689,7 +691,7 @@ function createAttendByPeriod(){
         let date_cell = $(`<td data-column="${i}" data-date=${cutData(mark_cell.date)} data-type="attend">`).text(date_format);
         capt.append(date_cell);
         for(let j = 0; j<data_names.length; j++ ){
-            let id = data_names[j].id;
+            let id = data_names[j].personal_file_num;
             let mark= mark_cell.n_attend_id.find(el=> el==id);
             let row = $("#table-row-"+id);
 
@@ -713,7 +715,7 @@ function createEndMarksView() {
     table.empty();
     table.append(caption);
     data_names.forEach(st=>{
-        let tr = $(`<tr id="table-end-row-${st.id}" data-student="${st.id}"  class="table-row-${st.id}">`);
+        let tr = $(`<tr id="table-end-row-${st.personal_file_num}" data-student="${st.personal_file_num}"  class="table-row-${st.personal_file_num}">`);
         table.append(tr);
     });
     let column = 2000;
@@ -723,7 +725,7 @@ function createEndMarksView() {
         caption.append(date_cell);
         data_names.forEach(st=>{
             let marks= mark.marks.find(el=> el.id==st.id);
-            let row = $("#table-end-row-"+st.id);
+            let row = $("#table-end-row-"+st.personal_file_num);
 
             if(marks===undefined) {
                 let td = $(`<td data-column="${column}" data-mark-type="${mark.type}" data-type="end">`);
@@ -751,7 +753,7 @@ function  createThemeMarksView(theme){
     caption.append(date_cell);
 
     data_names.forEach(st=>{
-        let tr = $(`<tr id="table-th-row-${st.id}" data-student="${st.id}" class="table-row-${st.id}">`);
+        let tr = $(`<tr id="table-th-row-${st.personal_file_num}" data-student="${st.personal_file_num}" class="table-row-${st.personal_file_num}">`);
         let mark= them_marks.find(el=> el.id==st.id);
         if(mark==undefined) {
             let td = $(`<td data-column="${column}" data-theme=${theme}  data-type="theme">`);
@@ -789,38 +791,48 @@ function createMarksByPeriod(topic_id){
     $('#marks_view_table').removeClass('hidden');
 
     data_names.forEach(student=> {
-        let td = $(`<tr id="table-row-${student.id}" data-student="${student.id}"  class="table-row-${student.id}">`);
-        let first_tr = $(`<td data-column="-1" class="caption_surname">`).text(student.last_name+" "+student.first_name+" "+student.second_name);
+        let td = $(`<tr id="table-row-${student.personal_file_num}" data-student="${student.personal_file_num}"  class="table-row-${student.personal_file_num}">`);
+        let first_tr = $(`<td data-column="-1" class="caption_surname">`).text(student.surname+" "+student.student_name+" "+student.patronymic);
         td.append(first_tr);
         table.append(td);
     });
 
     let column = 0;
     //поточні оцінки
-    for(let i = 0; i < dairy_data_marks.length; i++)
-    {
-        if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
-            continue;
-        let mark_cell = dairy_data_marks[i];
-        let date_format = cellDate(mark_cell.date);
-        let date_cell = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`).text(date_format);
-        caption.append(date_cell);
-        for(let j = 0; j<data_names.length; j++ ){
-            let id = data_names[j].id;
-            let mark= mark_cell.marks.find(el=> el.id==id);
-            let row = $("#table-row-"+id);
-            if(mark===undefined) {
-                let td = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`);
-                row.append(td);
-                continue;
-            }
-            let td = $(`<td data-column="${column}" data-mark-id=${mark.id} data-date=${cutData(mark_cell.date)} data-type="dairy" data-mark-value="${mark.value}"
+
+    $.ajax({
+        url: "/getDairyMarks/" + topic_id,
+        type: "GET",
+        success: function(result){
+            console.log(result);
+            dairy_data_marks = result;
+            for(let i = 0; i < dairy_data_marks.length; i++)
+            {
+                if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)
+                    continue;
+                let mark_cell = dairy_data_marks[i];
+                let date_format = cellDate(mark_cell.date);
+                let date_cell = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`).text(date_format);
+                caption.append(date_cell);
+                for(let j = 0; j<data_names.length; j++ ){
+                    let id = data_names[j].personal_file_num;
+                    let mark= mark_cell.marks.find(el=> el.id==id);
+                    let row = $("#table-row-"+id);
+                    if(mark===undefined) {
+                        let td = $(`<td data-column="${column}" data-date=${cutData(mark_cell.date)} data-type="dairy">`);
+                        row.append(td);
+                        continue;
+                    }
+                    let td = $(`<td data-column="${column}" data-mark-id=${mark.id} data-date=${cutData(mark_cell.date)} data-type="dairy" data-mark-value="${mark.value}"
 data-mark-visible="${mark.visible}">`).text(mark.value);
-            row.append(td);
+                    row.append(td);
+                }
+                column++;
+            }
+            column++;
         }
-        column++;
-    }
-    column++;
+    });
+
     //спеціальні оцінки
     let i;
     for(i = 0; i<special_data_marks.length; i++) //for every data-marks
@@ -832,7 +844,7 @@ data-mark-work-type = ${mark_cell.type}
 data-mark-name="${mark_cell.name}" >`).text(mark_cell.type);
         caption.append(date_cell);
         for(let j = 0; j<data_names.length; j++ ){
-            let id = data_names[j].id;
+            let id = data_names[j].personal_file_num;
 
             let mark= mark_cell.marks.find(el=> el.id==id);
             let row = $("#table-row-"+id);
@@ -884,7 +896,7 @@ function createMarksView(){
 
             let inputdate1 = create_selected_input_o(topics.map(t => {return {name: t.topic_name, id: t.topic_id}}), 'Tема:', 'theme_id_select', 'Оберіть тему', 'theme');
 
-            let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text">`);
+            let submit = $(`<input type="submit" id="create_marks_by_period" class="input-group-text" value="Обрати">`);
             div.append(dataform.append(inputdate1).append(submit));
             let marks_view = $(`<div id="marks_view_table" class="hidden" >`);
             let btn_div = $(`<div class="btn-group">`);

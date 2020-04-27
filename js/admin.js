@@ -853,9 +853,6 @@ function createConcreteSubjectList(name) {
             subjectsInGroup = subjectsInGroup.filter(a => a.subject_name == name);
             console.log(subjectsInGroup);
 
-            //            let data_subj = [{id: '5AG1', name: 'English', class_name: '5-A'},
-            //                             {id: '5AG2', name: 'English', class_name: '5-A'},
-            //                             {id: '5BG1', name: 'English', class_name: '5-B'}];
             subjectsInGroup.forEach(sb => {
                 let classId = sb.class_id.substring(0, sb.class_id.length - 4);
                 let class_letter = classId.substring(classId.length - 1, classId.length);
@@ -866,8 +863,9 @@ function createConcreteSubjectList(name) {
                 //TODO figure out what to do with group number (5AG1, 5AG2)
                 // the group number(5AG1,...) is primary key of subject in group
                 subject_list.append(subject_list_view(name, {
-                    id: class_number + class_letter + "G" + (sb.group_number == undefined) ? '' : sb.group_number,
-                    class_name: class_name
+                    id: class_number + class_letter + "G",
+                    class_name: class_name,
+                    group_num: sb.group_num
                 }))
             });
             $("#content").empty().append(subject_button).append(subject_list);
@@ -1937,9 +1935,10 @@ let subject_name_list_view = ({
 let subject_list_view = (name, {
     id: id,
     class_name: class_name,
+    group_num: group_num
 }) => {
     let $subject = $(`<button data-id="${id}" type="button" class="btn my_btn sd_btn btn-outline-success my-2 btn-lg btn-block">`);
-    $subject.text(name + " " + class_name + " " + id);
+    $subject.text(name + " " + class_name + " " + group_num);
     return $subject;
 };
 
