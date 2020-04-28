@@ -437,7 +437,7 @@ function selected_input_stud_groups(data, label, value, name) {
     let span = $(`<span class="input-group-text">`).text(label);
     let select = $(`<select class="custom-select" name='${name}'>`);
     select.append($(`<option value="${value}" disabled selected>`).text(value));
-    data.forEach(option=> {let opt = $(`<option value="${option.subject_id}">`).text(option.group_number);
+    data.forEach(option=> {let opt = $(`<option value="${option.subject_id}">`).text(option.group_num);
                            select.append(opt)});
     select.val(value);
     return group.append(prep.append(span)).append(select);
