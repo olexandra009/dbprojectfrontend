@@ -53,7 +53,6 @@ function getNamesOfStudentOfThisSubject(){
         type: "GET",
         success: function(students){
             data_names = students;
-            consolr.log(students);
             console.log(students);
         }
     });
