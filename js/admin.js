@@ -184,8 +184,8 @@ $(document).on('click', '.s_btn', function (e) {
 // Предмети => Назви предметів => Клік на конкретний предмет
 $(document).on('click', '.sd_btn', function () {
     //ми отримали шифр предмету треба вивести інформацію про предмет
-    //let subj =  $(this).data('id');
-    createConcreteSubjectInformation();
+    let subj = $(this).data('id');
+    createConcreteSubjectInformation(subj);
     //TODO check if it is work
 });
 
@@ -457,8 +457,8 @@ function appointTeacherForTheSubject() {
                 success: function (subjectsInGroup) {
                     let subjects = subjectsInGroup.map(function (subj) {
                         return subj.subject_name + " " + subj.class_id.substring(0, subj.class_id.length - 5) + "-" +
-                            subj.class_id.substring(subj.class_id.length - 5, subj.class_id.length - 4) + " " + subj.class_id.substring(subj.class_id.length - 4) + ' '+ subj.group_num+' '+
-                            " ID: " +subj.subject_id;
+                            subj.class_id.substring(subj.class_id.length - 5, subj.class_id.length - 4) + " " + subj.class_id.substring(subj.class_id.length - 4) + ' ' + subj.group_num + ' ' +
+                            " ID: " + subj.subject_id;
                     });
 
                     teachers = teachers.map(function (teacher) {
@@ -584,8 +584,6 @@ function identifyClassroomLeaders() {
         }
     });
 }
-
-
 
 
 /*************Teacher-page function ****************/
@@ -852,18 +850,14 @@ function createConcreteSubjectList(name) {
         success: function (subjectsInGroup) {
             subjectsInGroup = subjectsInGroup.filter(a => a.subject_name == name);
             console.log(subjectsInGroup);
-
             subjectsInGroup.forEach(sb => {
                 let classId = sb.class_id.substring(0, sb.class_id.length - 4);
                 let class_letter = classId.substring(classId.length - 1, classId.length);
                 classId = classId.substring(0, classId.length - 1);
                 let class_number = classId;
                 let class_name = class_number + "-" + class_letter;
-
-                //TODO figure out what to do with group number (5AG1, 5AG2)
-                // the group number(5AG1,...) is primary key of subject in group
                 subject_list.append(subject_list_view(name, {
-                    id: class_number + class_letter + "G",
+                    id: sb.subject_id,
                     class_name: class_name,
                     group_num: sb.group_num
                 }))
@@ -922,11 +916,11 @@ function addSubjectInGroupRequest(e) {
         window.alert('Оберіть клас');
         return false;
     }
-    if (elem['group'].value === ''){
+    if (elem['group'].value === '') {
         window.alert('Оберіть кількість груп');
         return false;
     }
-    let data={
+    let data = {
         book: elem['book'].value,
         subjName: elem['subjName'].value,
         class_name: elem['class'].value,
@@ -974,59 +968,72 @@ $(document).on('click', '#edit_subject', function () {
 });
 
 function createConcreteSubjectInformation(id) {
-    //ASAP
-    let div = $(`<div class="container">`);
+    console.log(id);
 
-    //{subject_id, subject_name, book, start_date, end_date, class, students_list[], teacher[] {teacher_id, name, start_date, end_date}}
-    let s = {
-        subject_id: '1212',
-        subject_name: 'Name1',
-        book: "Book",
-        start_date: new Date(),
-        end_date: new Date(),
-        clas: '5A',
-        student: [{id: 1, name: 'St', class_name: '5-F'}, {id: 1, name: 'St', class_name: "5-A"}],
-        teacher: [{id: 0, name: 'Teacher', s_date: new Date(), e_date: new Date()}]
-    }
-    let row = $(`<div class=" row row_button justify-content-between">`);
-    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
-    let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}" data-clas="${s.clas}" 
-data-name="${s.subject_name}" data-start-date="${cutData(s.start_date)}" data-end-date="${cutData(s.end_date)}" >`).text('Редагувати');
-    let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${s.subject_id}">`).text('Видалити');
-    let buttons = $(`<div class="btn-group">`);
-    buttons.append(button).append(del);
-    div.append(row.append(back).append(buttons));
+    $.ajax({
+        url: "/getSubjectDetails/" + id,
+        type: "GET",
+        contentType: "application/json",
+        success: function (res) {
+            console.log(res);
+            let subject = res.subject[0];
+            let students = res.students;
+            let teachers = res.teachers;
+            let classname = subject.class_number + '-' + subject.class_char;
+            let start_date = subject.teaching_start_date;
+            let end_date = subject.teaching_end_date;
+            let div = $(`<div class="container">`);
+            let s = {
+                subject_id: '1212',
+                subject_name: 'Name1',
+                book: "Book",
+                start_date: new Date(),
+                end_date: new Date(),
+                clas: '5A',
+                student: [{id: 1, name: 'St', class_name: '5-F'}, {id: 1, name: 'St', class_name: "5-A"}],
+                teacher: [{id: 0, name: 'Teacher', s_date: new Date(), e_date: new Date()}]
+            }
+            let row = $(`<div class=" row row_button justify-content-between">`);
+            let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+            let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}" data-clas="${subject.class_id}" 
+data-name="${subject.subject_name}" data-start-date="${cutData(start_date)}" data-end-date="${(end_date !== null ? cutData(end_date) : '')}" >`).text('Редагувати');
+            let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}">`).text('Видалити');
+            let buttons = $(`<div class="btn-group">`);
+            buttons.append(button).append(del);
+            div.append(row.append(back).append(buttons));
 
-    let subject_name = createInformationViewRows('Назва:', s.subject_name);
-    let subject_id = createInformationViewRows('Підгрупа:', s.subject_id,);
-    let book = createInformationViewRows('Підручник', s.book);
-    let start_date = createInformationViewRows('Дата початку викладання:', s.start_date.toLocaleDateString(), '');
-    let end_date = createInformationViewRows('Дата закінчення викладання:', s.end_date.toLocaleDateString());
-    let clas = createInformationViewRows('Клас:', s.clas, '');
-    let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Записані учні:"));
-    let div_teachers = $(`<div class="container">`).append($(`<div class="row">`).text("Вчителі:"));
-    s.student.forEach(st => {
-        let line = $(`<div class="row stlist input-group-text" data-id="${st.id}">`);
-        let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.name);
-        let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
-        let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
+            let subject_name = createInformationViewRows('Назва:', subject.subject_name);
+            let subject_id = createInformationViewRows('Підгрупа:', subject.group_num);
+            let book = createInformationViewRows('Підручник', subject.book);
+            let start_date1 = createInformationViewRows('Дата початку викладання:', new Date(start_date).toLocaleDateString(), '');
+            let end_date1 = createInformationViewRows('Дата закінчення викладання:', (end_date !== null ? new Date(end_date).toLocaleDateString() : ''));
+            let clas = createInformationViewRows('Клас:', classname, '');
+            let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Записані учні:"));
+            let div_teachers = $(`<div class="container">`).append($(`<div class="row">`).text("Вчителі:"));
+            students.forEach(st => {
+                let line = $(`<div class="row stlist input-group-text" data-id="${st.personal_file_num}">`);
+                let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname + ' ' + st.student_name);
+                let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.personal_file_num);
 
-        line.append(divname).append(divt_n)
-            .append(divqwl);
-        div_students.append(line)
+                line.append(divname).append(divt_n);
+                div_students.append(line);
+            });
+            teachers.forEach(te => {
+                let line = $(`<div class="row thlist input-group-text" data-id="${te.tabel_number}">`);
+                let divname = $(`<div class="lt col-md-6 text-left  name">`).text(te.surname + ' ' + te.teacher_name);
+                let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(new Date(te.teaching_from).toLocaleDateString());
+                let divqwl = $(`<div class="lt col-md-2   text-left  edate">`).text(te.teaching_to !== null ? new Date(te.teaching_to).toLocaleDateString() : '');
+
+                line.append(divname).append(divt_n)
+                    .append(divqwl);
+                div_teachers.append(line);
+            });
+            div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date1).append(end_date1).append(div_teachers).append(div_students);
+            createWindow(div);
+        }
     });
-    s.teacher.forEach(te => {
-        let line = $(`<div class="row thlist input-group-text" data-id="${te.id}">`);
-        let divname = $(`<div class="lt col-md-6 text-left  name">`).text(te.name);
-        let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(te.s_date.toLocaleDateString());
-        let divqwl = $(`<div class="lt col-md-2   text-left  edate">`).text(te.e_date.toLocaleDateString());
 
-        line.append(divname).append(divt_n)
-            .append(divqwl);
-        div_teachers.append(line);
-    });
-    div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date).append(end_date).append(div_teachers).append(div_students);
-    createWindow(div);
+
 }
 
 /*************Class-page function ****************/
@@ -1782,7 +1789,7 @@ function checkEditingStudent() {
 
 /*******************Helper function***************************/
 function cutData(data) {
-    console.log(data);
+    //console.log(data);
     try {
         return data.getFullYear() + "-" + ((data.getMonth() < 10) ?
 
