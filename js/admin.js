@@ -128,7 +128,7 @@ $(document).on('click', '#add_teacher', function () {
 $(document).on('click', ".th-list, .thlist", function () {
     let id = ($(this).data("id"));
     let from_class = ($(this).data("class-view"));
-    let from_subj = ($(this).data("subj-view"));
+    let from_subj = ($(this).data("subject-view"));
     createTeacherViewById(id, from_class, from_subj);
 });
 //edit_teacher
@@ -316,9 +316,12 @@ $(document).on('click', '.st-list, .stlist', function () {
     let id = ($(this).data("id"));
     let class_ = ($(this).data("class"));
     let from_class = ($(this).data("class-view"));
-    if (from_class == undefined || from_class == '')
-        from_class = ($(this).data("subj-view"));
-    createStudentViewById(id, class_, from_class);
+    let from_subject = ($(this).data("subject-view"));
+    console.log("READ");
+    console.log(from_class);
+    console.log(from_subject);
+
+    createStudentViewById(id, class_, from_class, from_subject);
 });
 
 $(document).on('click', '.par-list', function () {
@@ -396,6 +399,9 @@ $(document).on('click', '#cn_add_parents, #cn_add_teacher, #cn_add_student, #cn_
     $("#bacground_adding_parents").remove();
     let classflag = ($(this).data("class-view"));
     let subjectflag = ($(this).data("subj-view"));
+    console.log('FLAG');
+    console.log(classflag);
+    console.log(subjectflag);
     if (classflag != undefined && classflag != 'undefined' && classflag != '')
         createDetailClassView(classflag);
     else if (subjectflag != undefined && subjectflag != 'undefined' && subjectflag != '')
@@ -1031,7 +1037,7 @@ data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-dat
             let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Записані учні:"));
             let div_teachers = $(`<div class="container">`).append($(`<div class="row">`).text("Вчителі:"));
             students.forEach(st => {
-                let line = $(`<div class="row stlist input-group-text" data-id="${st.personal_file_num}">`);
+                let line = $(`<div class="row stlist input-group-text" data-subject-view ="${subject.subject_id}" data-id="${st.personal_file_num}">`);
                 let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname + ' ' + st.student_name);
                 let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.personal_file_num);
 
@@ -1039,7 +1045,7 @@ data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-dat
                 div_students.append(line);
             });
             teachers.forEach(te => {
-                let line = $(`<div class="row thlist input-group-text" data-id="${te.tabel_number}">`);
+                let line = $(`<div class="row thlist input-group-text" data-subject-view="${subject.subject_id}" data-id="${te.tabel_number}">`);
                 let divname = $(`<div class="lt col-md-6 text-left  name">`).text(te.surname + ' ' + te.teacher_name);
                 let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(new Date(te.teaching_from).toLocaleDateString());
                 let divqwl = $(`<div class="lt col-md-2   text-left  edate">`).text(te.teaching_to !== null ? new Date(te.teaching_to).toLocaleDateString() : '');
@@ -1354,6 +1360,7 @@ function createDetailClassView(id) {
                 leader_name: !classInfo.tabel_number ? "" : classInfo.teacher_name + ' ' + classInfo.patronymic + ' ' + classInfo.surname,
                 students: res.students,
             };
+            console.log(data.students);
             let div = $(`<div class="container">`);
             let row = $(`<div class=" row row_button justify-content-between">`);
             let back = $(` <button id="cn_add_class" class="btn my_btn btn-outline-success" >`).text("Назад");
@@ -1364,10 +1371,12 @@ data-class-char="${data.class_char}" data-year="${data.year}">`).text('Реда�
             let class_year = createInformationViewRows('Рік:', data.year);
             let leader = createInformationViewRows('Класний керівник:', data.leader_name);
             leader.addClass('thlist');
-            leader.attr('data-class-view', data.leader_id);
+            leader.attr('data-id', data.leader_id);
+            leader.attr('data-class-view', data.id);
             let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
             data.students.forEach(st => {
-                let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.id}">`);
+                console.log(st);
+                let line = $(`<div class="row stlist input-group-text"  data-class-view='${data.id}' data-id="${st.personal_file_num}">`);
                 let divname = $(`<div class="lt col-md-6 text-left name">`).text(st.surname + ' ' + st.student_name);
                 let divt_n = $(`<div class="lt  col-md-2 text-left id">`).text(st.id);
                 let divqwl = $(`<div class="lt col-md-2 text-left bday">`).text(st.class_name);
@@ -1640,6 +1649,10 @@ function createStudentViewById(id, classid, from_class, from_subj) {
                 class_id: ""
             };
             let data_bday = data.bday;
+
+            console.log("IN");
+            console.log(from_class);
+            console.log(from_subj);
 
             let div = $(`<div class="container">`); // обгортка
             let row = $(`<div class="row row_button">`);
