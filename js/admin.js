@@ -1006,6 +1006,7 @@ function createConcreteSubjectInformation(id) {
             let div = $(`<div class="container">`);
             let row = $(`<div class=" row row_button justify-content-between">`);
             let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+            if(current_teacher==undefined) current_teacher = {tabel_number:'', surname: 'Оберіть', teacher_name: 'вчителя'};
             let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-teacherid="${current_teacher.tabel_number}" data-teacher="${current_teacher.surname + ' ' + current_teacher.teacher_name}" data-group="${subject.group_num}" data-id="${subject.subject_id}" data-clas="${subject.class_id}" 
 data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-date="${(end_date !== null ? end_date : '')}" >`).text('Редагувати');
             let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}">`).text('Видалити');
