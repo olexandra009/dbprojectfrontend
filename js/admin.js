@@ -128,7 +128,7 @@ $(document).on('click', '#add_teacher', function () {
 $(document).on('click', ".th-list, .thlist", function () {
     let id = ($(this).data("id"));
     let from_class = ($(this).data("class-view"));
-    let from_subj = ($(this).data("subj-view"));
+    let from_subj = ($(this).data("subject-view"));
     createTeacherViewById(id, from_class, from_subj);
 });
 //edit_teacher
@@ -1037,7 +1037,7 @@ data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-dat
                 div_students.append(line);
             });
             teachers.forEach(te => {
-                let line = $(`<div class="row thlist input-group-text" data-id="${te.tabel_number}">`);
+                let line = $(`<div class="row thlist input-group-text" data-subject-view="${subject.subject_id}" data-id="${te.tabel_number}">`);
                 let divname = $(`<div class="lt col-md-6 text-left  name">`).text(te.surname + ' ' + te.teacher_name);
                 let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(new Date(te.teaching_from).toLocaleDateString());
                 let divqwl = $(`<div class="lt col-md-2   text-left  edate">`).text(te.teaching_to !== null ? new Date(te.teaching_to).toLocaleDateString() : '');
@@ -1363,7 +1363,8 @@ data-class-char="${data.class_char}" data-year="${data.year}">`).text('Реда�
             let class_year = createInformationViewRows('Рік:', data.year);
             let leader = createInformationViewRows('Класний керівник:', data.leader_name);
             leader.addClass('thlist');
-            leader.attr('data-class-view', data.leader_id);
+            leader.attr('data-id', data.leader_id);
+            leader.attr('data-class-view', data.id);
             let div_students = $(`<div class="container">`).append($(`<div class="row">`).text("Учні:"));
             data.students.forEach(st => {
                 console.log(st);
