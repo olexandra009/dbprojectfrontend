@@ -151,6 +151,17 @@ $(document).on('click', '#end_mark_report', function(){
     //todo send file with information about every student in class
     // end marks
 });
+$(document).on('click', '#tabel', function(){
+ createStudentsButton();
+});
+$(document).on('click', '.tabel_student', function(){
+    let id = $(this).data('id');
+    console.log(id);
+    //todo show tabels
+});
+$(document).on('click', '#students_rating', function(){
+
+});
 $(document).on('click', '#create_marks_by_period', function(){
     //todo get theme value and subject value
     // send theme value
@@ -392,6 +403,16 @@ function createMarksView(data, subj_id){
     marks_view.append(div_table_wrapper);
     $('#content').empty();
     $('#content').append(div).append(marks_view);
+}
+function createStudentsButton(){
+    let students = [{id: 1, name:'Igor'}];
+    let div = $(`<div>`);
+    students.forEach(student=> {
+         let btn = $(`<div class="btn my_btn btn-outline-success btn-block btn-lg tabel_student" data-id="${student.id}"> `).text(student.name);
+         div.append(btn);
+    });
+    $('#content').empty();
+    $('#content').append(div);
 }
 function createGroupsforStudent(subj){
     console.log("subj");
@@ -745,13 +766,19 @@ function createMenuReportsButtons(){
     let row1 =$('<div class="row m-1">');
     let row2 = row1.clone();
     let row3 = row1.clone();
+    let row4 = row1.clone();
+    let row5 = row1.clone();
     let rating_button = $('<button class="btn-outline-success my_btn btn col-7" id="current_students_rating">').text('Поточний рейтинг учнів');
     row1.append(rating_button);
     let attend_button = $(`<button class="btn btn-outline-success my_btn  col-7" id="attend_student_report">` ).text('Кількість пропущених днів');
     row2.append(attend_button);
     let end_button = $(`<button class="btn btn-outline-success my_btn  col-7" id="end_mark_report">`).text('Список підсумкових оцінок');
     row3.append(end_button);
-    divbuttons.append(row1).append(row2).append(row3);
+    let rating_all= $(`<button class="btn btn-outline-success my_btn  col-7" id="students_rating">`).text('Рейтинговий cписок класу');
+    row4.append(rating_all);
+    let tabel= $(`<button class="btn btn-outline-success my_btn  col-7" id="tabel">`).text('Табелі');
+    row5.append(tabel);
+    divbuttons.append(row1).append(row2).append(row3).append(row4).append(row5);
     $('#content').append(divbuttons);
 }
 
