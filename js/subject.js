@@ -14,11 +14,7 @@ let data_names = [{id: '1', last_name: "Surname", first_name: "Name", second_nam
                   {id: '3', last_name: "Surname", first_name: "Name", second_name: "Pobatkovi"},];
 
 
-let dairy_data_marks = [{date: new Date(2019, 3, 23), marks:[]},
-                        {date: new Date(2019, 4, 23), marks:[{id: '1', value: '10', mark_id: '0', visible:'true'}, {id:'2', value:'9',mark_id: '0', visible:'true'}]},
-                        {date: new Date(2019, 3, 24), marks:[]},
-                        {date: new Date(2019, 3, 25), marks:[{id:'3', value:'7',mark_id: '0', visible:'true'}]},
-                        {date: new Date(2019, 4, 26), marks:[{id: '1', value: '12',mark_id: '0', visible:'true'}]}, ];
+
 let special_data_marks = [{name: "To be or not to be", type: "poem", marks: [{id:'1', visible:'false', mark_id: '0', value:5, comment:"once more chance"}, {id:'2',value: 10,mark_id: '0', visible:'true' }]},
                           {name: "Test12", type: "test", marks: [{id:'1', value:'12',mark_id: '0', visible:'true'}, {id:'3', value:'6',mark_id: '0', visible: "true"}]}];
 
@@ -487,7 +483,7 @@ function createLessonDivAdding(id) {
     form.append(input_num);
     form.append(input_hometask);
     form.append(topic_id);
-    let submit = $(`<input type="submit" class="input-group-text">`);
+    let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`);
     form.append(submit);
     $('#form_l').remove();
     $('#add_lesson_form').append(form);
@@ -641,12 +637,14 @@ function showMarkPartEditView(a) {
     let input_comment = create_input_group('text', 'Коментар:', comment, 'comment');
     let input_visible = create_input_group('checkbox', 'Видимість', '', 'visible', '','','',visible);
     let div_btn = $(`<div class="btn-group">`);
-    let confirm = $(`<button class="btn btn-outline-dark"  data-student="${a.parent().data('student')}" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
+    let confirm = $(`<button class="btn btn-outline-dark" data-student="${a.parent().data('student')}" data-mark-id="${a.data('mark-id')}" id="mark_edition">`).text('Зберегти');
     let cancel = $(`<button class="btn btn-outline-dark" type= "reset" id="cancel">`).text("Скасувати");
     div_btn.append(confirm).append(cancel);
     div.append(input_value).append(input_comment).append(input_visible).append(div_btn);
     createWindow(div);
 }
+
+
 
 function showMarkEditView(a) {
     let type = a.data('type');
@@ -804,7 +802,7 @@ function createMarksByPeriod(topic_id){
         type: "GET",
         success: function(result){
             console.log(result);
-            dairy_data_marks = result;
+            let dairy_data_marks = result;
             for(let i = 0; i < dairy_data_marks.length; i++)
             {
                 if(dairy_data_marks[i].marks === undefined || dairy_data_marks[i].marks.length===0)

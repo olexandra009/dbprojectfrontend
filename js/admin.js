@@ -896,8 +896,8 @@ function createFormForAddingConcreteSubject(subjName) {
             });
             let inputClass = create_selected_input(classes.map(a => a.class_number + "-" + a.class_char), "Клас", "", "Оберіть клас", "class");
             let group = create_selected_input([1, 2, 3], "Кількість груп", "", "Оберіть кількість груп", "group");
-            let startDate = create_input_group('date', 'Дата початку викладання', '', 'start_date');
-            let endDate = create_input_group('date', 'Дата завершення викладання', '', 'end_date');
+            let startDate = create_input_group('date', 'Дата початку викладання', year+'-09-01', 'start_date');
+            let endDate = create_input_group('date', 'Дата завершення викладання', (year+1)+'-05-30', 'end_date');
             let submit = $(`<input type="submit" class="input-group-text" value="Зберегти">`);
             form.append(inputBook).append(inputClass).append(group).append(startDate).append(endDate).append(submit);
             $('#form_c_subject').remove();
@@ -922,7 +922,9 @@ function addSubjectInGroupRequest(e) {
         book: elem['book'].value,
         subjName: elem['subjName'].value,
         class_name: elem['class'].value,
-        groups: elem['group'].value
+        groups: elem['group'].value,
+        start: elem['start_date'].value,
+        end: elem['end_date'].value
     }
     console.log(data);
     $.ajax({
@@ -959,7 +961,7 @@ function createEditSubjectInformation(s) {
                     id: t.tabel_number
                 };
             });
-            let start =  cutData(new Date(s.data('startDate')));
+            let start = cutData(new Date(s.data('startDate')));
             //let end =
             console.log(start);
             let start_date = create_input_group('date', 'Дата початку викладання:', start, '');
@@ -968,7 +970,10 @@ function createEditSubjectInformation(s) {
             //current teacher info
             let current_teacher = s.data('teacher');
             let teacher_id = s.data('teacherid');
-            let teacher = create_selected_input_o_with_value(teachers, 'Вчитель: ', 'teacher_select', {name: current_teacher, id:teacher_id}, 'teacher');
+            let teacher = create_selected_input_o_with_value(teachers, 'Вчитель: ', 'teacher_select', {
+                name: current_teacher,
+                id: teacher_id
+            }, 'teacher');
 
             div.append(start_date).append(end_date).append(teacher);
             let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`);
@@ -1005,7 +1010,11 @@ function createConcreteSubjectInformation(id) {
             let div = $(`<div class="container">`);
             let row = $(`<div class=" row row_button justify-content-between">`);
             let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
-            if(current_teacher==undefined) current_teacher = {tabel_number:'', surname: 'Оберіть', teacher_name: 'вчителя'};
+            if (current_teacher == undefined) current_teacher = {
+                tabel_number: '',
+                surname: 'Оберіть',
+                teacher_name: 'вчителя'
+            };
             let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-teacherid="${current_teacher.tabel_number}" data-teacher="${current_teacher.surname + ' ' + current_teacher.teacher_name}" data-group="${subject.group_num}" data-id="${subject.subject_id}" data-clas="${subject.class_id}" 
 data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-date="${(end_date !== null ? end_date : '')}" >`).text('Редагувати');
             let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}">`).text('Видалити');
@@ -1829,6 +1838,7 @@ function create_selected_input_with_button(data, label, id, btn_id, btn_tx, valu
     append.append(button);
     return group.append(prep).append(select).append(append);
 }
+
 //data[{name:name, id:id}]
 //value {id: id, name: name}
 function create_selected_input_o_with_value(data, label, id, value, name) {
