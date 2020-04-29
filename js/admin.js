@@ -713,8 +713,6 @@ function createTeacherViewById(id, from_class, from_subj) {
         type: "GET",
         contentType: "application/json",
         success: function (data) {
-
-
             let last_qualification_date = new Date(data.last_qualification_date);
             let work_start_date = new Date(data.work_start_date);
             let end = (data.end == "" || data.end == undefined) ? "" : new Date(data.end);
@@ -750,11 +748,10 @@ data-end="${cutData(end)}">`).text('Редагувати');
 data-id="${data.t_n}">`).text('Предмети');
             button_subject.append(bs);
             let button_ex = $(`<div class="row input-group">`);
-            let be = $(` <button id="teacher_ex_subject_view" class="btn btn-block input-group-text" 
-data-id="${data.t_n}">`).text('Заміна');
+            let be = $(` <button id="teacher_ex_subject_view" class="btn btn-block input-group-text"data-id="${data.t_n}">`).text('Заміна');
             button_ex.append(be);
             //TODO add class
-            div.append(button_subject).append(button_ex);
+            div.append(button_subject);
             let div_last = $(`<div class="row btn-group mar">`);
             let dismiss = $(` <button id="teacher_dismiss" class=" my_btn btn-outline-success btn" 
 data-id="${data.tabel_number}">`).text('Звільнити');
@@ -947,20 +944,39 @@ function createEditSubjectInformation(s) {
     //todo get all subject names and class
     $('#bacground_adding_parents').remove();
     let div = $(`<div class="container">`);
-
     let row = $(`<div class="row_button justify-content-between">`);
     let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
-
     div.append(row.append(back));
+    $.ajax({
+        url: "/getTeachers",
+        type: "GET",
+        contentType: "application/json",
+        success: function (teachers) {
+            teachers = teachers.map(t => {
+                return {
+                    name: t.surname + ' ' + t.teacher_name,
+                    id: t.tabel_number
+                };
+            });
+            let start =  cutData(new Date(s.data('startDate')));
+            //let end =
+            console.log(start);
+            let start_date = create_input_group('date', 'Дата початку викладання:', start, '');
+            let end_date = create_input_group('date', 'Дата закінчення викладання:', s.data('endDate'), '');
+            //TODO add teacher selection
+            //current teacher info
+            let current_teacher = s.data('teacher');
+            let teacher_id = s.data('teacherid');
+            //let clas = create_selected_input(['clas1, clsa2'], 'class', 'Клас:', s.data('clas'), '');
+            div.append(start_date).append(end_date);
+            let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`);
+            createWindow(div.append(submit));
+        }
+    });
 
-    let subject_name = create_selected_input(['Name1', 'Name2', 'Name3'], 'Назва:', '', s.data('name'));
-    let subject_id = create_input_group('text', 'Підгрупа:', s.data('id'), '');
-    let start_date = create_input_group('date', 'Дата початку викладання:', s.data('start-date'), '');
-    let end_date = create_input_group('date', 'Дата закінчення викладання:', s.data('end-date'), '');
-    let clas = create_selected_input(['clas1, clsa2'], 'class', 'Клас:', s.data('clas'), '');
-    div.append(subject_name).append(subject_id).append(clas).append(start_date).append(end_date);
-    let submit = $(`<input type="submit" class="input-group-text">`).text('Зберегти');
-    createWindow(div.append(submit));
+    //let subject_name = create_selected_input(['Name1', 'Name2', 'Name3'], 'Назва:', '', s.data('name'));
+    //let subject_id = create_input_group('text', 'Підгрупа:', s.data('group-num'), '');
+
 };
 
 $(document).on('click', '#edit_subject', function () {
@@ -968,8 +984,6 @@ $(document).on('click', '#edit_subject', function () {
 });
 
 function createConcreteSubjectInformation(id) {
-    console.log(id);
-
     $.ajax({
         url: "/getSubjectDetails/" + id,
         type: "GET",
@@ -981,22 +995,16 @@ function createConcreteSubjectInformation(id) {
             let teachers = res.teachers;
             let classname = subject.class_number + '-' + subject.class_char;
             let start_date = subject.teaching_start_date;
+            console.log(start_date);
             let end_date = subject.teaching_end_date;
+            let current_teacher = teachers.filter(t => {
+                return t.teaching_to === null;
+            })[0];
             let div = $(`<div class="container">`);
-            let s = {
-                subject_id: '1212',
-                subject_name: 'Name1',
-                book: "Book",
-                start_date: new Date(),
-                end_date: new Date(),
-                clas: '5A',
-                student: [{id: 1, name: 'St', class_name: '5-F'}, {id: 1, name: 'St', class_name: "5-A"}],
-                teacher: [{id: 0, name: 'Teacher', s_date: new Date(), e_date: new Date()}]
-            }
             let row = $(`<div class=" row row_button justify-content-between">`);
             let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
-            let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}" data-clas="${subject.class_id}" 
-data-name="${subject.subject_name}" data-start-date="${cutData(start_date)}" data-end-date="${(end_date !== null ? cutData(end_date) : '')}" >`).text('Редагувати');
+            let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-teacherid="${current_teacher.tabel_number}" data-teacher="${current_teacher.surname + ' ' + current_teacher.teacher_name}" data-group="${subject.group_num}" data-id="${subject.subject_id}" data-clas="${subject.class_id}" 
+data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-date="${(end_date !== null ? end_date : '')}" >`).text('Редагувати');
             let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}">`).text('Видалити');
             let buttons = $(`<div class="btn-group">`);
             buttons.append(button).append(del);
@@ -1024,8 +1032,7 @@ data-name="${subject.subject_name}" data-start-date="${cutData(start_date)}" dat
                 let divt_n = $(`<div class="lt  col-md-2  text-left   sdate">`).text(new Date(te.teaching_from).toLocaleDateString());
                 let divqwl = $(`<div class="lt col-md-2   text-left  edate">`).text(te.teaching_to !== null ? new Date(te.teaching_to).toLocaleDateString() : '');
 
-                line.append(divname).append(divt_n)
-                    .append(divqwl);
+                line.append(divname).append(divt_n).append(divqwl);
                 div_teachers.append(line);
             });
             div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date1).append(end_date1).append(div_teachers).append(div_students);
