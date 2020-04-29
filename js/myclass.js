@@ -266,7 +266,7 @@ function removeClass() {
     $('#content').empty();
     removing('students');
     removing('marks');
-    removing('attend');
+   // removing('attend');
     removing('report');
 }
 
