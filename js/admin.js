@@ -188,7 +188,11 @@ $(document).on('click', '.sd_btn', function () {
     createConcreteSubjectInformation(subj);
     //TODO check if it is work
 });
+$(document).on('click', '#c_back_subject', function(){
+    let subj = $(this).data('id');
 
+    createConcreteSubjectInformation(subj);
+})
 // Предмети => Додати групу предметів
 $(document).on('click', '#add_subject', function () {
     if (!createSubject) {
@@ -954,7 +958,7 @@ function createEditSubjectInformation(s) {
     $('#bacground_adding_parents').remove();
     let div = $(`<div class="container">`);
     let row = $(`<div class="row_button justify-content-between">`);
-    let back = $(` <button id="cn_add_parents" class="btn my_btn btn-outline-success" >`).text("Назад");
+    let back = $(` <button id="c_back_subject" data-id="${s.data('id')}" class="btn my_btn btn-outline-success" >`).text("Назад");
     div.append(row.append(back));
     $.ajax({
         url: "/getTeachers",
@@ -1054,6 +1058,7 @@ data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-dat
                 div_teachers.append(line);
             });
             div.append(subject_name).append(subject_id).append(clas).append(book).append(start_date1).append(end_date1).append(div_teachers).append(div_students);
+
             createWindow(div);
         }
     });
@@ -1922,6 +1927,7 @@ function cellDate(data) {
 }
 
 function createWindow(innerItem) {
+    $('#bacground_adding_parents').remove();
     let back = $(` <div class = "backgr" id="bacground_adding_parents">`);
     let form = $(` <div class="forming">`);
     $('.body').before(back.append(form.append(innerItem)));
