@@ -846,7 +846,6 @@ function createConcreteSubjectList(name) {
         data: {subject: name},
         success: function (subjectsInGroup) {
             subjectsInGroup = subjectsInGroup.filter(a => a.subject_name == name);
-            console.log(subjectsInGroup);
             subjectsInGroup.forEach(sb => {
                 let classId = sb.class_id.substring(0, sb.class_id.length - 4);
                 let class_letter = classId.substring(classId.length - 1, classId.length);
