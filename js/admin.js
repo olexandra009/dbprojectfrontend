@@ -375,42 +375,9 @@ $(document).on('click', '#parent_save_edit', function () {
 $(document).on('click', '#parent_save_edit', function () {
     //todo save edited student
 });
-//TODO adequate treatment of the filter-button
+
 //endregion
 
-/*****************Form-inner buttons*******************/
-//Клік на плюсик до пільг
-/*
-$(document).on('click', '#add_benefits', function () {
-    $(this).parent().parent().after(create_input_group_with_button('text', 'Пільги', 'add_benefits'));
-    $(this).parent().remove();
-});
- */
-//клік на плюсик в формі телефонів
-$(document).on('click', '#add_phone', function () {
-    $(this).parent().parent()
-        .after(create_input_group_with_button('text', 'Телефон', 'add_phone'));
-    $(this).parent().remove();
-});
-
-//клік на Додати Відповідальну особу в формі додавання студентів
-$(document).on('click', '#create_persons', function () {
-    let div = createPersonForm();
-    createWindow(div);
-});
-//клік на Скасувати Форма додати учня => додати відповідальну особу
-$(document).on('click', '#cn_add_parents, #cn_add_teacher, #cn_add_student, #cn_add_class', function () {
-    $("#bacground_adding_parents").remove();
-    let classflag = ($(this).data("class-view"));
-    let subjectflag = ($(this).data("subj-view"));
-    console.log('FLAG');
-    console.log(classflag);
-    console.log(subjectflag);
-    if (classflag != undefined && classflag != 'undefined' && classflag != '')
-        createDetailClassView(classflag);
-    else if (subjectflag != undefined && subjectflag != 'undefined' && subjectflag != '')
-        createConcreteSubjectInformation(subjectflag);
-});
 
 /************************Function***************************/
 /*******Left-menu navigation function********/
@@ -954,9 +921,8 @@ function addSubjectInGroupRequest(e) {
 }
 
 function createEditSubjectInformation(s) {
-    //todo get all subject names and class
     $('#bacground_adding_parents').remove();
-    let div = $(`<div class="container">`);
+    let div = $(`<form class="container" id="edit_subject_in_group" onsubmit="editSubjectInGroupRequest(event)">`);
     let row = $(`<div class="row_button justify-content-between">`);
     let back = $(` <button id="c_back_subject" data-id="${s.data('id')}" class="btn my_btn btn-outline-success" >`).text("Назад");
     div.append(row.append(back));
@@ -971,13 +937,15 @@ function createEditSubjectInformation(s) {
                     id: t.tabel_number
                 };
             });
+            console.log(new Date(s.data('startDate')));
+            console.log(cutData(new Date(s.data('startDate'))));
             let start = cutData(new Date(s.data('startDate')));
-            //let end =
+            let end = cutData(new Date(s.data('endDate')));
+            console.log(s.data('startDate'));
             console.log(start);
-            let start_date = create_input_group('date', 'Дата початку викладання:', start, '');
-            let end_date = create_input_group('date', 'Дата закінчення викладання:', s.data('endDate'), '');
-            //TODO add teacher selection
-            //current teacher info
+            let book = create_input_group('text','Підручник:',s.data('book'),'book');
+            let start_date = create_input_group('date', 'Дата початку викладання:', start, 'start-date');
+            let end_date = create_input_group('date', 'Дата закінчення викладання:', end, 'end-date');
             let current_teacher = s.data('teacher');
             let teacher_id = s.data('teacherid');
             let teacher = create_selected_input_o_with_value(teachers, 'Вчитель: ', 'teacher_select', {
@@ -986,15 +954,20 @@ function createEditSubjectInformation(s) {
             }, 'teacher');
 
             div.append(start_date).append(end_date).append(teacher);
-            let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`);
+            let submit = $(`<input type="submit" class="input-group-text value="Зберегти">`).text('Зберегти');
             createWindow(div.append(submit));
         }
     });
 
-    //let subject_name = create_selected_input(['Name1', 'Name2', 'Name3'], 'Назва:', '', s.data('name'));
-    //let subject_id = create_input_group('text', 'Підгрупа:', s.data('group-num'), '');
 
 };
+
+function editSubjectInGroupRequest(e) {
+    e.preventDefault();
+    let start = new Date(document.forms['edit_subject_in_group']['start-date'].value);
+    console.log(start);
+
+}
 
 $(document).on('click', '#edit_subject', function () {
     createEditSubjectInformation($('#edit_subject'));
@@ -1012,7 +985,6 @@ function createConcreteSubjectInformation(id) {
             let teachers = res.teachers;
             let classname = subject.class_number + '-' + subject.class_char;
             let start_date = subject.teaching_start_date;
-            console.log(start_date);
             let end_date = subject.teaching_end_date;
             let current_teacher = teachers.filter(t => {
                 return t.teaching_to === null;
@@ -1026,7 +998,7 @@ function createConcreteSubjectInformation(id) {
                 teacher_name: 'вчителя'
             };
             let button = $(` <button id="edit_subject" class="btn my_btn btn-outline-success" data-teacherid="${current_teacher.tabel_number}" data-teacher="${current_teacher.surname + ' ' + current_teacher.teacher_name}" data-group="${subject.group_num}" data-id="${subject.subject_id}" data-clas="${subject.class_id}" 
-data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-date="${(end_date !== null ? end_date : '')}" >`).text('Редагувати');
+data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-date="${(end_date !== null ? end_date : '')}" data-book="${subject.subject_book}">`).text('Редагувати');
             let del = $(`<button id="delete_concrete_subject" class="btn my_btn btn-outline-success" data-id="${subject.subject_id}">`).text('Видалити');
             let buttons = $(`<div class="btn-group">`);
             buttons.append(button).append(del);
@@ -1034,7 +1006,7 @@ data-name="${subject.subject_name}" data-start-date="${start_date}" data-end-dat
 
             let subject_name = createInformationViewRows('Назва:', subject.subject_name);
             let subject_id = createInformationViewRows('Підгрупа:', subject.group_num);
-            let book = createInformationViewRows('Підручник', subject.book);
+            let book = createInformationViewRows('Підручник', subject.subject_book);
             let start_date1 = createInformationViewRows('Дата початку викладання:', new Date(start_date).toLocaleDateString(), '');
             let end_date1 = createInformationViewRows('Дата закінчення викладання:', (end_date !== null ? new Date(end_date).toLocaleDateString() : ''));
             let clas = createInformationViewRows('Клас:', classname, '');
@@ -1830,7 +1802,7 @@ function cutData(data) {
     try {
         return data.getFullYear() + "-" + ((data.getMonth() < 10) ?
 
-            ("0" + data.getMonth()) : data.getMonth()) + "-" + ((data.getDate() < 10) ?
+            ("0" + (data.getMonth()+1)) : (data.getMonth()+1)) + "-" + ((data.getDate() < 10) ?
             ("0" + data.getDate()) : data.getDate());
     } catch (e) {
         return "";
@@ -1964,12 +1936,7 @@ let teacher_list = ({
     return line;
 };
 
-// let form_student_filter = ({cl_list: cl})=>{
-//     let array = [];
-//     cl.forEach(ql=>{
-//         array.push($(`<option value="${ql}">`).text(ql))})
-//     return array;
-// };
+
 
 let form_teacher_filter = ({qw_list: qwalification_list}) => {
     let array = [];
